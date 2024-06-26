@@ -1,0 +1,6 @@
+services:
+  server:
+    build:
+      dockerfile: ./Dockerfile
+    ports:
+      - "8842:8842"
