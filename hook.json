@@ -1,0 +1,7 @@
+[
+  {
+    "id": "redeploy-webhook",
+    "execute-command": "/hook.sh",
+    "command-working-directory": "/var/www/counseling_psycho_server"
+  }
+]
