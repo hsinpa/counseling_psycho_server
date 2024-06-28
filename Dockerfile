@@ -8,6 +8,7 @@ RUN pip install --no-cache-dir --upgrade -r requirements.txt
 
 COPY main.py main.py
 COPY ./src /code/src
+COPY .env /code/.env
 
 EXPOSE 8842
 
