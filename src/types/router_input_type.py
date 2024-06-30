@@ -3,15 +3,27 @@ from typing import Text, List
 
 from pydantic import BaseModel
 
+class TheoryEnum(str, Enum):
+    object_relation_theory = 'object_relation_theory'
+    somatic_experience = 'somatic_experience'
+
+class UserMetaType(BaseModel):
+    gender: str
+    age: int
+    counseling_session: str
+    session_expectation: str
+
 class AnalysisInputQuestionnaireType(BaseModel):
     questionnaire_id: str
     questionnaire: str
     content: str
 
 class AnalysisInputQuestionnairesType(BaseModel):
-    content: List[AnalysisInputQuestionnaireType]
+    theory: TheoryEnum
+    user_meta: UserMetaType
+    question_answer_pairs: List[AnalysisInputQuestionnaireType]
 
 
-class TheoryEnum(str, Enum):
-    object_relation_theory = 'object_relation_theory'
-    somatic_experience = 'somatic_experience'
+class InputMediaStrategyType(BaseModel):
+    theory: TheoryEnum
+    content: str
