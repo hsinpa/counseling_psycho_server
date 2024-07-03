@@ -1,0 +1,91 @@
+{
+    "questions": [
+        {
+            "content": "您覺得您是一個怎樣的人？請簡單自我介紹一下，像是您的個性怎麼樣、身邊的人通常怎麼形容自己等等。",
+            "type": "text_field",
+            "id": "b933bb42-4292-4f54-be61-44becb349fec"
+        },
+        {
+            "content": "您的家庭關係如何？像是誰跟您住一起、家人的工作、您跟誰比較好、彼此怎麼互動、家族有什麼遺傳病史嗎等等。",
+                      "type": "text_field",
+            "id": "c3cd6111-626f-461a-a386-ebc820d0ca93"
+        },
+        {
+            "content": "您目前最有意願、最想要優先處理的狀況是什麼？這個狀況從甚麼時候開始出現？目前的頻率、強度為何？",
+                      "type": "text_field",
+
+            "id": "57f7d88e-e330-4155-900a-83f163a49c1c"
+        },
+        {
+            "content": "承上，您怎麼看待這個狀況？",
+                      "type": "text_field",
+
+            "id": "2649148b-df3e-40d7-a1a1-504c9887fed6"
+        },
+        {
+            "content": "承上，您採取什麼行為去應對這個狀況？",
+                      "type": "text_field",
+
+            "id": "54cbac11-beba-4dcc-8ced-e76ac54683ad"
+        },
+        {
+            "content": "承上，這個狀況帶給您什麼心理上的感受?",
+                      "type": "text_field",
+
+            "id": "c2542a33-ddbf-43f4-8923-4610c3e231ce"
+        },
+        {
+            "content": "承上，這個狀況帶給您什麼生理上的變化?",
+                      "type": "text_field",
+
+            "id": "8e6f49a8-05c1-4d07-846c-24c0dfc06587"
+        },
+        {
+            "content": "您身邊有哪些人可以支持您？心事有人說嗎？或是您有沒有參與什麼社團或信仰團體?",
+                      "type": "text_field",
+
+            "id": "9919ee58-73b5-4d08-967f-79c6b008be9b"
+        },
+        {
+            "content": "您過去有進行過心理諮商嗎？如果有的話那(幾)次的經驗怎麼樣？又是因為什麼原因而去諮商的呢?",
+                      "type": "text_field",
+
+            "id": "493e55df-ec7d-48fc-94e9-fd0400ed2a35"
+        },
+        {
+            "content": "感覺憂鬱 (下拉選單0~4)",
+                      "type": "text_field",
+
+            "id": "d288bfee-76fa-4af6-91fb-e63d79791acb"
+        },
+
+        {
+            "content": "感覺緊張不安 (下拉選單0~4)",
+            "type": "number",
+            "id": "64fb1156-351a-4c7e-951f-65a16ae1e9b7"
+        },
+        {
+            "content": "情緒低落 (下拉選單0~4)",
+                      "type": "number",
+            "id": "00e7aeb2-a6a3-4c6e-9c81-7d715fa32d26"
+        },
+        {
+            "content": "覺得比不上別人 (下拉選單0~4)",
+                                "type": "number",
+
+            "id": "baef2f40-6c6a-40a4-a6f3-edc8bc3ec058"
+        },
+        {
+            "content": " 睡眠困難，譬如難以入睡、易醒或早醒 (下拉選單0~4)",
+                                "type": "number",
+
+            "id": "0783f986-f11f-4c9f-9f0e-c80e59d28075"
+        },
+              {
+            "content": " 睡眠困難，譬如難以入睡、易醒或早醒 (下拉選單0~4)",
+                                      "type": "number",
+
+            "id": "4abece5e-c3d5-4e3a-84b8-7b4a23ea6e27"
+        }
+    ]
+}
