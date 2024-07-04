@@ -15,6 +15,16 @@ MEDIATION_STRATEGY_REPORT_PROMPT = """\
 '''\
 """
 
+COGNITIVE_BEHAVIOR_REPORT_PROMPT = """\
+你是一名專業的心理師，請根據以下心理師的問題與個案的回答，認知行為療法(Cognitive Behavioral Therapy)中: 
+'核心信念(core beliefs)','中介信念(assumptions)','因應策略(coping strategies)', '促發情境(situation)', '自動化思考(automatic thoughts)','身心反應(reaction)'，
+提供我5000字的個案心理狀態分析，並列點呈現且詳細說明各項目內容
+
+'''
+{user_content}
+'''
+"""
+
 USER_INFO_TEXT = """\
 用戶性別: {gender}
 年紀: {age}

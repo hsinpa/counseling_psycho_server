@@ -4,14 +4,23 @@ import uuid
 from fastapi import APIRouter, HTTPException
 from langchain_core.output_parsers import StrOutputParser
 
-from src.llm_agents.theory_prompt import INDIVIDUAL_THEORY_REPORT_PROMPT, MEDIATION_STRATEGY_REPORT_PROMPT, \
-    USER_INFO_TEXT
-from src.model.questionnaire_model import QuestionnairesRespType, QuestionnaireRespType
+from src.llm_agents.theory_prompt import INDIVIDUAL_THEORY_REPORT_PROMPT, MEDIATION_STRATEGY_REPORT_PROMPT
+from src.model.questionnaire_model import QuestionnairesRespType, QuestionnaireRespType, CognitiveQuestionsRespType
 from src.types.router_input_type import TheoryEnum, AnalysisInputQuestionnairesType, InputMediaStrategyType
 from src.utility.simple_prompt_factory import SimplePromptFactory
 from src.utility.utility_method import group_user_input_theory_quiz, group_user_persoanl_info
 
 router = APIRouter(prefix="/questionnaire", tags=["questionnaire"])
+
+@router.get("/get_cognitive_questions")
+def get_theory_questions() -> CognitiveQuestionsRespType:
+    try:
+        with open("./src/data/cognitive_behavior_questions.json", encoding='utf-8') as f:
+            psycho_theories = json.load(f)
+        return CognitiveQuestionsRespType(**psycho_theories)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail="Agent not found")
+
 
 @router.get("/get_theory_questions")
 def get_theory_questions() -> QuestionnairesRespType:

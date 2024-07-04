@@ -53,36 +53,36 @@
             "id": "493e55df-ec7d-48fc-94e9-fd0400ed2a35"
         },
         {
-            "content": "感覺憂鬱 (下拉選單0~4)",
+            "content": "感覺憂鬱 (最高四分)",
                       "type": "text_field",
 
             "id": "d288bfee-76fa-4af6-91fb-e63d79791acb"
         },
 
         {
-            "content": "感覺緊張不安 (下拉選單0~4)",
+            "content": "感覺緊張不安 (最高四分)",
             "type": "number",
             "id": "64fb1156-351a-4c7e-951f-65a16ae1e9b7"
         },
         {
-            "content": "情緒低落 (下拉選單0~4)",
+            "content": "情緒低落 (最高四分)",
                       "type": "number",
             "id": "00e7aeb2-a6a3-4c6e-9c81-7d715fa32d26"
         },
         {
-            "content": "覺得比不上別人 (下拉選單0~4)",
+            "content": "覺得比不上別人 (最高四分)",
                                 "type": "number",
 
             "id": "baef2f40-6c6a-40a4-a6f3-edc8bc3ec058"
         },
         {
-            "content": " 睡眠困難，譬如難以入睡、易醒或早醒 (下拉選單0~4)",
+            "content": "睡眠困難，譬如難以入睡、易醒或早醒 (最高四分)",
                                 "type": "number",
 
             "id": "0783f986-f11f-4c9f-9f0e-c80e59d28075"
         },
               {
-            "content": " 睡眠困難，譬如難以入睡、易醒或早醒 (下拉選單0~4)",
+            "content": "有自殺的想法 (最高四分)",
                                       "type": "number",
 
             "id": "4abece5e-c3d5-4e3a-84b8-7b4a23ea6e27"
