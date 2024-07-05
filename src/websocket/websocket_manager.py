@@ -1,12 +1,20 @@
 import asyncio
+import typing
 
-from websockets import WebSocketServerProtocol, serve
+from fastapi import WebSocket
 
 
 class WebSocketManager:
-    async def set_up(self):
-        async with serve(self.on_connect, "localhost", 8765):
-            await asyncio.Future()  # run forever
+    def __init__(self):
+        self.active_connections: typing.Dict[str, WebSocket] = {}
 
-    async def on_connect(self, socket: WebSocketServerProtocol):
-        print('new socket ' + str(socket.id))
+    async def connect(self, client_id: str, websocket: WebSocket):
+        await websocket.accept()
+        self.active_connections[client_id] = websocket
+
+    def disconnect(self, client_id: str, websocket: WebSocket):
+        if client_id in self.active_connections:
+            del self.active_connections[client_id]
+
+    async def send_personal_message(self, message: str, websocket: WebSocket):
+        await websocket.send_text(message)
