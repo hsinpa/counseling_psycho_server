@@ -6,6 +6,7 @@ from pydantic import BaseModel
 class TheoryEnum(str, Enum):
     object_relation_theory = 'object_relation_theory'
     somatic_experience = 'somatic_experience'
+    cognitive_behavior = 'cognitive_behavior'
 
 class UserMetaType(BaseModel):
     gender: str

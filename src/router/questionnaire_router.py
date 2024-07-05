@@ -4,7 +4,8 @@ import uuid
 from fastapi import APIRouter, HTTPException
 from langchain_core.output_parsers import StrOutputParser
 
-from src.llm_agents.theory_prompt import INDIVIDUAL_THEORY_REPORT_PROMPT, MEDIATION_STRATEGY_REPORT_PROMPT
+from src.llm_agents.theory_prompt import INDIVIDUAL_THEORY_REPORT_PROMPT, MEDIATION_STRATEGY_REPORT_PROMPT, \
+    COGNITIVE_BEHAVIOR_REPORT_PROMPT, COGNITIVE_INDIVIDUAL_REPORT_PROMPT
 from src.model.questionnaire_model import QuestionnairesRespType, QuestionnaireRespType, CognitiveQuestionsRespType
 from src.types.router_input_type import TheoryEnum, AnalysisInputQuestionnairesType, InputMediaStrategyType
 from src.utility.simple_prompt_factory import SimplePromptFactory
@@ -21,6 +22,36 @@ def get_theory_questions() -> CognitiveQuestionsRespType:
     except Exception as e:
         raise HTTPException(status_code=404, detail="Agent not found")
 
+@router.post("/output_cognitive_report")
+async def output_cognitive_report(analysis_input: AnalysisInputQuestionnairesType) -> QuestionnaireRespType:
+    try:
+        user_personal_info = group_user_persoanl_info(analysis_input.user_meta)
+        user_theory_report = group_user_input_theory_quiz(analysis_input.question_answer_pairs)
+
+        factory = SimplePromptFactory()
+
+        chain = factory.create_chain(output_parser=StrOutputParser(),
+                             human_prompt_text=COGNITIVE_BEHAVIOR_REPORT_PROMPT,
+                             partial_variables={'content': user_personal_info + '\n' + user_theory_report})
+        result = await chain.ainvoke({})
+
+        return QuestionnaireRespType(id=str(uuid.uuid4()), content=result)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail="Agent not found")
+
+@router.post("/output_cognitive_individual")
+async def output_cognitive_individual(input: InputMediaStrategyType) -> QuestionnaireRespType:
+    try:
+        factory = SimplePromptFactory()
+
+        chain = factory.create_chain(output_parser=StrOutputParser(),
+                                     human_prompt_text=COGNITIVE_INDIVIDUAL_REPORT_PROMPT,
+                                     partial_variables={'content': input.content})
+        result = await chain.ainvoke({})
+
+        return QuestionnaireRespType(id=str(uuid.uuid4()), content=result)
+    except Exception as e:
+        raise HTTPException(status_code=404, detail="Agent not found")
 
 @router.get("/get_theory_questions")
 def get_theory_questions() -> QuestionnairesRespType:
