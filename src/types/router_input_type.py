@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Text, List
+from typing import Text, List, Optional
 
 from pydantic import BaseModel
 
@@ -23,6 +23,7 @@ class AnalysisInputQuestionnairesType(BaseModel):
     theory: TheoryEnum
     user_meta: UserMetaType
     question_answer_pairs: List[AnalysisInputQuestionnaireType]
+    session_id: Optional[str] = None
 
 
 class InputMediaStrategyType(BaseModel):

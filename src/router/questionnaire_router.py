@@ -11,6 +11,7 @@ from src.model.questionnaire_model import QuestionnairesRespType, QuestionnaireR
 from src.types.router_input_type import TheoryEnum, AnalysisInputQuestionnairesType, InputMediaStrategyType
 from src.utility.simple_prompt_factory import SimplePromptFactory
 from src.utility.utility_method import group_user_input_theory_quiz, group_user_persoanl_info
+from src.websocket.websocket_manager import websocket_manager
 
 router = APIRouter(prefix="/questionnaire", tags=["questionnaire"])
 
@@ -36,7 +37,9 @@ async def output_cognitive_report(analysis_input: AnalysisInputQuestionnairesTyp
                          partial_variables={'content': user_personal_info + '\n' + user_theory_report})
 
     results = ''
-    async for chunk in chain.astream({"topic": "parrot"}):
+    async for chunk in chain.astream({}):
+        if analysis_input.session_id is not None:
+            websocket_manager.send(target_id=analysis_input.session_id, data=chunk)
         results = results + chunk
 
     return QuestionnaireRespType(id=str(uuid.uuid4()), content=results)
