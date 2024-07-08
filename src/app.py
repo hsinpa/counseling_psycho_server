@@ -22,4 +22,4 @@ async def websocket_endpoint(websocket: WebSocket, client_id: str):
     try:
        await websocket.send_text('HOW ARE YOU')
     except WebSocketDisconnect:
-        websocket_manager.disconnect(client_id)
+        websocket_manager.disconnect(client_id, websocket)
