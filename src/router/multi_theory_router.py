@@ -1,10 +1,14 @@
 import json
 
 from fastapi import APIRouter, HTTPException
+from langchain_core.output_parsers import StrOutputParser
 
-from src.model.multi_theory_model import MultiTheoriesDataType, MultiTheoryInputType
+from src.llm_agents.multi_theory_prompt import MULTI_THEORY_CREATION_PROMPT
+from src.model.multi_theory_model import MultiTheoriesDataType, MultiTheoryInputType, MultiTheoryDataType
 from src.model.questionnaire_model import CognitiveQuestionsRespType, QuestionnaireRespType
 from src.types.router_input_type import AnalysisInputQuestionnairesType
+from src.utility.simple_prompt_factory import SimplePromptFactory
+from src.utility.simple_prompt_streamer import SimplePromptStreamer
 
 router = APIRouter(prefix="/multi_theory", tags=["multi_theory"])
 
@@ -25,9 +29,19 @@ def get_multi_theory() -> MultiTheoriesDataType:
 async def output_multi_theory_report(analysis_input: MultiTheoryInputType) -> QuestionnaireRespType:
 
     if analysis_input.theory in pyscho_theory_dict:
+        theory_obj: MultiTheoryDataType = pyscho_theory_dict[analysis_input.theory]
+        simple_factory = SimplePromptFactory(trace_langfuse=True, trace_name='Multi_Theory_Report')
+        simple_streamer = SimplePromptStreamer(user_id=analysis_input.user_id, session_id=analysis_input.session_id)
+        dimension_concat = '\n'.join(theory_obj.dimension)
 
+        chain = simple_factory.create_chain(output_parser=StrOutputParser(),
+                                     human_prompt_text=MULTI_THEORY_CREATION_PROMPT,
+                                     partial_variables={'theory': theory_obj.name,
+                                                        'dimension': dimension_concat,
+                                                        'personal_info': analysis_input.content})
 
+        result = await simple_streamer.execute(chain=chain)
 
-        pass
+        return QuestionnaireRespType(id=analysis_input.session_id, content=result)
 
     return QuestionnaireRespType(id=analysis_input.session_id, content='')
