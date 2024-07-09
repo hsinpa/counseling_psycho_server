@@ -17,10 +17,10 @@ class SimplePromptStreamer:
 
         async for chunk in chain.astream(p_input):
             stream_data = StreamingDataChunkType(session_id=self._session_id, data=chunk, type=DataChunkType.Chunk)
-            websocket_manager.send(target_id=self._user_id, data=stream_data.model_dump_json())
+            await websocket_manager.send(target_id=self._user_id, data=stream_data.model_dump_json())
             results = results + chunk
 
         stream_data = StreamingDataChunkType(session_id=self._session_id, data=results, type=DataChunkType.Complete)
-        websocket_manager.send(target_id=self._user_id, data=stream_data.model_dump_json())
+        await websocket_manager.send(target_id=self._user_id, data=stream_data.model_dump_json())
 
         return results

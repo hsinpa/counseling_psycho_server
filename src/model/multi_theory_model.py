@@ -7,7 +7,7 @@ class StreamUserInput(BaseModel):
 
 
 class MultiTheoryInputType(StreamUserInput):
-    theory: str
+    theory_id: str
     content: str
 
 

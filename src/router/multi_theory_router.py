@@ -16,7 +16,7 @@ pyscho_theory_dict = {}
 with open("./src/data/theory_definition.json", encoding='utf-8') as f:
     psycho_theories = json.load(f)
     for x in psycho_theories['theory']:
-        pyscho_theory_dict[x['id']] = x
+        pyscho_theory_dict[x['id']] = MultiTheoryDataType(**x)
 
 @router.get("/get_multi_theory")
 def get_multi_theory() -> MultiTheoriesDataType:
@@ -28,10 +28,12 @@ def get_multi_theory() -> MultiTheoriesDataType:
 @router.post("/output_multi_theory_report")
 async def output_multi_theory_report(analysis_input: MultiTheoryInputType) -> QuestionnaireRespType:
 
-    if analysis_input.theory in pyscho_theory_dict:
-        theory_obj: MultiTheoryDataType = pyscho_theory_dict[analysis_input.theory]
+    if analysis_input.theory_id in pyscho_theory_dict:
+        theory_obj: MultiTheoryDataType = pyscho_theory_dict[analysis_input.theory_id]
         simple_factory = SimplePromptFactory(trace_langfuse=True, trace_name='Multi_Theory_Report')
         simple_streamer = SimplePromptStreamer(user_id=analysis_input.user_id, session_id=analysis_input.session_id)
+
+        print(theory_obj)
         dimension_concat = '\n'.join(theory_obj.dimension)
 
         chain = simple_factory.create_chain(output_parser=StrOutputParser(),
