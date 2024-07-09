@@ -18,6 +18,7 @@ class SimplePromptFactory():
             model_name: str = OpenAI_Model_3_5,
             json_response: bool = False,
             trace_langfuse: bool = True,
+            trace_name: str = None,
     ):
         kwargs = {'model_name': model_name, 'temperature': temperature}
         if json_response is True:
@@ -26,6 +27,7 @@ class SimplePromptFactory():
         if trace_langfuse is True:
             self._langfuse_handler = CallbackHandler(user_id='hsinpa')
 
+        self.trace_name = trace_name
         self._llm = ChatOpenAI(**kwargs)
 
     def create_chain(
@@ -50,6 +52,9 @@ class SimplePromptFactory():
 
         if self._langfuse_handler is not None:
             chain = chain.with_config({"callbacks": [self._langfuse_handler]})
+
+        if self.trace_name is not None:
+            chain = chain.with_config({"run_name": self.trace_name})
 
         return chain
 
