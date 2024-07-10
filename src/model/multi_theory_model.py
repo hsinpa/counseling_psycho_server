@@ -19,3 +19,10 @@ class MultiTheoryDataType(BaseModel):
 
 class MultiTheoriesDataType(BaseModel):
     theory: list[MultiTheoryDataType]
+
+
+class MultiTheoryRespType(BaseModel):
+    id: str
+    theory_id: str
+    theory_name: str
+    content: str

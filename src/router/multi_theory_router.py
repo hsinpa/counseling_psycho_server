@@ -4,7 +4,8 @@ from fastapi import APIRouter, HTTPException
 from langchain_core.output_parsers import StrOutputParser
 
 from src.llm_agents.multi_theory_prompt import MULTI_THEORY_CREATION_PROMPT
-from src.model.multi_theory_model import MultiTheoriesDataType, MultiTheoryInputType, MultiTheoryDataType
+from src.model.multi_theory_model import MultiTheoriesDataType, MultiTheoryInputType, MultiTheoryDataType, \
+    MultiTheoryRespType
 from src.model.questionnaire_model import CognitiveQuestionsRespType, QuestionnaireRespType
 from src.types.router_input_type import AnalysisInputQuestionnairesType
 from src.utility.simple_prompt_factory import SimplePromptFactory
@@ -26,7 +27,7 @@ def get_multi_theory() -> MultiTheoriesDataType:
         raise HTTPException(status_code=404, detail="Agent not found")
 
 @router.post("/output_multi_theory_report")
-async def output_multi_theory_report(analysis_input: MultiTheoryInputType) -> QuestionnaireRespType:
+async def output_multi_theory_report(analysis_input: MultiTheoryInputType) -> MultiTheoryRespType:
 
     if analysis_input.theory_id in pyscho_theory_dict:
         theory_obj: MultiTheoryDataType = pyscho_theory_dict[analysis_input.theory_id]
@@ -44,6 +45,6 @@ async def output_multi_theory_report(analysis_input: MultiTheoryInputType) -> Qu
 
         result = await simple_streamer.execute(chain=chain)
 
-        return QuestionnaireRespType(id=analysis_input.session_id, content=result)
+        return MultiTheoryRespType(id=analysis_input.session_id, content=result, theory_name=theory_obj.name, theory_id=analysis_input.theory_id)
 
-    return QuestionnaireRespType(id=analysis_input.session_id, content='')
+    return MultiTheoryRespType(id=analysis_input.session_id, content='', theory_name='', theory_id='')
