@@ -11,6 +11,16 @@ class MultiTheoryInputType(StreamUserInput):
     content: str
 
 
+class MixTheoryInputType(StreamUserInput):
+    theory_id: list[str]
+    content: str
+
+class MixTheoryRespType(BaseModel):
+    id: str
+    theory_id: list[str]
+    theory_name: list[str]
+    content: str
+
 class MultiTheoryDataType(BaseModel):
     id: str
     name: str
