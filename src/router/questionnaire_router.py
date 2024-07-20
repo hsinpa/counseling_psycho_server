@@ -5,7 +5,7 @@ from fastapi import APIRouter, HTTPException
 from langchain_core.messages import AIMessageChunk
 from langchain_core.output_parsers import StrOutputParser
 
-from src.llm_agents.report_features import output_individual_strategy
+from src.llm_agents.report_features import output_individual_strategy, output_theory_report
 from src.llm_agents.theory_prompt import INDIVIDUAL_THEORY_REPORT_PROMPT, MEDIATION_STRATEGY_REPORT_PROMPT, \
     COGNITIVE_BEHAVIOR_REPORT_PROMPT, COGNITIVE_INDIVIDUAL_REPORT_PROMPT
 from src.model.questionnaire_model import QuestionnairesRespType, QuestionnaireRespType, CognitiveQuestionsRespType
@@ -55,7 +55,7 @@ def get_theory_questions() -> QuestionnairesRespType:
 
 
 @router.post("/output_theory_report")
-async def output_theory_report(analysis_input: AnalysisInputQuestionnairesType) -> QuestionnaireRespType:
+async def route_output_theory_report(analysis_input: AnalysisInputQuestionnairesType) -> QuestionnaireRespType:
     try:
         return await output_theory_report(analysis_input=analysis_input,
                                           prompt_template=INDIVIDUAL_THEORY_REPORT_PROMPT)
