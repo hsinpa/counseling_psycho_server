@@ -23,14 +23,14 @@ class SimplePromptFactory():
             trace_langfuse: bool = True,
             trace_name: str = None
     ):
-        kwargs = {'model_name': model_name, 'temperature': temperature}
+        kwargs = {'model_name': model_name, 'model': model_name, 'temperature': temperature}
         if json_response is True:
             kwargs['response_format'] = {"type": "json_object"}
 
         if trace_langfuse is True:
             self._langfuse_handler = CallbackHandler(user_id='hsinpa')
 
-        self._llm: BaseChatOpenAI = get_model(model_enum=llm_model, model_name=model_name, **kwargs)
+        self._llm: BaseChatOpenAI = get_model(model_enum=llm_model, **kwargs)
         self.trace_name = trace_name
 
     def create_chain(
