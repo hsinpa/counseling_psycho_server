@@ -3,8 +3,10 @@ from langchain.schema.messages import SystemMessage
 from langchain.prompts import ChatPromptTemplate, HumanMessagePromptTemplate
 from langchain_openai import ChatOpenAI
 from dotenv import load_dotenv
+from langchain_openai.chat_models.base import BaseChatOpenAI
 from langfuse.callback import CallbackHandler
 
+from src.llm_agents.llm_model import LLMModel, get_model
 from src.utility.static_text import OpenAI_Model_3_5
 
 load_dotenv()
@@ -15,10 +17,11 @@ class SimplePromptFactory():
     def __init__(
             self,
             temperature: float = 0.75,
+            llm_model: LLMModel = LLMModel.OpenAI,
             model_name: str = OpenAI_Model_3_5,
             json_response: bool = False,
             trace_langfuse: bool = True,
-            trace_name: str = None,
+            trace_name: str = None
     ):
         kwargs = {'model_name': model_name, 'temperature': temperature}
         if json_response is True:
@@ -27,8 +30,8 @@ class SimplePromptFactory():
         if trace_langfuse is True:
             self._langfuse_handler = CallbackHandler(user_id='hsinpa')
 
+        self._llm: BaseChatOpenAI = get_model(model_enum=llm_model, model_name=model_name, **kwargs)
         self.trace_name = trace_name
-        self._llm = ChatOpenAI(**kwargs)
 
     def create_chain(
             self,

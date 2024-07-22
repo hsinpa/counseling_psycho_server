@@ -3,6 +3,7 @@ import json
 from fastapi import APIRouter, HTTPException
 from langchain_core.output_parsers import StrOutputParser
 
+from src.llm_agents.llm_model import LLMModel
 from src.llm_agents.multi_theory_prompt import MULTI_THEORY_CREATION_PROMPT, MIX_THEORY_CREATION_PROMPT
 from src.model.multi_theory_model import MultiTheoriesDataType, MultiTheoryInputType, MultiTheoryDataType, \
     MultiTheoryRespType, MixTheoryInputType, MixTheoryRespType
@@ -10,6 +11,7 @@ from src.model.questionnaire_model import CognitiveQuestionsRespType, Questionna
 from src.types.router_input_type import AnalysisInputQuestionnairesType
 from src.utility.simple_prompt_factory import SimplePromptFactory
 from src.utility.simple_prompt_streamer import SimplePromptStreamer
+from src.utility.static_text import Gemini_Model_1_5
 
 router = APIRouter(prefix="/multi_theory", tags=["multi_theory"])
 
@@ -32,7 +34,8 @@ def get_multi_theory() -> MultiTheoriesDataType:
 async def output_multi_theory_report(analysis_input: MultiTheoryInputType) -> MultiTheoryRespType:
     if analysis_input.theory_id in pyscho_theory_dict:
         theory_obj: MultiTheoryDataType = pyscho_theory_dict[analysis_input.theory_id]
-        simple_factory = SimplePromptFactory(trace_langfuse=True, trace_name='Multi_Theory_Report')
+        simple_factory = SimplePromptFactory(trace_langfuse=True, trace_name='Multi_Theory_Report',
+                                             model_name=Gemini_Model_1_5, llm_model=LLMModel.Gemini)
         simple_streamer = SimplePromptStreamer(user_id=analysis_input.user_id, session_id=analysis_input.session_id)
 
         print(theory_obj)
@@ -64,7 +67,8 @@ async def output_mix_theory_report(analysis_input: MixTheoryInputType) -> MixThe
             theory_name_list.append(theory.name)
             theory_dimension_list.append('. '.join(theory.dimension) + '\n')
 
-    simple_factory = SimplePromptFactory(trace_langfuse=True, trace_name='Multi_Theory_Report')
+    simple_factory = SimplePromptFactory(trace_langfuse=True, trace_name='Multi_Theory_Report',
+                                         model_name=Gemini_Model_1_5, llm_model=LLMModel.Gemini)
     chain = simple_factory.create_chain(output_parser=StrOutputParser(),
                                         human_prompt_text=MIX_THEORY_CREATION_PROMPT,
                                         partial_variables={'theory': ','.join(theory_name_list),

@@ -28,6 +28,7 @@ langchain==0.2.6
 langchain-core==0.2.10
 langchain-openai==0.1.10
 langchain-text-splitters==0.2.2
+langchain-google-genai==1.0.7
 langfuse==2.36.2
 langsmith==0.1.82
 markdown-it-py==3.0.0

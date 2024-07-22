@@ -10,9 +10,6 @@ from src.llm_agents.theory_prompt import INDIVIDUAL_THEORY_REPORT_PROMPT, MEDIAT
     COGNITIVE_BEHAVIOR_REPORT_PROMPT, COGNITIVE_INDIVIDUAL_REPORT_PROMPT
 from src.model.questionnaire_model import QuestionnairesRespType, QuestionnaireRespType, CognitiveQuestionsRespType
 from src.types.router_input_type import TheoryEnum, AnalysisInputQuestionnairesType, InputMediaStrategyType
-from src.utility.simple_prompt_factory import SimplePromptFactory
-from src.utility.utility_method import group_user_input_theory_quiz, group_user_persoanl_info
-from src.websocket.websocket_manager import websocket_manager
 
 router = APIRouter(prefix="/questionnaire", tags=["questionnaire"])
 
