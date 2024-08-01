@@ -1,8 +1,9 @@
+import json
 from typing import Any
 
 from langchain_core.runnables import RunnableSerializable
 
-from src.model.general_model import StreamingDataChunkType, DataChunkType
+from src.model.general_model import StreamingDataChunkType, DataChunkType, SocketEvent
 from src.websocket.websocket_manager import websocket_manager
 
 
@@ -15,11 +16,19 @@ class SimplePromptStreamer:
         results = ''
 
         async for chunk in chain.astream(p_input):
-            stream_data = StreamingDataChunkType(session_id=self._session_id, data=chunk, type=DataChunkType.Chunk)
-            await websocket_manager.send(target_id=self._user_id, data=stream_data.model_dump_json())
-            results = results + chunk
+            data_chunk = str(chunk)
+
+            print(data_chunk)
+
+            stream_data = StreamingDataChunkType(session_id=self._session_id, data=data_chunk, type=DataChunkType.Chunk)
+            json_string = {'event': SocketEvent.bot, **stream_data.model_dump()}
+
+            await websocket_manager.send(target_id=self._user_id, data=json.dumps(json_string, ensure_ascii=False))
+            results = results + data_chunk
 
         stream_data = StreamingDataChunkType(session_id=self._session_id, data=results, type=DataChunkType.Complete)
-        await websocket_manager.send(target_id=self._user_id, data=stream_data.model_dump_json())
+        json_string = {'event': SocketEvent.bot, **stream_data.model_dump()}
+
+        await websocket_manager.send(target_id=self._user_id, data=json.dumps(json_string, ensure_ascii=False))
 
         return results

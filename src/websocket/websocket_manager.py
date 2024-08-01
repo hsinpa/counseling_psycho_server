@@ -5,13 +5,13 @@ from fastapi import WebSocket
 
 
 class WebSocketManager:
-    _instance = None
+    __instance = None
 
-    # Singleton
-    def __new__(cls, *args, **kwargs):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls)
-        return cls._instance
+    def __new__(cls):
+        if cls.__instance is None:
+            cls.__instance = super(WebSocketManager, cls).__new__(cls)
+
+        return cls.__instance
 
     def __init__(self):
         self.active_connections: typing.Dict[str, WebSocket] = {}
@@ -33,3 +33,7 @@ class WebSocketManager:
 
 
 websocket_manager = WebSocketManager()
+
+
+def get_websocket():
+    return websocket_manager

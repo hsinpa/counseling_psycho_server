@@ -3,8 +3,12 @@ from typing import TypedDict
 
 from pydantic import BaseModel
 
+class SocketEvent:
+    open = 'socket_open'
+    bot = 'bot'
 
-class DataChunkType(Enum):
+
+class DataChunkType(str, Enum):
     Chunk = 'chunk'
     Complete = 'complete'
 

@@ -1,8 +1,11 @@
 import asyncio
+import json
+import uuid
 
 from dotenv import load_dotenv
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect
 
+from src.model.general_model import SocketEvent
 from src.router.questionnaire_router import router as questionnaire_router
 from src.router.multi_theory_router import router as multi_theory_router
 from fastapi.middleware.cors import CORSMiddleware
@@ -33,10 +36,15 @@ async def root():
     return {"version": "0.0.2"}
 
 
-@app.websocket("/ws/{client_id}")
-async def websocket_endpoint(websocket: WebSocket, client_id: str):
-    await websocket_manager.connect(client_id, websocket)
+@app.websocket("/ws")
+async def websocket_endpoint(websocket: WebSocket):
+    g_user_id = str(uuid.uuid4())
+
+    await websocket_manager.connect(g_user_id, websocket)
     try:
-        await websocket.send_text('HOW ARE YOU')
+        await websocket.send_text(json.dumps({'event': SocketEvent.open, '_id': g_user_id}))
+        while True:
+            data = await websocket.receive_json()
     except WebSocketDisconnect:
-        websocket_manager.disconnect(client_id)
+        print('websocket disconnect user '+g_user_id)
+        websocket_manager.disconnect(g_user_id)

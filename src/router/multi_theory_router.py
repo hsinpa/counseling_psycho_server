@@ -12,8 +12,10 @@ from src.types.router_input_type import AnalysisInputQuestionnairesType
 from src.utility.simple_prompt_factory import SimplePromptFactory
 from src.utility.simple_prompt_streamer import SimplePromptStreamer
 from src.utility.static_text import Gemini_Model_1_5, OpenAI_Model_3_5
+from src.websocket.websocket_manager import get_websocket
 
 router = APIRouter(prefix="/multi_theory", tags=["multi_theory"])
+socket_manager = get_websocket()
 
 pyscho_theory_dict = {}
 with open("./src/data/theory_definition.json", encoding='utf-8') as f:
@@ -57,9 +59,9 @@ async def output_multi_theory_report(analysis_input: MultiTheoryInputType) -> Mu
 
 @router.post("/output_mix_theory_report")
 async def output_mix_theory_report(analysis_input: MixTheoryInputType) -> MixTheoryRespType:
+    print(analysis_input)
     theory_dimension_list: list[str] = []
     theory_name_list: list[str] = []
-    print(analysis_input)
     for p_theory in analysis_input.theory_id:
         if p_theory in pyscho_theory_dict:
             theory = pyscho_theory_dict[p_theory]
@@ -67,6 +69,7 @@ async def output_mix_theory_report(analysis_input: MixTheoryInputType) -> MixThe
             theory_name_list.append(theory.name)
             theory_dimension_list.append('. '.join(theory.dimension) + '\n')
 
+    simple_streamer = SimplePromptStreamer(user_id=analysis_input.user_id, session_id=analysis_input.session_id)
     simple_factory = SimplePromptFactory(trace_langfuse=True, trace_name='Multi_Theory_Report',
                                          model_name=OpenAI_Model_3_5, llm_model=LLMModel.OpenAI)
     chain = simple_factory.create_chain(output_parser=StrOutputParser(),
@@ -74,7 +77,8 @@ async def output_mix_theory_report(analysis_input: MixTheoryInputType) -> MixThe
                                         partial_variables={'theory': ','.join(theory_name_list),
                                                            'dimension': ';'.join(theory_dimension_list),
                                                            'personal_info': analysis_input.content})
-    result = await chain.ainvoke({})
+
+    result = await simple_streamer.execute(chain=chain)
 
     return MixTheoryRespType(id=analysis_input.session_id,
                              content=result,
