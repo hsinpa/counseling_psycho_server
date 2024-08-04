@@ -1,7 +1,7 @@
 import json
 import uuid
 
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, HTTPException, BackgroundTasks
 from langchain_core.messages import AIMessageChunk
 from langchain_core.output_parsers import StrOutputParser
 
@@ -52,10 +52,14 @@ def get_theory_questions() -> QuestionnairesRespType:
 
 
 @router.post("/output_theory_report")
-async def route_output_theory_report(analysis_input: AnalysisInputQuestionnairesType) -> QuestionnaireRespType:
+async def route_output_theory_report(analysis_input: AnalysisInputQuestionnairesType, background_tasks: BackgroundTasks) -> QuestionnaireRespType:
     try:
-        return await output_theory_report(analysis_input=analysis_input,
-                                          prompt_template=INDIVIDUAL_THEORY_REPORT_PROMPT)
+
+        background_tasks.add_task(output_theory_report, analysis_input, INDIVIDUAL_THEORY_REPORT_PROMPT)
+
+        return QuestionnaireRespType(id=analysis_input.session_id, content='')
+        # return await output_theory_report(analysis_input=analysis_input,
+        #                                   prompt_template=INDIVIDUAL_THEORY_REPORT_PROMPT)
     except Exception as e:
         raise HTTPException(status_code=404, detail="Agent not found")
 
