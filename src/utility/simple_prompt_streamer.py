@@ -18,8 +18,6 @@ class SimplePromptStreamer:
         async for chunk in chain.astream(p_input):
             data_chunk = str(chunk)
 
-            print(data_chunk)
-
             stream_data = StreamingDataChunkType(session_id=self._session_id, data=data_chunk, type=DataChunkType.Chunk)
             json_string = {'event': SocketEvent.bot, **stream_data.model_dump()}
 

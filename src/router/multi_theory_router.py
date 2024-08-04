@@ -40,7 +40,6 @@ async def output_multi_theory_report(analysis_input: MultiTheoryInputType) -> Mu
                                              model_name=OpenAI_Model_3_5, llm_model=LLMModel.OpenAI)
         simple_streamer = SimplePromptStreamer(user_id=analysis_input.user_id, session_id=analysis_input.session_id)
 
-        print(theory_obj)
         dimension_concat = '\n'.join(theory_obj.dimension)
 
         chain = simple_factory.create_chain(output_parser=StrOutputParser(),
