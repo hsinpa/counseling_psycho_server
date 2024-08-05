@@ -2,9 +2,6 @@ import json
 import uuid
 
 from fastapi import APIRouter, HTTPException, BackgroundTasks
-from langchain_core.messages import AIMessageChunk
-from langchain_core.output_parsers import StrOutputParser
-
 from src.llm_agents.report_features import output_individual_strategy, output_theory_report
 from src.llm_agents.theory_prompt import INDIVIDUAL_THEORY_REPORT_PROMPT, MEDIATION_STRATEGY_REPORT_PROMPT, \
     COGNITIVE_BEHAVIOR_REPORT_PROMPT, COGNITIVE_INDIVIDUAL_REPORT_PROMPT
@@ -25,18 +22,19 @@ def get_theory_questions() -> CognitiveQuestionsRespType:
 
 
 @router.post("/output_cognitive_report")
-async def output_cognitive_report(analysis_input: AnalysisInputQuestionnairesType) -> QuestionnaireRespType:
+async def output_cognitive_report(analysis_input: AnalysisInputQuestionnairesType, background_tasks: BackgroundTasks) -> QuestionnaireRespType:
     try:
-        return await output_theory_report(analysis_input=analysis_input,
-                                          prompt_template=COGNITIVE_BEHAVIOR_REPORT_PROMPT)
+        background_tasks.add_task(output_theory_report, analysis_input, COGNITIVE_BEHAVIOR_REPORT_PROMPT)
+        return QuestionnaireRespType(id=analysis_input.session_id, content='')
     except Exception as e:
         raise HTTPException(status_code=404, detail="Agent not found")
 
 
 @router.post("/output_cognitive_individual")
-async def output_cognitive_individual(input: InputMediaStrategyType) -> QuestionnaireRespType:
+async def output_cognitive_individual(p_input: InputMediaStrategyType, background_tasks: BackgroundTasks) -> QuestionnaireRespType:
     try:
-        return await output_individual_strategy(user_input=input, prompt_template=COGNITIVE_INDIVIDUAL_REPORT_PROMPT)
+        background_tasks.add_task(output_individual_strategy, p_input, COGNITIVE_INDIVIDUAL_REPORT_PROMPT)
+        return QuestionnaireRespType(id=p_input.session_id, content='')
     except Exception as e:
         raise HTTPException(status_code=404, detail="Agent not found")
 
@@ -54,7 +52,6 @@ def get_theory_questions() -> QuestionnairesRespType:
 @router.post("/output_theory_report")
 async def route_output_theory_report(analysis_input: AnalysisInputQuestionnairesType, background_tasks: BackgroundTasks) -> QuestionnaireRespType:
     try:
-
         background_tasks.add_task(output_theory_report, analysis_input, INDIVIDUAL_THEORY_REPORT_PROMPT)
 
         return QuestionnaireRespType(id=analysis_input.session_id, content='')
@@ -65,8 +62,10 @@ async def route_output_theory_report(analysis_input: AnalysisInputQuestionnaires
 
 
 @router.post("/output_mediation_strategy")
-async def output_mediation_strategy(user_report: InputMediaStrategyType) -> QuestionnaireRespType:
+async def output_mediation_strategy(user_report: InputMediaStrategyType, background_tasks: BackgroundTasks) -> QuestionnaireRespType:
     try:
-        return await output_individual_strategy(user_report, MEDIATION_STRATEGY_REPORT_PROMPT)
+        background_tasks.add_task(output_individual_strategy, user_report, MEDIATION_STRATEGY_REPORT_PROMPT)
+
+        return QuestionnaireRespType(id=user_report.session_id, content='')
     except Exception as e:
         raise HTTPException(status_code=404, detail="Agent not found")
