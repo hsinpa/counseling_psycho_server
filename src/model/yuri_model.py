@@ -38,3 +38,20 @@ class YuriCreateTrainRecordType(BaseModel):
             ]
         }
     }
+
+class YuriGetTrainRecordType(BaseModel):
+    caregiverId: str = Field(..., example='User id')
+    hospitalId: str = Field(..., example='Name of test')
+    token: str = Field(..., example='Completeness')
+
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "caregiverId": "2024-07-29T11:50:35.479Z-17222538354797020755e-3691-49d3-b5bd-4248ee5b30bb",
+                    "hospitalId": '2024-07-29T11:49:16.918Z-172225375691884d908a9-16bf-43cb-a4bf-64fa10f1bb15',
+                    "token": '',
+                }
+            ]
+        }
+    }

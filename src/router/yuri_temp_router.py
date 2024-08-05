@@ -3,7 +3,7 @@ import json
 import requests
 from fastapi import APIRouter
 
-from src.model.yuri_model import YuriLoginType, YuriCreateTrainRecordType
+from src.model.yuri_model import YuriLoginType, YuriCreateTrainRecordType, YuriGetTrainRecordType
 
 router = APIRouter(prefix="/yuri", tags=["yuri"])
 
@@ -26,11 +26,9 @@ async def upload_record(org_id: str, token: str, create_type: YuriCreateTrainRec
     return r.json()
 
 
-@router.get("/get_record/{token}/{org_id}/{user_id}")
-async def get_record(token: str, org_id: str, user_id: str):
-    headers = {'Authorization': token}
-    r = requests.get(
-        f'http://34.127.119.34:3000/TrainingRecordsDatabase/{org_id}/searchByCaregiverId?caregiverId={user_id}',
-        headers=headers)
-
+@router.post("/get_record")
+async def get_record(p_input: YuriGetTrainRecordType):
+    headers = {'Authorization': p_input.token}
+    url = f'http://34.127.119.34:3000/TrainingRecordsDatabase/{p_input.hospitalId}/searchByCaregiverId?caregiverId={p_input.caregiverId}'
+    r = requests.get(url, headers=headers)
     return r.json()
