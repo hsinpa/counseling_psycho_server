@@ -24,6 +24,7 @@ origins = [
     "http://localhost",
     "http://localhost:5173",
     "https://counseling-psycho.vercel.app",
+    "https://https://itri-mqtt-doll.vercel.app",
 ]
 
 app.add_middleware(
