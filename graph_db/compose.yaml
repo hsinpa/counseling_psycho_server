@@ -1,0 +1,15 @@
+version: '3.9'
+
+services:
+  postgres:
+    image: neo4j:community-ubi9
+    ports:
+      - "7673:7473"
+      - "7474:7474"
+      - "7687:7687"
+    volumes:
+      - ~/apps/postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=counselAI
+      - POSTGRES_USER=counsel_user
+      - POSTGRES_DB=counsel_db
