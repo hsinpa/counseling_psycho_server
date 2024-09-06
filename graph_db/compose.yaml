@@ -1,15 +1,21 @@
 version: '3.9'
 
 services:
-  postgres:
+  neo4j:
     image: neo4j:community-ubi9
     ports:
       - "7673:7473"
       - "7474:7474"
       - "7687:7687"
     volumes:
-      - ~/apps/postgres:/var/lib/postgresql/data
+      - ./neo4j_db/data:/data
+      - ./neo4j_db/logs:/logs
+      - ./neo4j_db/import:/var/lib/neo4j/import
+      - ./neo4j_db/plugins:/plugins
     environment:
-      - POSTGRES_PASSWORD=counselAI
-      - POSTGRES_USER=counsel_user
-      - POSTGRES_DB=counsel_db
+      - NEO4J_AUTH=neo4j/counselAI
+      - NEO4J_apoc_export_file_enabled=true
+      - NEO4J_apoc_import_file_enabled=true
+      - NEO4J_apoc_import_file_use__neo4j__config=true
+      - NEO4J_PLUGINS=["apoc", "graph-data-science"]
+

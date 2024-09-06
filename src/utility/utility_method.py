@@ -1,7 +1,7 @@
 from itertools import islice
 from typing import List
 
-from src.llm_agents.theory_prompt import THEORY_REPORT_TEXT, USER_INFO_TEXT
+from src.llm_agents.prompt.theory_prompt import THEORY_REPORT_TEXT, USER_INFO_TEXT
 from src.types.router_input_type import AnalysisInputQuestionnaireType, UserMetaType
 
 

@@ -1,12 +1,11 @@
 import json
-import uuid
 
 from fastapi import APIRouter, HTTPException, BackgroundTasks
 from src.llm_agents.report_features import output_individual_strategy, output_theory_report
-from src.llm_agents.theory_prompt import INDIVIDUAL_THEORY_REPORT_PROMPT, MEDIATION_STRATEGY_REPORT_PROMPT, \
+from src.llm_agents.prompt.theory_prompt import INDIVIDUAL_THEORY_REPORT_PROMPT, MEDIATION_STRATEGY_REPORT_PROMPT, \
     COGNITIVE_BEHAVIOR_REPORT_PROMPT, COGNITIVE_INDIVIDUAL_REPORT_PROMPT
 from src.model.questionnaire_model import QuestionnairesRespType, QuestionnaireRespType, CognitiveQuestionsRespType
-from src.types.router_input_type import TheoryEnum, AnalysisInputQuestionnairesType, InputMediaStrategyType
+from src.types.router_input_type import AnalysisInputQuestionnairesType, InputMediaStrategyType
 
 router = APIRouter(prefix="/questionnaire", tags=["questionnaire"])
 
