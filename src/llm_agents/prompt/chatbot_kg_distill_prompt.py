@@ -9,14 +9,13 @@ The format of knowledge map is layout in JSON format, and you need to strictly f
 Please order the JSON array by important level, sort the most important object on top.
 
 {
-    "thought_process": "分析整段話中 重要的訊息為何",
-    "knowledge_graph": [
-        {
-            "node_1": "Label of node",
-            "relationship": "The name of directional or unidirectional relationship",
-            "node_2": "Label of connected node"
-        }
-    ]
+  "thought": "在建構知識庫之前的思考過程",
+  "nodes": [
+    "node_1": "類似Cypher語法, 由標籤, 屬性類型 和 屬性參數組成. Ex, Person | name | Thomas",
+    "relation": "Give label and direction (directed or bidirected). Ex, 'FRIEND' | 'bidirected'",
+    "node_2": "類似Cypher語法, 由標籤, 屬性類型 和 屬性參數組成. Ex, Person | name | Elaine"
+    }
+  ]
 }
 """
 
