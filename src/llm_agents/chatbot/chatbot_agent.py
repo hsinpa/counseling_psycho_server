@@ -4,6 +4,7 @@ from langgraph.graph import StateGraph
 
 from src.llm_agents.agent_interface import GraphAgent
 from src.llm_agents.chatbot.chatbot_agent_type import ChatbotAgentState, KGRetrieveType
+from src.llm_agents.chatbot.chatbot_util import convert_triple_list_to_pydantic
 from src.llm_agents.llm_model import get_gemini_model
 from src.llm_agents.prompt.chatbot_kg_distill_prompt import RETRIVE_KG_SYSTEM_PROMPT
 from src.utility.simple_prompt_factory import SimplePromptFactory
@@ -25,9 +26,8 @@ class ChatbotAgent(GraphAgent):
         )
 
         r = await chain.ainvoke({})
-        print(r)
 
-        return {'kg_triples': ['hi']}
+        return {'kg_triples': convert_triple_list_to_pydantic(r['triples'])}
 
     def create_graph(self):
         g_workflow = StateGraph(ChatbotAgentState)
