@@ -2,15 +2,13 @@ from langchain_core.language_models import BaseChatModel
 from langchain_core.output_parsers import BaseOutputParser
 from langchain.schema.messages import SystemMessage
 from langchain.prompts import ChatPromptTemplate, HumanMessagePromptTemplate
-from langchain_openai import ChatOpenAI
-from dotenv import load_dotenv
-from langchain_openai.chat_models.base import BaseChatOpenAI
+from langchain_core.prompts import AIMessagePromptTemplate
 from langfuse.callback import CallbackHandler
-from src.utility.static_text import OpenAI_Model_3_5
 
-load_dotenv()
+from src.utility.simple_factory_type import simple_message_convert, messages_langchain_convert
 
-class SimplePromptFactory():
+
+class SimplePromptFactory:
     """A factory only accept and run one prompt, nothing more"""
 
     def __init__(
@@ -54,15 +52,22 @@ class SimplePromptFactory():
 
         return chain
 
-    def _create_prompt(self, system_prompt:str, human_prompt: str, input_variables: list[str], partial_variables: dict ):
-        messages = [
-            SystemMessage(content=system_prompt),
-            HumanMessagePromptTemplate.from_template(human_prompt),
-        ]
+    def _create_prompt(self, system_prompt: str, message_prompt: str, input_variables: list[str],
+                       partial_variables: dict):
+        # messages = [
+        #     SystemMessage(content=system_prompt),
+        #     HumanMessagePromptTemplate.from_template(message_prompt),
+        # ]
 
+        messages = messages_langchain_convert(
+            simple_message_convert(system_prompt, message_prompt)
+        )
+        #
+        # print(messages)
         template = ChatPromptTemplate(
-            messages=messages, input_variables=input_variables, partial_variables=partial_variables
+            messages=messages,
+            input_variables=input_variables,
+            partial_variables=partial_variables
         )
 
         return template
-

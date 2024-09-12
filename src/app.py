@@ -9,6 +9,7 @@ from src.model.general_model import SocketEvent
 from src.router.questionnaire_router import router as questionnaire_router
 from src.router.multi_theory_router import router as multi_theory_router
 from src.router.yuri_temp_router import router as yuri_router
+from src.router.chatbot_router import router as chatbot_router
 
 from fastapi.middleware.cors import CORSMiddleware
 from src.websocket.websocket_manager import websocket_manager
@@ -19,6 +20,7 @@ app = FastAPI(openapi_url="/docs/openapi.json", docs_url="/docs")
 app.include_router(questionnaire_router)
 app.include_router(multi_theory_router)
 app.include_router(yuri_router)
+app.include_router(chatbot_router)
 
 origins = [
     "http://localhost",
