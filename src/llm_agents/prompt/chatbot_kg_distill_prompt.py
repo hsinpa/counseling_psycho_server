@@ -6,7 +6,8 @@ RETRIVE_KG_SYSTEM_PROMPT = """\
 2. 將[Past History]作為輔助用的參考資料, 把 '使用者回覆' 和 '思考過程',  以Json 的方式呈現 使用者Knowledge Graph，
 
 The format of knowledge map is layout in JSON format, and you need to strictly follow the rule.
-Please order the triples array by important level, sort the most important object on top, and no longer than array size 15.
+Please order the triples array by important level, sort by the important level of triple, so the most important triple will be on the top.
+Lastly, triple array should be less than array size of 15.
 
 {{
   "thought": "仔細思考 '使用者回覆' 中的訊息和其中想要表達的意思",
