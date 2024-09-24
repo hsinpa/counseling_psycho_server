@@ -1,0 +1,1 @@
+MESSAGE_TRIPLE_TABLE = 'message_triple_table'

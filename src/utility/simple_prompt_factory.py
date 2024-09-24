@@ -14,9 +14,10 @@ class SimplePromptFactory:
     def __init__(
             self,
             llm_model: BaseChatModel,
-            trace_langfuse: bool = True,
+            trace_langfuse: bool = False,
             trace_name: str = None
     ):
+        self._langfuse_handler = None
 
         if trace_langfuse is True:
             self._langfuse_handler = CallbackHandler(user_id='hsinpa')

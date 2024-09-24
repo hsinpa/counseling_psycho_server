@@ -14,7 +14,6 @@ def get_async_neo4j_driver():
 
     driver = AsyncGraphDatabase.driver(uri, auth=("neo4j", password))
 
-    # async with AsyncGraphDatabase.driver(uri, auth=auth) as driver:
     return driver
 
 

@@ -29,7 +29,9 @@ class ChatbotAgentState(TypedDict):
     final_message: Annotated[list[StreamingDataChunkType], annotate_list]
     scenario: Annotated[str, lambda x, y: y]
     query: str
+    long_term_plan: str
     chatbot_id: str
     chatroom_id: int
     kg_triples: list[TripleType]
-    new_chatroom_summary: str
+    summary: str
+    output: str

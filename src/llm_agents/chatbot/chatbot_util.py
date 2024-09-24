@@ -23,3 +23,14 @@ def convert_triple_list_to_pydantic(triple_list: list[str]) -> list[TripleType]:
             triple_converts.append(convert_t)
 
     return triple_converts
+
+
+def convert_triple_list_to_string(triple_list: list[TripleType]) -> str:
+    triple_converts: str = ''
+    for index, t in enumerate(triple_list):
+        triple_converts += f'{t.host_node} | {t.relation} | {t.child_node}'
+
+        if index < len(triple_list) - 1:
+            triple_converts += '\n'
+
+    return triple_converts
