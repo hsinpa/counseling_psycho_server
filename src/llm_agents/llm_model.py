@@ -1,9 +1,11 @@
+import asyncio
 from enum import Enum
 from typing import Dict, Any
 
 from google.cloud.aiplatform_v1beta1 import HarmCategory, SafetySetting
 from langchain_google_vertexai import ChatVertexAI
 from langchain_openai import ChatOpenAI
+from openai import OpenAI
 
 from src.utility.static_text import OpenAI_Model_4o_mini, Gemini_Model_1_5
 
@@ -40,3 +42,10 @@ def get_gemini_model(model_name: str = Gemini_Model_1_5, temperature: float = 0.
     return ChatVertexAI(
         **arguments
     )
+
+def text_embedding(corpus: list[str]):
+    client = OpenAI()
+    return client.embeddings.create(input=corpus, model="text-embedding-3-small", dimensions=256).data
+
+async def atext_embedding(corpus: list[str]):
+    return await asyncio.to_thread(text_embedding, corpus)

@@ -6,14 +6,12 @@ from langgraph.graph import StateGraph
 
 from src.llm_agents.agent_interface import GraphAgent
 from src.llm_agents.chatbot.chatbot_agent_type import ChatbotAgentState, KGRetrieveType, TripleType
-from src.llm_agents.chatbot.chatbot_db import save_to_graph_db
-from src.llm_agents.chatbot.chatbot_util import convert_triple_list_to_pydantic, convert_triple_list_to_string
+from src.llm_agents.chatbot.chatbot_util import convert_triple_list_to_pydantic, convert_triple_list_to_string, \
+    convert_triple_list_to_embedding
 from src.llm_agents.llm_model import get_gemini_model
 from src.llm_agents.prompt.chatbot_kg_distill_prompt import RETRIVE_KG_SYSTEM_PROMPT
 from src.llm_agents.prompt.chatbot_output_prompt import CHATBOT_OUTPUT_SYSTEM_PROMPT, CHATBOT_OUTPUT_HUMAN_PROMPT
 from src.llm_agents.prompt.chatbot_plan_prompt import LONG_TERM_PLAN_HUMAN_PROMPT, LONG_TERM_PLAN_SYSTEM_PROMPT
-from src.service.graph_db.neo4j_entry import get_async_neo4j_driver, triple_to_cypher
-from src.service.graph_db.neo4j_static import MESSAGE_TRIPLE_TABLE
 from src.utility.simple_prompt_factory import SimplePromptFactory
 from src.utility.simple_prompt_streamer import SimplePromptStreamer
 from src.utility.utility_method import parse_block
@@ -37,6 +35,7 @@ class ChatbotAgent(GraphAgent):
         r = await chain.ainvoke({})
 
         triples = convert_triple_list_to_pydantic(r['triples'])
+        triples = await convert_triple_list_to_embedding(triples)
 
         # await save_to_graph_db(
         #     user_id='hsinpa', session_id='session_01',

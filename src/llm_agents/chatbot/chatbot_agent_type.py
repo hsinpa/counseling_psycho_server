@@ -1,4 +1,4 @@
-from typing import TypedDict, Annotated, Any
+from typing import TypedDict, Annotated, Any, Optional
 
 from pydantic import BaseModel, Field
 
@@ -23,6 +23,7 @@ class TripleType(BaseModel):
     host_node: str
     relation: str
     child_node: str
+    embedding: Optional[list[float]] = Field(default=[])
 
 
 class ChatbotAgentState(TypedDict):
