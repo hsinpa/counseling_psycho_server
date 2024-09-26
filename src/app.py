@@ -12,6 +12,8 @@ from src.router.yuri_temp_router import router as yuri_router
 from src.router.chatbot_router import router as chatbot_router
 
 from fastapi.middleware.cors import CORSMiddleware
+
+from src.service.vector_db.vector_db_manager import VectorDBManager
 from src.websocket.websocket_manager import websocket_manager
 
 load_dotenv()
@@ -36,6 +38,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+vector_db = VectorDBManager()
+loop = asyncio.get_running_loop()
+db_task = loop.create_task(vector_db.init_db_collection())
 
 @app.get("/")
 async def root():

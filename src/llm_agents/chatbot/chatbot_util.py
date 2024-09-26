@@ -1,3 +1,5 @@
+import uuid
+
 from openai.types import Embedding
 
 from src.llm_agents.chatbot.chatbot_agent_type import TripleType
@@ -8,6 +10,7 @@ def convert_triple_str_to_pydantic(triple_str: str) -> TripleType | None:
     try:
         s_triple = triple_str.split("|")
         triple = TripleType(
+            uuid=str(uuid.uuid4()),
             host_node= s_triple[0].strip(),
             relation=s_triple[1].strip(),
             child_node=s_triple[2].strip()

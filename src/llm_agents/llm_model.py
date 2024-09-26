@@ -7,6 +7,7 @@ from langchain_google_vertexai import ChatVertexAI
 from langchain_openai import ChatOpenAI
 from openai import OpenAI
 
+from src.service.vector_db.vector_static import TEXT_EMBEDDING_SIZE
 from src.utility.static_text import OpenAI_Model_4o_mini, Gemini_Model_1_5
 
 
@@ -45,7 +46,7 @@ def get_gemini_model(model_name: str = Gemini_Model_1_5, temperature: float = 0.
 
 def text_embedding(corpus: list[str]):
     client = OpenAI()
-    return client.embeddings.create(input=corpus, model="text-embedding-3-small", dimensions=256).data
+    return client.embeddings.create(input=corpus, model="text-embedding-3-small", dimensions=TEXT_EMBEDDING_SIZE).data
 
 async def atext_embedding(corpus: list[str]):
     return await asyncio.to_thread(text_embedding, corpus)

@@ -20,19 +20,16 @@ class KGRetrieveType(BaseModel):
 
 
 class TripleType(BaseModel):
+    uuid: str
     host_node: str
     relation: str
     child_node: str
     embedding: Optional[list[float]] = Field(default=[])
 
-
 class ChatbotAgentState(TypedDict):
-    final_message: Annotated[list[StreamingDataChunkType], annotate_list]
     scenario: Annotated[str, lambda x, y: y]
     query: str
     long_term_plan: str
-    chatbot_id: str
-    chatroom_id: int
-    kg_triples: list[TripleType]
     summary: str
     output: str
+    kg_triples: list[TripleType]

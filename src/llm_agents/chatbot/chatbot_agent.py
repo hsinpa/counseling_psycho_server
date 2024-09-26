@@ -12,6 +12,7 @@ from src.llm_agents.llm_model import get_gemini_model
 from src.llm_agents.prompt.chatbot_kg_distill_prompt import RETRIVE_KG_SYSTEM_PROMPT
 from src.llm_agents.prompt.chatbot_output_prompt import CHATBOT_OUTPUT_SYSTEM_PROMPT, CHATBOT_OUTPUT_HUMAN_PROMPT
 from src.llm_agents.prompt.chatbot_plan_prompt import LONG_TERM_PLAN_HUMAN_PROMPT, LONG_TERM_PLAN_SYSTEM_PROMPT
+from src.service.vector_db.vector_db_manager import VectorDBManager
 from src.utility.simple_prompt_factory import SimplePromptFactory
 from src.utility.simple_prompt_streamer import SimplePromptStreamer
 from src.utility.utility_method import parse_block
@@ -19,10 +20,11 @@ from src.utility.utility_method import parse_block
 
 class ChatbotAgent(GraphAgent):
 
-    def __init__(self, user_id: str, session_id: str, chat_summary: str):
+    def __init__(self, user_id: str, session_id: str, chat_summary: str, vector_db: VectorDBManager):
         self._user_id = user_id
         self._session_id = session_id
         self._chat_summary = str
+        self._vector_db = vector_db
 
     async def _retreive_kg_graph(self, state: ChatbotAgentState):
         prompt_factory = SimplePromptFactory(llm_model=get_gemini_model())
