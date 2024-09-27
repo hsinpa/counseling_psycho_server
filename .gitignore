@@ -164,3 +164,4 @@ cython_debug/
 credentials/
 compose_group/graph_db/neo4j_db
 compose_group/vector_db/qdrant_data
+graph_db/
