@@ -33,7 +33,11 @@ class VectorDBManager:
             query_vector=embedding,
             query_filter=filters,
             limit=limit,
+
         )
+
+    async def batch_search(self, collection_name: str, query_requests: list[models.QueryRequest]):
+        return await self._client.query_batch_points(collection_name=collection_name, requests=query_requests, )
 
     async def update(self, collection_name: str, points: list[PointStruct]):
         async with asyncio.TaskGroup() as tg:

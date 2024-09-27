@@ -11,7 +11,7 @@ def convert_triple_str_to_pydantic(triple_str: str) -> TripleType | None:
         s_triple = triple_str.split("|")
         triple = TripleType(
             uuid=str(uuid.uuid4()),
-            host_node= s_triple[0].strip(),
+            host_node=s_triple[0].strip(),
             relation=s_triple[1].strip(),
             child_node=s_triple[2].strip()
         )
@@ -20,14 +20,17 @@ def convert_triple_str_to_pydantic(triple_str: str) -> TripleType | None:
         print(f'convert_triple_str_to_pydantic error {triple_str}, {e}')
     return None
 
+
 async def convert_triple_list_to_embedding(triple_list: list[TripleType]) -> list[TripleType]:
-    pre_embed_texts: list[str] = list(map(lambda x: f'Main node: {x.host_node}, Relation: {x.relation}, Child node: {x.child_node}' , triple_list))
-    embedded_texts:  list[Embedding] = await atext_embedding(pre_embed_texts)
+    pre_embed_texts: list[str] = list(
+        map(lambda x: f'Main node: {x.host_node}, Relation: {x.relation}, Child node: {x.child_node}', triple_list))
+    embedded_texts: list[Embedding] = await atext_embedding(pre_embed_texts)
 
     for triple, embedded_text in zip(triple_list, embedded_texts):
         triple.embedding = embedded_text.embedding
 
     return triple_list
+
 
 def convert_triple_list_to_pydantic(triple_list: list[str]) -> list[TripleType]:
     triple_converts: list[TripleType] = []

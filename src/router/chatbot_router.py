@@ -10,4 +10,5 @@ async def chat(chat_input: ChatbotUserInputType):
     chatbot_manager = ChatbotManager(chat_input)
 
     r = await chatbot_manager.process_chat()
-    return r
+
+    return {'output': r['output']}

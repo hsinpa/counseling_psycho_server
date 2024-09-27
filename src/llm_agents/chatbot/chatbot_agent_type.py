@@ -26,10 +26,12 @@ class TripleType(BaseModel):
     child_node: str
     embedding: Optional[list[float]] = Field(default=[])
 
+
 class ChatbotAgentState(TypedDict):
-    scenario: Annotated[str, lambda x, y: y]
     query: str
     long_term_plan: str
     summary: str
     output: str
-    kg_triples: list[TripleType]
+
+    kg_triples: list[TripleType]  # Convert from User Input
+    retrieve_triples: list[TripleType]  # Get from VectorDB by kg_triples

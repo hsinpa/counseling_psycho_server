@@ -20,3 +20,23 @@ Lastly, triple array should be less than array size of 15.
 KG_DISTILL_QUERY = """
 
 """
+
+KG_SUMMARY_SYSTEM_PROMPT = """\
+你是做文本摘要的專家, 但現在, 你需要將 過去的摘要 和 節點型知識庫 做融合
+以純文字的形式當作輸出
+輸出風格 偏向報導, 公正, 無偏見\
+"""
+
+KG_SUMMARY_HUMAN_PROMPT = """\
+[過去的摘要]
+'''
+{summary}
+'''
+
+[節點型知識庫]
+'''
+{kg_triples}
+'''
+
+請結合以上兩點, 並給出一份250字內的新摘要\
+"""

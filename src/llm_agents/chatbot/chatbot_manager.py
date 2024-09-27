@@ -2,6 +2,7 @@ import asyncio
 from threading import Thread
 
 from src.llm_agents.chatbot.chatbot_agent import ChatbotAgent
+from src.llm_agents.chatbot.chatbot_agent_type import ChatbotAgentState
 from src.llm_agents.chatbot.post_ops.post_agent import PostAgent
 from src.model.chatbot_model import ChatbotUserInputType
 from langfuse.callback import CallbackHandler
@@ -14,8 +15,8 @@ class ChatbotManager:
         self._chat_input = chat_input
         self._vector_db = VectorDBManager()
 
-    async def process_chat(self):
-        # todo: DB query
+    async def process_chat(self) -> ChatbotAgentState:
+        # todo: DB query [History record]
         chatbot_agent = ChatbotAgent(user_id=self._chat_input.user_id,
                                      session_id=self._chat_input.session_id,
                                      chat_summary='',
@@ -24,11 +25,11 @@ class ChatbotManager:
         compile_agent = chatbot_agent.create_graph()
 
         chat_result = await compile_agent.ainvoke({'query': self._chat_input.input},
-                                           config={"run_name": 'Chat Graph',
-                                               "callbacks": [CallbackHandler(
-                                                   user_id='hsinpa',
-                                                   session_id=self._chat_input.session_id
-                                               )]})
+                                                  config={"run_name": 'Chat Graph',
+                                                          "callbacks": [CallbackHandler(
+                                                              user_id='hsinpa',
+                                                              session_id=self._chat_input.session_id
+                                                          )]})
 
         # Post work, no IO block
         post_agent = PostAgent(user_id=self._chat_input.user_id, session_id=self._chat_input.session_id,

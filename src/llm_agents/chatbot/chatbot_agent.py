@@ -8,6 +8,7 @@ from src.llm_agents.agent_interface import GraphAgent
 from src.llm_agents.chatbot.chatbot_agent_type import ChatbotAgentState, KGRetrieveType, TripleType
 from src.llm_agents.chatbot.chatbot_util import convert_triple_list_to_pydantic, convert_triple_list_to_string, \
     convert_triple_list_to_embedding
+from src.llm_agents.chatbot.db_ops.chatbot_vector_db import retrieve_relate_triples
 from src.llm_agents.llm_model import get_gemini_model
 from src.llm_agents.prompt.chatbot_kg_distill_prompt import RETRIVE_KG_SYSTEM_PROMPT
 from src.llm_agents.prompt.chatbot_output_prompt import CHATBOT_OUTPUT_SYSTEM_PROMPT, CHATBOT_OUTPUT_HUMAN_PROMPT
@@ -45,7 +46,9 @@ class ChatbotAgent(GraphAgent):
         #     triple_list=triples
         # )
 
-        return {'kg_triples': triples}
+        retrieve_triples = await retrieve_relate_triples(session_id=self._session_id, kg_triples=triples, vector_db=self._vector_db)
+
+        return {'kg_triples': triples, 'retrieve_triples': retrieve_triples}
 
     async def _long_term_plan(self, state: ChatbotAgentState):
         prompt_factory = SimplePromptFactory(llm_model=get_gemini_model())
