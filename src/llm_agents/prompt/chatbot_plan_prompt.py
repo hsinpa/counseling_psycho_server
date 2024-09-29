@@ -4,6 +4,7 @@ Long term plan需要包含使用者情感需求, 階段性目標, 需要收集�
 
 Long term plan 偏向短期內想要執行的計畫
 Long term strategy 偏向長期不易變更的宗旨
+Recent summary 是最近發生的事情, 以knowledge graph node的形式呈現
 
 [三種計畫方針]
 探索 (Exploration) 引導個案深入了解和表達自身的情感,思想和行為模式,以建立對問題的全面認識.
@@ -12,13 +13,19 @@ Long term strategy 偏向長期不易變更的宗旨
 
 [Knowledge graph]
 """
-{triples}
+{db_triples}
+{input_triples}
+"""
+
+[Recent summary]
+"""
+{summary}
 """
 
 [Previous long term plan]
 """
 {long_term_plan}
-"""\
+"""
 '''
 
 LONG_TERM_PLAN_HUMAN_PROMPT = '''\

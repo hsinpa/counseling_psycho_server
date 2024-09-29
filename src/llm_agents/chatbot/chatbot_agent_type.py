@@ -1,8 +1,8 @@
-from typing import TypedDict, Annotated, Any, Optional
+import datetime
+from enum import Enum
+from typing import TypedDict, Any, Optional
 
 from pydantic import BaseModel, Field
-
-from src.model.general_model import StreamingDataChunkType
 
 
 def annotate_list(x: list[Any], y: list[Any]):
@@ -12,6 +12,9 @@ def annotate_list(x: list[Any], y: list[Any]):
     x.extend(y)
     return x
 
+class ChatbotUserEnum(str, Enum):
+    human = 'human'
+    bot = 'bot'
 
 class KGRetrieveType(BaseModel):
     thought: str = Field(..., description='仔細思考 "使用者回覆" 中的訊息和其中想要表達的意思')
@@ -35,3 +38,28 @@ class ChatbotAgentState(TypedDict):
 
     kg_triples: list[TripleType]  # Convert from User Input
     retrieve_triples: list[TripleType]  # Get from VectorDB by kg_triples
+    filtered_triples: list[TripleType]  # Merge kg_triples and retrieve_triples
+
+class ChatbotPostState(TypedDict):
+    query: str
+    long_term_plan: str
+    summary: str
+    output: str
+    kg_triples: list[TripleType]  # Convert from User Input
+    retrieve_triples: list[TripleType]  # Get from VectorDB by kg_triples
+    delete_triples: list[str]  # Previous ID should be removed
+
+class ChatroomInfo(BaseModel):
+    id: int = Field(default=0)
+    summary:str  = Field(default='')
+    long_term_plan: str  = Field(default='')
+    created_date: Optional[datetime.datetime] = None
+
+class ChatMessage(BaseModel):
+    id: int = Field(default=0)
+    user_id: str = Field(default='')
+    session_id: str = Field(default='')
+    bubble_id: str = Field(default='')
+    message_type: ChatbotUserEnum = Field(default=ChatbotUserEnum.human)
+    body: str = Field(default='')
+    created_date: Optional[datetime.datetime] = None

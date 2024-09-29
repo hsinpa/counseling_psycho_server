@@ -1,8 +1,10 @@
 import uuid
+from typing import List
 
+from langchain_core.prompts import ChatPromptTemplate
 from openai.types import Embedding
 
-from src.llm_agents.chatbot.chatbot_agent_type import TripleType
+from src.llm_agents.chatbot.chatbot_agent_type import TripleType, ChatMessage, ChatbotUserEnum
 from src.llm_agents.llm_model import atext_embedding
 
 
@@ -42,12 +44,36 @@ def convert_triple_list_to_pydantic(triple_list: list[str]) -> list[TripleType]:
     return triple_converts
 
 
-def convert_triple_list_to_string(triple_list: list[TripleType]) -> str:
+def convert_triple_list_to_string(triple_list: list[TripleType], with_id: bool = False) -> str:
     triple_converts: str = ''
     for index, t in enumerate(triple_list):
+
+        if with_id:
+            triple_converts += f'[ID: {t.uuid}] '
+
         triple_converts += f'{t.host_node} | {t.relation} | {t.child_node}'
 
         if index < len(triple_list) - 1:
             triple_converts += '\n'
 
     return triple_converts
+
+
+
+def db_message_to_prompt(system_prompt: str, human_prompt: str,
+                         messages: list[ChatMessage]) -> ChatPromptTemplate:
+    agent_message = [('system', system_prompt)]
+
+    # Ignore narrator
+    for message in messages:
+        if message.message_type == ChatbotUserEnum.human:
+            agent_message.extend([('user', message.body)])
+
+        if message.message_type == ChatbotUserEnum.bot:
+            agent_message.extend([('ai', message.body)])
+
+    agent_message.append(('user', human_prompt))
+
+    prompt_template = ChatPromptTemplate(agent_message)
+    return prompt_template
+

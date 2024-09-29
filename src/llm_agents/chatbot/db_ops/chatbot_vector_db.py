@@ -24,6 +24,10 @@ async def retrieve_relate_triples(session_id: str, kg_triples: list[TripleType],
     retrieve_triples: list[TripleType] = []
     for qdrant_result in qdrant_results:
         for qdrant_point in qdrant_result.points:
+            # ignore score point if less than 0.5
+            if qdrant_point.score < 0.5:
+                continue
+
             retrieve_triples.append(TripleType(uuid=qdrant_point.id,
                                                host_node=qdrant_point.payload['host_node'],
                                                relation=qdrant_point.payload['relation'],

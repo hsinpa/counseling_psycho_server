@@ -28,10 +28,11 @@ class SimplePromptFactory:
     def create_chain(
             self,
             output_parser: BaseOutputParser,
-            human_prompt_text: str,
+            human_prompt_text: str = None,
             system_prompt_text: str = None,
             input_variables: list[str] = None,
             partial_variables: dict = None,
+            prompt_template: ChatPromptTemplate = None
     ):
 
         if partial_variables is None:
@@ -41,7 +42,13 @@ class SimplePromptFactory:
         if system_prompt_text is None:
             system_prompt_text = "You are a helpful assistant."
 
-        prompt = self._create_prompt(system_prompt_text, human_prompt_text, input_variables, partial_variables)
+        if prompt_template is None:
+            prompt = self._create_prompt(system_prompt_text, human_prompt_text, input_variables, partial_variables)
+        else:
+            prompt = prompt_template
+            prompt.input_variables = input_variables
+            prompt.partial_variables = partial_variables
+
         chain = prompt | self._llm | output_parser
         chain = chain.with_fallbacks([chain])
 

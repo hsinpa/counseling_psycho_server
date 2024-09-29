@@ -15,18 +15,11 @@ CHATBOT_OUTPUT_SYSTEM_PROMPT = """\
 {triples}
 '''
 
-[User Input]
-'''
-{query}
-'''
-
 [Long term plan]
 '''
 {long_term_plan}
-'''\
-"""
+'''
 
-CHATBOT_OUTPUT_HUMAN_PROMPT = """\
 輸出規定
-和使用者像朋友聊天一樣相處, 使用選定的介入方式, 可以同時分享訊息或是感受, 一次只能詢問一個問題, 輸出一段對話回覆
+和使用者像朋友聊天一樣相處, 使用選定的介入方式, 可以同時分享訊息或是感受, 一次只能詢問一個問題, 輸出一段對話回覆\
 """

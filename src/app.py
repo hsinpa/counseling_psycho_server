@@ -1,5 +1,6 @@
 import asyncio
 import json
+import sys
 import uuid
 
 from dotenv import load_dotenv
@@ -17,6 +18,9 @@ from src.service.vector_db.vector_db_manager import VectorDBManager
 from src.websocket.websocket_manager import websocket_manager
 
 load_dotenv()
+
+if sys.platform == "win32":
+    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 app = FastAPI(openapi_url="/docs/openapi.json", docs_url="/docs")
 app.include_router(questionnaire_router)

@@ -3,7 +3,8 @@ from threading import Thread
 
 from src.llm_agents.chatbot.chatbot_agent import ChatbotAgent
 from src.llm_agents.chatbot.chatbot_agent_type import ChatbotAgentState
-from src.llm_agents.chatbot.post_ops.post_agent import PostAgent
+from src.llm_agents.chatbot.db_ops.chatbot_relation_db import get_chatroom_info, get_chatroom_message
+from src.llm_agents.chatbot.post_ops.post_work_manager import PostWorkManager
 from src.model.chatbot_model import ChatbotUserInputType
 from langfuse.callback import CallbackHandler
 
@@ -15,25 +16,37 @@ class ChatbotManager:
         self._chat_input = chat_input
         self._vector_db = VectorDBManager()
 
+
+
     async def process_chat(self) -> ChatbotAgentState:
-        # todo: DB query [History record]
+        # Get Dat from DB
+        chatroom_info = get_chatroom_info(self._chat_input.session_id)
+        chat_messages = get_chatroom_message(self._chat_input.session_id, limit=6)
+
+        # Agent
         chatbot_agent = ChatbotAgent(user_id=self._chat_input.user_id,
                                      session_id=self._chat_input.session_id,
-                                     chat_summary='',
+                                     messages=chat_messages,
                                      vector_db=self._vector_db)
 
         compile_agent = chatbot_agent.create_graph()
 
-        chat_result = await compile_agent.ainvoke({'query': self._chat_input.input},
-                                                  config={"run_name": 'Chat Graph',
-                                                          "callbacks": [CallbackHandler(
-                                                              user_id='hsinpa',
-                                                              session_id=self._chat_input.session_id
-                                                          )]})
+        chat_result = await compile_agent.ainvoke(
+            {
+                'query': self._chat_input.input,
+                'summary': chatroom_info.summary,
+                'long_term_plan': chatroom_info.long_term_plan,
+             }, config={"run_name": 'Chat Graph',
+                  "callbacks": [CallbackHandler(
+                      user_id='hsinpa',
+                      session_id=self._chat_input.session_id
+                  )]
+            }
+        )
 
         # Post work, no IO block
-        post_agent = PostAgent(user_id=self._chat_input.user_id, session_id=self._chat_input.session_id,
-                               state=chat_result, vector_db=self._vector_db)
+        post_agent = PostWorkManager(user_id=self._chat_input.user_id, session_id=self._chat_input.session_id,
+                                     state=chat_result, vector_db=self._vector_db)
         t = Thread(target=post_agent.exec_pipeline)
         t.start()
 

@@ -1,41 +1,63 @@
-import asyncio
+import json
 
-from qdrant_client.http.models import PointStruct
+from langchain_core.output_parsers import StrOutputParser
+from langgraph.constants import END
+from langgraph.graph import StateGraph
 
-from src.llm_agents.chatbot.chatbot_agent_type import ChatbotAgentState, TripleType
-from src.service.vector_db.vector_db_manager import VectorDBManager
-from src.service.vector_db.vector_static import COLLECTION_CHAT
+from src.llm_agents.chatbot.chatbot_agent_type import ChatbotPostState
+from src.llm_agents.chatbot.chatbot_util import convert_triple_list_to_string
+from src.llm_agents.llm_model import get_gemini_model
+from src.llm_agents.prompt.chatbot_kg_distill_prompt import KG_SUMMARY_SYSTEM_PROMPT, KG_SUMMARY_HUMAN_PROMPT, \
+    KG_UPSERT_SYSTEM_PROMPT, KG_UPSERT_HUMAN_PROMPT
+from src.utility.simple_prompt_factory import SimplePromptFactory
+from src.utility.utility_method import parse_block
 
 
 class PostAgent:
-    def __init__(self, user_id: str, session_id: str, state: ChatbotAgentState, vector_db: VectorDBManager):
+    def __init__(self, user_id: str, session_id: str):
         self._user_id = user_id
         self._session_id = session_id
-        self._state = state
-        self._vector_db = vector_db
-        self._new_loop = asyncio.new_event_loop()  # Create a new event loop
 
-    def exec_pipeline(self):
-        asyncio.set_event_loop(self._new_loop)
-        self._new_loop.run_until_complete(self._process_post_work())
+    async def _update_summary(self, state: ChatbotPostState):
+        prompt_factory = SimplePromptFactory(llm_model=get_gemini_model())
+        chain = prompt_factory.create_chain(
+            output_parser=StrOutputParser(),
+            system_prompt_text=KG_SUMMARY_SYSTEM_PROMPT,
+            human_prompt_text=KG_SUMMARY_HUMAN_PROMPT,
+            partial_variables={'long_term_plan': state['long_term_plan'],
+                               'summary': state['summary'],
+                               'triples': convert_triple_list_to_string(state['kg_triples'])}
+        ).with_config({"run_name": 'Summary'})
 
-    async def _process_post_work(self):
-        await self._kg_triple_to_vector_db()
+        r = await chain.ainvoke({})
 
-    async def _kg_triple_to_vector_db(self):
-        triples: list[TripleType] = self._state['kg_triples']
-        points: list[PointStruct] = []
+        return {'summary': r}
 
-        for triple in triples:
-            points.append(PointStruct(
-                id=triple.uuid,
-                payload={
-                    'session_id': self._session_id,
-                    'host_node': triple.host_node,
-                    'relation': triple.relation,
-                    'child_node': triple.child_node,
-                },
-                vector=triple.embedding
-            ))
+    async def _update_kg_node(self, state: ChatbotPostState):
+        prompt_factory = SimplePromptFactory(llm_model=get_gemini_model())
+        chain = prompt_factory.create_chain(
+            output_parser=StrOutputParser(),
+            system_prompt_text=KG_UPSERT_SYSTEM_PROMPT,
+            human_prompt_text=KG_UPSERT_HUMAN_PROMPT,
+            partial_variables={'new_nodes': convert_triple_list_to_string(state['kg_triples'], with_id=True),
+                               'previous_nodes': convert_triple_list_to_string(state['retrieve_triples'], with_id=True)}
+        ).with_config({"run_name": 'Summary'})
+        r = await chain.ainvoke({})
 
-        await self._vector_db.insert(collection_name=COLLECTION_CHAT, points=points)
+        plan_json = json.loads(parse_block('json', r))
+        return {'delete_triples': plan_json['delete_nodes']}
+
+    def create_graph(self):
+        g_workflow = StateGraph(ChatbotPostState)
+
+        g_workflow.add_node('init', lambda state: state)
+        g_workflow.add_node('summary_node', self._update_summary)
+        g_workflow.add_node('kg_node', self._update_kg_node)
+
+        g_workflow.set_entry_point('init')
+        g_workflow.add_edge('init', 'summary_node')
+        g_workflow.add_edge('init', 'kg_node')
+
+        g_workflow.add_edge(['summary_node', 'kg_node'], END)
+
+        return g_workflow.compile()
