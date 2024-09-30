@@ -71,12 +71,12 @@ def db_message_to_prompt(system_prompt: str, human_prompt: str,
     # Ignore narrator
     for message in messages:
         if message.message_type == ChatbotUserEnum.human:
-            agent_message.extend([('user', message.body)])
+            agent_message.extend([('human', message.body)])
 
         if message.message_type == ChatbotUserEnum.bot:
             agent_message.extend([('ai', message.body)])
 
-    agent_message.append(('user', human_prompt))
+    agent_message.append(('human', human_prompt))
 
     prompt_template = ChatPromptTemplate(agent_message)
     return prompt_template

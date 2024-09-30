@@ -75,38 +75,6 @@ class ChatbotAgent(GraphAgent):
         except Exception as e:
             return {'filtered_triples': []}
 
-    async def _long_term_plan(self, state: ChatbotAgentState):
-        try:
-            prompt_factory = SimplePromptFactory(llm_model=get_gemini_model())
-
-            prompt_template = db_message_to_prompt(system_prompt=LONG_TERM_PLAN_SYSTEM_PROMPT,
-                                                   human_prompt=LONG_TERM_PLAN_HUMAN_PROMPT,
-                                                   messages=self._messages)
-
-            chain = prompt_factory.create_chain(
-                output_parser=StrOutputParser(),
-                prompt_template=prompt_template,
-                partial_variables={'long_term_plan': state['long_term_plan'],
-                                   'summary': state['summary'],
-                                   'db_triples': convert_triple_list_to_string(state['filtered_triples']),
-                                   'input_triples': convert_triple_list_to_string(state['kg_triples'])}
-            ).with_config({"run_name": 'Long term plan'})
-
-            r = await chain.ainvoke({})
-
-            plan_json = json.loads(parse_block('json', r))
-
-            strategy = plan_json['strategy']
-            plans = convert_triple_list_to_string(convert_triple_list_to_pydantic(plan_json['plan']))
-
-            plan_str = f'戰略: {strategy}\n\n採用短期策略:\n{plans}'
-
-            return {'long_term_plan': plan_str}
-
-        except Exception as ex:
-            return {'long_term_plan': ''}
-
-
     async def _output_chat(self, state: ChatbotAgentState):
         prompt_factory = SimplePromptFactory(llm_model=get_gemini_model())
         prompt_template = db_message_to_prompt(system_prompt=CHATBOT_OUTPUT_SYSTEM_PROMPT,
@@ -135,15 +103,13 @@ class ChatbotAgent(GraphAgent):
         g_workflow.add_node('init', lambda state: state)
         g_workflow.add_node('state_0_retrieve_kg', self._retrieve_kg_graph)
         g_workflow.add_node('state_2_merge_kg', self._merge_kg_graph)
-        g_workflow.add_node('state_4_long_term_plan', self._long_term_plan)
         g_workflow.add_node('state_5_chat_output', self._output_chat)
 
         g_workflow.set_entry_point('init')
         g_workflow.add_edge('init', 'state_0_retrieve_kg')
 
         g_workflow.add_edge('state_0_retrieve_kg', 'state_2_merge_kg')
-        g_workflow.add_edge('state_2_merge_kg', 'state_4_long_term_plan')
-        g_workflow.add_edge('state_4_long_term_plan', 'state_5_chat_output')
+        g_workflow.add_edge('state_2_merge_kg', 'state_5_chat_output')
         g_workflow.add_edge('state_5_chat_output', END)
 
         g_compile = g_workflow.compile()

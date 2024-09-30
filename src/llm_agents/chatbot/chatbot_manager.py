@@ -2,6 +2,8 @@ import asyncio
 import uuid
 from threading import Thread
 
+from langchain.chains.question_answering.map_reduce_prompt import messages
+
 from src.llm_agents.chatbot.chatbot_agent import ChatbotAgent
 from src.llm_agents.chatbot.chatbot_agent_type import ChatbotAgentState
 from src.llm_agents.chatbot.db_ops.chatbot_relation_db import get_chatroom_info, get_chatroom_message
@@ -16,8 +18,6 @@ class ChatbotManager:
     def __init__(self, chat_input: ChatbotUserInputType):
         self._chat_input = chat_input
         self._vector_db = VectorDBManager()
-
-
 
     async def process_chat(self) -> ChatbotAgentState:
         # Get Dat from DB
@@ -49,7 +49,7 @@ class ChatbotManager:
 
         # Post work, no IO block
         post_agent = PostWorkManager(user_id=self._chat_input.user_id, session_id=self._chat_input.session_id,
-                                     state=chat_result, vector_db=self._vector_db)
+                                     state=chat_result, messages=chat_messages, vector_db=self._vector_db)
         t = Thread(target=post_agent.exec_pipeline)
         t.start()
 

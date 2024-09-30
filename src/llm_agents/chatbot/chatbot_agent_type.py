@@ -40,13 +40,7 @@ class ChatbotAgentState(TypedDict):
     retrieve_triples: list[TripleType]  # Get from VectorDB by kg_triples
     filtered_triples: list[TripleType]  # Merge kg_triples and retrieve_triples
 
-class ChatbotPostState(TypedDict):
-    query: str
-    long_term_plan: str
-    summary: str
-    output: str
-    kg_triples: list[TripleType]  # Convert from User Input
-    retrieve_triples: list[TripleType]  # Get from VectorDB by kg_triples
+class ChatbotPostState(ChatbotAgentState):
     delete_triples: list[str]  # Previous ID should be removed
 
 class ChatroomInfo(BaseModel):
