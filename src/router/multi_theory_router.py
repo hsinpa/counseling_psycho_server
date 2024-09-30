@@ -8,7 +8,7 @@ from src.model.multi_theory_model import MultiTheoriesDataType, MultiTheoryInput
 from src.utility.static_text import psycho_theory_dict, psycho_theory_json
 from src.websocket.websocket_manager import get_websocket
 
-router = APIRouter(prefix="/multi_theory", tags=["multi_theory"])
+router = APIRouter(prefix="/api/multi_theory", tags=["multi_theory"])
 socket_manager = get_websocket()
 
 @router.get("/get_multi_theory")

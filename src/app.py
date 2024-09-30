@@ -54,13 +54,12 @@ async def root():
 
 @app.websocket("/ws")
 async def websocket_endpoint(websocket: WebSocket):
-    g_user_id = str(uuid.uuid4())
-
-    await websocket_manager.connect(g_user_id, websocket)
+    g_socket_id = str(uuid.uuid4())
+    await websocket_manager.connect(g_socket_id, websocket)
     try:
-        await websocket.send_text(json.dumps({'event': SocketEvent.open, '_id': g_user_id}))
+        await websocket.send_text(json.dumps({'event': SocketEvent.open, '_id': g_socket_id}))
         while True:
             data = await websocket.receive_json()
     except WebSocketDisconnect:
-        print('websocket disconnect user '+g_user_id)
-        websocket_manager.disconnect(g_user_id)
+        print('websocket disconnect user '+g_socket_id)
+        websocket_manager.disconnect(g_socket_id)

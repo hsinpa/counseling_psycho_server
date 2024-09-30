@@ -6,6 +6,7 @@ from pydantic import BaseModel
 class SocketEvent:
     open = 'socket_open'
     bot = 'bot'
+    message_stream = 'main_content_socket'
 
 
 class DataChunkType(str, Enum):
@@ -14,6 +15,8 @@ class DataChunkType(str, Enum):
 
 
 class StreamingDataChunkType(BaseModel):
+    bubble_id: str
     session_id: str
     data: str
     type: DataChunkType
+    index: int

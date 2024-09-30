@@ -25,8 +25,8 @@ class PostWorkManager:
         self._new_loop.run_until_complete(self._process_post_work())
 
     async def _process_post_work(self):
-        insert_chatroom_message(self._session_id, self._user_id, bubble_id='',
-                                user_message=self._state['query'], agent_message=self._state['output'])
+        insert_chatroom_message(self._session_id, self._user_id, user_message=self._state['query'],
+                                agent_message=self._state['output'])
 
         post_data: ChatbotPostState = await self._compiled_agent.ainvoke(
             {

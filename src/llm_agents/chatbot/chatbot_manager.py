@@ -1,4 +1,5 @@
 import asyncio
+import uuid
 from threading import Thread
 
 from src.llm_agents.chatbot.chatbot_agent import ChatbotAgent
@@ -21,11 +22,13 @@ class ChatbotManager:
     async def process_chat(self) -> ChatbotAgentState:
         # Get Dat from DB
         chatroom_info = get_chatroom_info(self._chat_input.session_id)
-        chat_messages = get_chatroom_message(self._chat_input.session_id, limit=6)
+        chat_messages = get_chatroom_message(self._chat_input.user_id, self._chat_input.session_id, limit=6)
+        bubble_id = str(uuid.uuid4())
 
         # Agent
         chatbot_agent = ChatbotAgent(user_id=self._chat_input.user_id,
                                      session_id=self._chat_input.session_id,
+                                     socket_id=self._chat_input.websocket_id,
                                      messages=chat_messages,
                                      vector_db=self._vector_db)
 
@@ -33,7 +36,7 @@ class ChatbotManager:
 
         chat_result = await compile_agent.ainvoke(
             {
-                'query': self._chat_input.input,
+                'query': self._chat_input.text,
                 'summary': chatroom_info.summary,
                 'long_term_plan': chatroom_info.long_term_plan,
              }, config={"run_name": 'Chat Graph',

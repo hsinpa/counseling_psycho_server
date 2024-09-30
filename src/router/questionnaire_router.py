@@ -7,7 +7,7 @@ from src.llm_agents.prompt.theory_prompt import INDIVIDUAL_THEORY_REPORT_PROMPT,
 from src.model.questionnaire_model import QuestionnairesRespType, QuestionnaireRespType, CognitiveQuestionsRespType
 from src.types.router_input_type import AnalysisInputQuestionnairesType, InputMediaStrategyType
 
-router = APIRouter(prefix="/questionnaire", tags=["questionnaire"])
+router = APIRouter(prefix="/api/questionnaire", tags=["questionnaire"])
 
 
 @router.get("/get_cognitive_questions")

@@ -20,13 +20,13 @@ class WebSocketManager:
         if target_id in self.active_connections:
             await self.active_connections[target_id].send_text(data)
 
-    async def connect(self, client_id: str, websocket: WebSocket):
+    async def connect(self, socket_id: str, websocket: WebSocket):
         await websocket.accept()
-        self.active_connections[client_id] = websocket
+        self.active_connections[socket_id] = websocket
 
-    def disconnect(self, client_id: str):
-        if client_id in self.active_connections:
-            del self.active_connections[client_id]
+    def disconnect(self, socket_id: str):
+        if socket_id in self.active_connections:
+            del self.active_connections[socket_id]
 
     async def send_personal_message(self, message: str, websocket: WebSocket):
         await websocket.send_text(message)

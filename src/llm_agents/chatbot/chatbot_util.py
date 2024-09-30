@@ -26,6 +26,10 @@ def convert_triple_str_to_pydantic(triple_str: str) -> TripleType | None:
 async def convert_triple_list_to_embedding(triple_list: list[TripleType]) -> list[TripleType]:
     pre_embed_texts: list[str] = list(
         map(lambda x: f'Main node: {x.host_node}, Relation: {x.relation}, Child node: {x.child_node}', triple_list))
+
+    if len(pre_embed_texts) <= 0:
+        return triple_list
+
     embedded_texts: list[Embedding] = await atext_embedding(pre_embed_texts)
 
     for triple, embedded_text in zip(triple_list, embedded_texts):
