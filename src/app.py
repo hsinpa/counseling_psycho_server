@@ -32,6 +32,7 @@ origins = [
     "http://localhost",
     "http://localhost:5173",
     "https://counseling-psycho.vercel.app",
+    "https://counseling-psycho-chatbot.vercel.app",
     "https://itri-mqtt-doll.vercel.app",
 ]
 

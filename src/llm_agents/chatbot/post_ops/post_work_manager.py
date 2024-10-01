@@ -78,6 +78,6 @@ class PostWorkManager:
                 },
                 vector=triple.embedding
             ))
-            
+
         if len(points) > 0:
             await vector_db.upsert(collection_name=COLLECTION_CHAT, points=points)
