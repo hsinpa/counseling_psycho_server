@@ -14,12 +14,11 @@ from src.service.vector_db.vector_static import COLLECTION_CHAT
 
 class PostWorkManager:
     def __init__(self, user_id: str, session_id: str, state: ChatbotAgentState,
-                 messages: List[ChatMessage], vector_db: VectorDBManager):
+                 messages: List[ChatMessage]):
         self._user_id = user_id
         self._session_id = session_id
         self._state = state
         self._messages = messages
-        self._vector_db = vector_db
         self._new_loop = asyncio.new_event_loop()  # Create a new event loop
 
         # Append last round info to messages
@@ -57,9 +56,14 @@ class PostWorkManager:
         await asyncio.to_thread(upsert_chatroom_info, self._user_id, self._session_id, post_data['summary'], post_data['long_term_plan'])
 
     async def _kg_triple_to_remove_db(self, delete_triples: list[str]):
-        await self._vector_db.delete(collection_name=COLLECTION_CHAT, point_ids=delete_triples)
+        if len(delete_triples) == 0:
+            return
+
+        vector_db = VectorDBManager()
+        await vector_db.delete(collection_name=COLLECTION_CHAT, point_ids=delete_triples)
 
     async def _kg_triple_to_vector_db(self):
+        vector_db = VectorDBManager()
         triples: list[TripleType] = self._state['kg_triples']
         points: list[PointStruct] = []
 
@@ -74,5 +78,6 @@ class PostWorkManager:
                 },
                 vector=triple.embedding
             ))
-
-        await self._vector_db.upsert(collection_name=COLLECTION_CHAT, points=points)
+            
+        if len(points) > 0:
+            await vector_db.upsert(collection_name=COLLECTION_CHAT, points=points)

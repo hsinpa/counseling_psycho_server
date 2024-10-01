@@ -49,7 +49,7 @@ class ChatbotManager:
 
         # Post work, no IO block
         post_agent = PostWorkManager(user_id=self._chat_input.user_id, session_id=self._chat_input.session_id,
-                                     state=chat_result, messages=chat_messages, vector_db=self._vector_db)
+                                     state=chat_result, messages=chat_messages)
         t = Thread(target=post_agent.exec_pipeline)
         t.start()
 

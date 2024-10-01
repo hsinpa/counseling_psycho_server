@@ -38,18 +38,22 @@ class PostAgent:
         return {'summary': r}
 
     async def _update_kg_node(self, state: ChatbotPostState):
-        prompt_factory = SimplePromptFactory(llm_model=get_gemini_model())
-        chain = prompt_factory.create_chain(
-            output_parser=StrOutputParser(),
-            system_prompt_text=KG_UPSERT_SYSTEM_PROMPT,
-            human_prompt_text=KG_UPSERT_HUMAN_PROMPT,
-            partial_variables={'new_nodes': convert_triple_list_to_string(state['kg_triples'], with_id=True),
-                               'previous_nodes': convert_triple_list_to_string(state['retrieve_triples'], with_id=True)}
-        ).with_config({"run_name": 'Summary'})
-        r = await chain.ainvoke({})
+        try:
+            prompt_factory = SimplePromptFactory(llm_model=get_gemini_model())
+            chain = prompt_factory.create_chain(
+                output_parser=StrOutputParser(),
+                system_prompt_text=KG_UPSERT_SYSTEM_PROMPT,
+                human_prompt_text=KG_UPSERT_HUMAN_PROMPT,
+                partial_variables={'new_nodes': convert_triple_list_to_string(state['kg_triples'], with_id=True),
+                                   'previous_nodes': convert_triple_list_to_string(state['retrieve_triples'], with_id=True)}
+            ).with_config({"run_name": 'Summary'})
+            r = await chain.ainvoke({})
 
-        plan_json = json.loads(parse_block('json', r))
-        return {'delete_triples': plan_json['delete_nodes']}
+            plan_json = json.loads(parse_block('json', r))
+            return {'delete_triples': plan_json['delete_nodes']}
+
+        except Exception as ex:
+            return {'delete_triples': []}
 
     async def _long_term_plan(self, state: ChatbotPostState):
         try:

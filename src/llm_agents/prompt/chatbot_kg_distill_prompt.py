@@ -84,6 +84,7 @@ One is the previous graph node and new coming node, I want you specified out whi
 previous graph node should be delete, given the new node will replace their state.
 
 First shortly figure out which previous node you think need to be delete,
+delete_nodes should only contain node from [previous graph node]
 and output a JSON object with the schema I list below
 
 delete_nodes: list[string] = Field(description='Previous ID that no longer need to exist, since the new node will replace them')
