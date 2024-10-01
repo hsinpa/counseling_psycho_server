@@ -1,4 +1,5 @@
 import asyncio
+import os
 
 from qdrant_client import AsyncQdrantClient, models
 from qdrant_client.http.models import VectorParams, Distance, PointStruct, ScalarQuantization
@@ -8,7 +9,9 @@ from src.service.vector_db.vector_static import TEXT_EMBEDDING_SIZE, COLLECTION_
 
 class VectorDBManager:
     def __init__(self):
-        self._client = AsyncQdrantClient(url="http://localhost:6333")
+        postgres_host = os.environ['LOCALHOST']
+
+        self._client = AsyncQdrantClient(url=f"http://{postgres_host}:6333")
         self._vectorParams = VectorParams(size=TEXT_EMBEDDING_SIZE, distance=Distance.COSINE, on_disk=True)
         self._quantization = ScalarQuantization(
             scalar=models.ScalarQuantizationConfig(

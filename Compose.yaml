@@ -4,3 +4,5 @@ services:
       dockerfile: ./Dockerfile
     ports:
       - "8842:8842"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"

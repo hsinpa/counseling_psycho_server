@@ -1,5 +1,4 @@
 import uuid
-from random import lognormvariate
 from typing import List
 
 from pydantic import TypeAdapter
