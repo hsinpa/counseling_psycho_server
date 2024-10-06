@@ -1,10 +1,8 @@
 import json
 from typing import List
-
 from langchain_core.output_parsers import StrOutputParser
 from langgraph.constants import END
 from langgraph.graph import StateGraph
-
 from src.llm_agents.chatbot.chatbot_agent_type import ChatbotPostState, ChatMessage
 from src.llm_agents.chatbot.chatbot_util import convert_triple_list_to_string, db_message_to_prompt, \
     convert_triple_list_to_pydantic
@@ -74,14 +72,18 @@ class PostAgent:
 
             r = await chain.ainvoke({})
 
-            plan_json = json.loads(parse_block('json', r))
+            plan_json = parse_block('yaml', r)
 
-            strategy = plan_json['strategy']
-            plans = convert_triple_list_to_string(convert_triple_list_to_pydantic(plan_json['plan']))
+            # plan_json = json.loads(parse_block('json', r))
+            #
+            # strategy = plan_json['overall_status']
+            # exploration_technique = convert_triple_list_to_string(convert_triple_list_to_pydantic(plan_json['exploration_technique']))
+            # insight_technique = convert_triple_list_to_string(convert_triple_list_to_pydantic(plan_json['insight_technique']))
+            # action_technique = convert_triple_list_to_string(convert_triple_list_to_pydantic(plan_json['action_technique']))
+            #
+            # plan_str = f'戰略: {strategy}\n\n採用短期策略:\n{exploration_technique}'
 
-            plan_str = f'戰略: {strategy}\n\n採用短期策略:\n{plans}'
-
-            return {'long_term_plan': plan_str}
+            return {'long_term_plan': plan_json}
 
         except Exception as ex:
             print('ERROR long_term_plan')

@@ -16,7 +16,6 @@ from src.llm_agents.llm_model import get_gemini_model
 from src.llm_agents.prompt.chatbot_kg_distill_prompt import RETRIVE_KG_SYSTEM_PROMPT, KG_FILTERED_SYSTEM_PROMPT, \
     KG_FILTERED_HUMAN_PROMPT
 from src.llm_agents.prompt.chatbot_output_prompt import CHATBOT_OUTPUT_SYSTEM_PROMPT
-from src.llm_agents.prompt.chatbot_plan_prompt import LONG_TERM_PLAN_HUMAN_PROMPT, LONG_TERM_PLAN_SYSTEM_PROMPT
 from src.model.general_model import SocketEvent
 from src.service.vector_db.vector_db_manager import VectorDBManager
 from src.utility.simple_prompt_factory import SimplePromptFactory

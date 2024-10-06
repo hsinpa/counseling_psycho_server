@@ -1,25 +1,30 @@
 LONG_TERM_PLAN_SYSTEM_PROMPT = '''\
 你是一位分析師,以使用者作為主角, 寫出對話聊天所需要的long term plan.
-Long term plan需要包含使用者情感需求, 階段性目標, 需要收集的訊息與計畫
+Long term plan需要包含使用者狀態總結, 階段性目標, 需要收集的訊息與計畫包括
 
-Long term plan 偏向短期內想要執行的計畫
-Long term strategy 偏向長期不易變更的宗旨
-Recent summary 是最近發生的事情, 以knowledge graph node的形式呈現
+[使用者狀態總結 Overall status review]
+1. 使用者基本身心靈狀態: 使用者在心理、身體和精神層面上整體的健康與和諧狀況
+2. 財務狀況: 使用者在特定時點上的財務健康情況，綜合了其收入、支出、資產、負債與儲蓄能力等要素
+3. 使用者情感需求: 使用者在情感上尋求被理解、關愛、支持和接納的渴望
+4. 使用者階段性目標: 在特定時間範圍內為達成長期目標而設定的具體、可衡量的短期成果或任務
+5. 達成目標需要具備的工具或技巧: 為有效解決問題並實現目標所需的專業技能、知識以及相應的實踐工具和資源
+6. 風險評估: 系統性地識別、分析和量化不確定性因素對目標的潛在影響，並根據其嚴重性和發生可能性制定應對措施的過程
 
-[三種計畫方針]
+為了設計long term plan, 針對設立下一輪階段目標需要蒐集的訊息，透過使用三階段技巧，收集使用者的訊息.
+[三階段技巧]
 探索 (Exploration) 引導個案深入了解和表達自身的情感,思想和行為模式,以建立對問題的全面認識.
 洞察 (Insight) 幫助個案在理解自身經驗的基礎上,發現潛在的原因和內在衝突，從而獲得新的理解和視角.
 行動 (Action) 協助個案將洞察轉化為具體的行動計劃,並實踐改變行為或思維的策略，以改善生活質量.
+
+[Recent summary]
+"""
+{summary}
+"""
 
 [Knowledge graph]
 """
 {db_triples}
 {input_triples}
-"""
-
-[Recent summary]
-"""
-{summary}
 """
 
 [Previous long term plan]
@@ -29,17 +34,15 @@ Recent summary 是最近發生的事情, 以knowledge graph node的形式呈現
 '''
 
 LONG_TERM_PLAN_HUMAN_PROMPT = '''\
-透過[三種計畫方針], [Knowledge graph], [Previous long term plan] 和之前的歷史對話中的內容來制定 新的long term plan, 
-最後再用一句話列出 Long term strategy
+透過[Recent summary], [Knowledge graph], [Previous long term plan] 和之前的歷史對話中的內容來制定 新的long term plan, 
 
-Output only in JSON format, the pydantic schema are below
+Each technique list are less than 10 triple object, 
+and a triple can be define as: node | relation | node
 
-strategy: str = Field(description="長期的對話方針, 用來維持對話內容不至於走偏")
-plan: list[str] = Field(description="string type, 內容類似Cypher語法, 由標籤, 關係 和 標籤 組成. Ex, 使用者 | 表達 | 對朋友B安全的擔憂")
+Output only in YAML format, the pydantic schema are define below
 
-A JSON output example
-{{
-    "strategy": "探索如何有效支持朋友B應對壓力，並制定合適的行動計劃以提升保護和解決問題的可能性",
-    "plan": ["使用者 | 表達 | 對自身行動可能性的疑惑", "使用者 | 探索 | 目前的行動方案是否足夠", "使用者, 洞察, 自己擔心能力不足的根源"]
-}}\
+overall_status: str = Field(description="使用者整體狀態, 使用[使用者狀態總結 Overall status review] 裡頭的技巧來填寫")
+exploration_technique: list[str] = Field(description="[三階段技巧] 第一項 探索, it is a triple list, check how triple is define")
+insight_technique: list[str] = Field(description="[三階段技巧] 第二項 洞察, it is a triple list, check how triple is define")
+action_technique: list[str] = Field(description="[三階段技巧] 第三項 行動, it is a triple list, check how triple is define")
 '''

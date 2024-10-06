@@ -27,6 +27,8 @@ I want you to pick the most relevant knowledge graph nodes from Past nodes compa
 They should be relevant in context.
 
 Pick no more than '{number}' most relevant nodes from past node
+If the data is not enough to retrieve anything, just return an empty triples array, and nothing more.
+
 The format of knowledge node are in JSON format, and you need to strictly follow the rule.
 {{
   "triples": [
