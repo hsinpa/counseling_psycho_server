@@ -1,0 +1,124 @@
+{
+  "checkboxes": [
+    {
+      "id": "self_growth",
+      "ch_name": "自我成長",
+      "en_name": "Self-growth"
+    },
+    {
+      "id": "intimate_relationships",
+      "ch_name": "親密關係",
+      "en_name": "Intimate relationships"
+    },
+    {
+      "id": "interpersonal_interactions",
+      "ch_name": "人際互動",
+      "en_name": "Interpersonal interactions"
+    },
+    {
+      "id": "family_relationships",
+      "ch_name": "家庭關係",
+      "en_name": "Family relationships"
+    },
+    {
+      "id": "career_development",
+      "ch_name": "生涯發展",
+      "en_name": "Career development"
+    },
+    {
+      "id": "emotional_distress",
+      "ch_name": "情緒困擾",
+      "en_name": "Emotional distress"
+    },
+    {
+      "id": "issues_of_loss",
+      "ch_name": "失落議題",
+      "en_name": "Issues of loss"
+    },
+    {
+      "id": "life_adjustment",
+      "ch_name": "生活適應",
+      "en_name": "Life adjustment"
+    },
+    {
+      "id": "parent_child_issues",
+      "ch_name": "親子議題",
+      "en_name": "Parent-child issues"
+    },
+    {
+      "id": "workplace_school_adaptation",
+      "ch_name": "職場/校園適應",
+      "en_name": "Workplace/School adaptation"
+    },
+    {
+      "id": "gender_issues",
+      "ch_name": "性別議題",
+      "en_name": "Gender issues"
+    },
+    {
+      "id": "stress_management",
+      "ch_name": "壓力調適",
+      "en_name": "Stress management"
+    },
+    {
+      "id": "psychosomatic_symptoms",
+      "ch_name": "身心症狀",
+      "en_name": "Psychosomatic symptoms"
+    },
+    {
+      "id": "learning_difficulties",
+      "ch_name": "學習困擾",
+      "en_name": "Learning difficulties"
+    },
+    {
+      "id": "addiction_issues",
+      "ch_name": "成癮議題",
+      "en_name": "Addiction issues"
+    },
+    {
+      "id": "traumatic_events",
+      "ch_name": "創傷事件",
+      "en_name": "Traumatic events"
+    },
+    {
+      "id": "sexual_counseling",
+      "ch_name": "性諮商",
+      "en_name": "Sexual counseling"
+    },
+    {
+      "id": "spiritual_exploration",
+      "ch_name": "靈性探索",
+      "en_name": "Spiritual exploration"
+    },
+    {
+      "id": "self_harm",
+      "ch_name": "自我傷害",
+      "en_name": "Self-harm"
+    },
+    {
+      "id": "multicultural_issues",
+      "ch_name": "多元文化議題",
+      "en_name": "Multicultural issues"
+    },
+    {
+      "id": "political_violence",
+      "ch_name": "政治暴力",
+      "en_name": "Political violence"
+    },
+    {
+      "id": "social_oppression",
+      "ch_name": "社會壓迫",
+      "en_name": "Social oppression"
+    },
+    {
+      "id": "existential_issues",
+      "ch_name": "存在議題",
+      "en_name": "Existential issues"
+    },
+    {
+      "id": "other",
+      "ch_name": "其他",
+      "en_name": "Other"
+    }
+  ]
+}

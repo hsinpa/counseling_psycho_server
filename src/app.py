@@ -11,6 +11,7 @@ from src.router.questionnaire_router import router as questionnaire_router
 from src.router.multi_theory_router import router as multi_theory_router
 from src.router.yuri_temp_router import router as yuri_router
 from src.router.chatbot_router import router as chatbot_router
+from src.router.talk_simulation_router import router as talk_router
 
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -27,6 +28,7 @@ app.include_router(questionnaire_router)
 app.include_router(multi_theory_router)
 app.include_router(yuri_router)
 app.include_router(chatbot_router)
+app.include_router(talk_router)
 
 origins = [
     "http://localhost",
