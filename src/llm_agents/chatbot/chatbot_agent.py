@@ -7,13 +7,12 @@ from langgraph.constants import END
 from langgraph.graph import StateGraph
 
 from src.llm_agents.agent_interface import GraphAgent
-from src.llm_agents.chatbot.chatbot_agent_type import ChatbotAgentState, KGRetrieveType, TripleType, ChatMessage
+from src.llm_agents.chatbot.chatbot_agent_type import ChatbotAgentState, KGRetrieveType, ChatMessage
 from src.llm_agents.chatbot.chatbot_util import convert_triple_list_to_pydantic, convert_triple_list_to_string, \
     convert_triple_list_to_embedding, db_message_to_prompt
-from src.llm_agents.chatbot.db_ops.chatbot_relation_db import get_chatroom_info
 from src.llm_agents.chatbot.db_ops.chatbot_vector_db import retrieve_relate_triples
 from src.llm_agents.llm_model import get_gemini_model
-from src.llm_agents.prompt.chatbot_kg_distill_prompt import RETRIVE_KG_SYSTEM_PROMPT, KG_FILTERED_SYSTEM_PROMPT, \
+from src.llm_agents.prompt.chatbot_kg_distill_prompt import RETRIEVE_KG_SYSTEM_PROMPT, RETRIEVE_KG_HUMAN_PROMPT,  KG_FILTERED_SYSTEM_PROMPT, \
     KG_FILTERED_HUMAN_PROMPT
 from src.llm_agents.prompt.chatbot_output_prompt import CHATBOT_OUTPUT_SYSTEM_PROMPT
 from src.model.general_model import SocketEvent
@@ -37,9 +36,9 @@ class ChatbotAgent(GraphAgent):
         prompt_factory = SimplePromptFactory(llm_model=get_gemini_model())
         chain = prompt_factory.create_chain(
             output_parser=JsonOutputParser(pydantic_object=KGRetrieveType),
-            system_prompt_text=RETRIVE_KG_SYSTEM_PROMPT,
-            partial_variables={'summary': state['summary']},
-            human_prompt_text=state['query'],
+            system_prompt_text=RETRIEVE_KG_SYSTEM_PROMPT,
+            partial_variables={'summary': state['summary'], 'user_query': state['query']},
+            human_prompt_text=RETRIEVE_KG_HUMAN_PROMPT,
         ).with_config({"run_name": 'Retrieve KG Graph'})
 
         r = await chain.ainvoke({})
