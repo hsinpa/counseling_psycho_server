@@ -9,8 +9,7 @@ from src.websocket.websocket_manager import get_websocket
 
 
 class SimplePromptStreamer:
-    def __init__(self, user_id: str, session_id: str, socket_id: str, event_tag: str):
-        self._user_id = user_id
+    def __init__(self, session_id: str, socket_id: str, event_tag: str):
         self._session_id = session_id
         self._socket_id = socket_id
         self._event_tag = event_tag

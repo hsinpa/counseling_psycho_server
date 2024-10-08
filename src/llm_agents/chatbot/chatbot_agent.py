@@ -88,8 +88,7 @@ class ChatbotAgent(GraphAgent):
                                'triples': convert_triple_list_to_string(state['kg_triples'])}
         ).with_config({"run_name": 'Long term plan'})
 
-        simple_streamer = SimplePromptStreamer(user_id=self._user_id, session_id=self._session_id,
-                                               socket_id=self._socket_id, event_tag=SocketEvent.bot)
+        simple_streamer = SimplePromptStreamer(session_id=self._session_id, socket_id=self._socket_id, event_tag=SocketEvent.bot)
 
         print('Entering Output chat stream')
         result = await simple_streamer.execute(chain=chain)
