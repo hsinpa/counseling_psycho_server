@@ -7,3 +7,14 @@ class SimulationThemeCheckboxType(BaseModel):
 
 class SimulationThemeCheckboxesType(BaseModel):
     checkboxes: list[SimulationThemeCheckboxType]
+
+
+class SimulationQuesUserInputType(BaseModel):
+    age: int
+    gender: str
+    job: str
+    education: str
+    theme_checkboxes: list[SimulationThemeCheckboxType]
+
+    theme_reason: str
+    sorting_reason: str
