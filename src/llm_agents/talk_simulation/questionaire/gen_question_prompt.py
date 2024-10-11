@@ -4,6 +4,7 @@ GENERATE_SIMULATION_QUESTION_SYSTEM_PROMPT = """
 
 Definition
 二次創傷: 在心理治療過程中,個案因重新回憶或探討過去的創傷經歷而再次經歷心理和情感上的痛苦和創傷反應,導致個案情緒惡化或出現新的心理困擾
+參考範本: 提供了, 生成題目時, 需要的用詞的方式和語氣
 
 [參考範本]
 '''
@@ -22,5 +23,5 @@ GENERATE_SIMULATION_QUESTION_HUMAN_PROMPT = """
 前三個題目必須是 基本資料,婚姻, 居住地點
 
 Output in JSON format, as the schema define below
-question: list[str] = Field(description='設計一個對個案分析有幫助的問題')
+questions: list[str] = Field(description='設計一個對個案分析有幫助的問題')
 """
