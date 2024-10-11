@@ -18,3 +18,4 @@ class SimulationQuesUserInputType(BaseModel):
 
     theme_reason: str
     sorting_reason: str
+    session_id: str

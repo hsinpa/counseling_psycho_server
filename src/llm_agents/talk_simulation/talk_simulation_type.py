@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import TypedDict
+from typing import TypedDict, Optional
 
 from pydantic import BaseModel, Field
 
@@ -12,3 +12,4 @@ class QuestionTypeEnum(str, Enum):
 class QuestionType(BaseModel):
     type: QuestionTypeEnum = Field(default=QuestionTypeEnum.text)
     content: str
+    answer: Optional[str] = Field(default='')
