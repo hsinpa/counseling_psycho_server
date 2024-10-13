@@ -1,17 +1,28 @@
 import json
 
 from src.llm_agents.talk_simulation.talk_simulation_type import QuestionType
-from src.model.talk_simulation_model import SimulationQuesUserInputType
+from src.model.talk_simulation_model import SimulationQuesUserInputType, GLOBAL_SIMULATION_CHECKBOX_DICT
 from src.service.relation_db.postgres_db_manager import sync_db_ops, FetchType
 
 TABLE = 'talk_simulation'
 
 def db_ops_get_simulation_info(session_id: str):
+    sql_syntax = (f"SELECT * "
+                  f"FROM {TABLE} WHERE session_id=%s")
+
+    result = sync_db_ops(sql_syntax=sql_syntax, fetch_type=FetchType.One, parameters=[session_id])
+
+    if result is not None:
+        theme_checkboxes = list(map(lambda x: GLOBAL_SIMULATION_CHECKBOX_DICT[x], result['theme_checkboxes']))
+        result['theme_checkboxes'] = theme_checkboxes
+
+    return result
+
+def db_ops_get_simulation_external_view(session_id: str):
     sql_syntax = (f"SELECT id, process_count, report, questionnaires "
                   f"FROM {TABLE} WHERE session_id=%s")
 
     result = sync_db_ops(sql_syntax=sql_syntax, fetch_type=FetchType.One, parameters=[session_id])
-    print(result)
     return result
 
 def db_ops_save_basic_info(user_input: SimulationQuesUserInputType):
@@ -37,3 +48,9 @@ def db_ops_save_gen_questionnaire(session_id: str, questionnaires: list[Question
 
     sync_db_ops(sql_syntax=sql_syntax,
                 parameters=[json_string, session_id])
+
+def db_ops_save_output_report(session_id: str, report: str):
+    sql_syntax = f"UPDATE {TABLE} SET report=%s WHERE session_id=%s"
+
+    sync_db_ops(sql_syntax=sql_syntax,
+                parameters=[report, session_id])

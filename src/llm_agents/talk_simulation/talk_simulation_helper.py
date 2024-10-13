@@ -1,3 +1,4 @@
+from src.llm_agents.talk_simulation.talk_simulation_type import QuestionType, QuestionTypeEnum
 from src.model.talk_simulation_model import SimulationQuesUserInputType
 
 
@@ -23,3 +24,20 @@ Related theme, sequence matter
 [Why sort this way]
 {basic_info.sorting_reason}\
 """
+
+
+def questionaries_to_string(questionnaires: list[QuestionType]):
+    questionnaires_text = ''
+
+    for i, q in enumerate(questionnaires):
+        if q.type == QuestionTypeEnum.text:
+            questionnaires_text += f'Question. {q.content}\n'
+            questionnaires_text += f'Answer:\n{q.answer}\n\n'
+
+        if q.type == QuestionTypeEnum.label:
+            questionnaires_text += f'** {q.content}\n'
+
+        if q.type == QuestionTypeEnum.number:
+            questionnaires_text += f'{q.content}: {q.answer}\n'
+
+    return questionnaires_text

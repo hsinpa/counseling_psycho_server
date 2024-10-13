@@ -8,7 +8,8 @@ from src.model.questionnaire_model import QuestionnaireRespType
 from src.types.router_input_type import InputMediaStrategyType, AnalysisInputQuestionnairesType
 from src.utility.simple_prompt_factory import SimplePromptFactory
 from src.utility.simple_prompt_streamer import SimplePromptStreamer
-from src.utility.static_text import psycho_theory_dict, Gemini_Model_1_5
+from src.utility.static_text import Gemini_Model_1_5
+from src.utility.theory_utility import psycho_theory_dict
 from src.utility.utility_method import group_user_persoanl_info, group_user_input_theory_quiz
 
 

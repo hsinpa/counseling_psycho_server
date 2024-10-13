@@ -5,7 +5,7 @@ from fastapi import APIRouter, HTTPException, BackgroundTasks
 from src.llm_agents.report_features import stream_mix_theory_report, stream_multi_theory_report
 from src.model.multi_theory_model import MultiTheoriesDataType, MultiTheoryInputType, MultiTheoryDataType, \
     MultiTheoryRespType, MixTheoryInputType, MixTheoryRespType
-from src.utility.static_text import psycho_theory_dict, psycho_theory_json
+from src.utility.theory_utility import psycho_theory_json
 from src.websocket.websocket_manager import get_websocket
 
 router = APIRouter(prefix="/api/multi_theory", tags=["multi_theory"])
