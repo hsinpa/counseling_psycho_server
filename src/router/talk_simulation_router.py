@@ -1,12 +1,10 @@
-import json
-
 from fastapi import APIRouter, HTTPException, BackgroundTasks
 
 from src.llm_agents.talk_simulation.answers.answer_question_manager import AnswerQuestionManager
 from src.llm_agents.talk_simulation.detail_report.report_theory_manager import ReportTheoryManager
 from src.llm_agents.talk_simulation.talk_simulation_db_ops import db_ops_get_simulation_external_view, \
     db_ops_save_gen_questionnaire
-from src.llm_agents.talk_simulation.talk_simulation_manager import TalkSimulationManager
+from src.llm_agents.talk_simulation.questionaire.talk_sim_questionnaire_manager import TalkSimulationManager
 from src.model.talk_simulation_model import SimulationThemeCheckboxesType, SimulationQuesUserInputType, \
     GLOBAL_SIMULATION_CHECKBOXES, SimulationQuizInput, StreamSimulationInput
 
@@ -18,7 +16,7 @@ def get_simulation_checkboxes() -> SimulationThemeCheckboxesType:
     return GLOBAL_SIMULATION_CHECKBOXES
 
 @router.get("/get_simulation_talk/{session_id}")
-async def gen_simulation_quiz(session_id: str):
+async def get_simulation_talk(session_id: str):
     # try:
     #     print(session_id)
     return db_ops_get_simulation_external_view(session_id)
@@ -29,11 +27,24 @@ async def gen_simulation_quiz(session_id: str):
 @router.post("/gen_simulation_quiz")
 async def gen_simulation_quiz(user_input: SimulationQuesUserInputType):
     # try:
-    talk_sim_manager = TalkSimulationManager(user_input)
+    talk_sim_manager = TalkSimulationManager()
 
-    questions = await talk_sim_manager.execute_questionnaire_pipeline()
+    questions = await talk_sim_manager.exec_new_questionnaire_pipeline(user_input)
 
     return questions
+    # except Exception as e:
+    #     raise HTTPException(status_code=404, detail="Checkbox not found")
+
+@router.post("/iterate_simulation_quiz/{session_id}")
+async def iterate_simulation_quiz(session_id: str):
+    # try:
+    talk_sim_manager = TalkSimulationManager()
+
+    questions = await talk_sim_manager.exec_iterate_questionnaire_pipeline(session_id)
+
+    return questions
+
+
     # except Exception as e:
     #     raise HTTPException(status_code=404, detail="Checkbox not found")
 
@@ -50,12 +61,12 @@ async def gen_simulation_answer(session_id: str):
 
 @router.put("/update_simulation_quiz")
 async def update_simulation_quiz(user_input: SimulationQuizInput):
-    try:
-        db_ops_save_gen_questionnaire(user_input.session_id, user_input.questionnaires)
+    # try:
+    db_ops_save_gen_questionnaire(user_input.session_id, user_input.questionnaires)
 
-        return {"status": True}
-    except Exception as e:
-        raise HTTPException(status_code=404, detail="Session id do not exist")
+    return {"status": True}
+    # except Exception as e:
+    #     raise HTTPException(status_code=404, detail="Session id do not exist")
 
 @router.post("/gen_simulation_report")
 async def gen_simulation_report(user_input: StreamSimulationInput):

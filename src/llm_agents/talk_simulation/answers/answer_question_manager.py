@@ -16,8 +16,12 @@ class AnswerQuestionManager:
         basic_info = db_ops_get_simulation_info(self._session_id)
         user_input: SimulationQuesUserInputType = SimulationQuesUserInputType(**basic_info)
 
+        # Rephrase questionnaire
+        questionnaire_len = len(basic_info['questionnaires'])
+        questionnaires_json = basic_info['questionnaires'][questionnaire_len - 1]
+
         question_list_adapter = TypeAdapter(List[QuestionType])
-        question_list = question_list_adapter.validate_python(basic_info['questionnaires'])
+        question_list = question_list_adapter.validate_python(questionnaires_json)
 
         agent = AnswerQuestionAgent(user_input, question_list)
         questions = await agent.execute_pipeline()

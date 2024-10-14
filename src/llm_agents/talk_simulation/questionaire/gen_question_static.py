@@ -1,3 +1,5 @@
+from src.llm_agents.talk_simulation.talk_simulation_type import QuestionType, QuestionTypeEnum
+
 LAST_QUESTION="""
 請填寫您的基本資料,包含性別,年齡,婚姻,教育程度,職業,居住地點.
 您覺得您是一個怎樣的人? 請簡單自我介紹一下, 像是您的個性怎麼樣, 身邊的人通常怎麼形容自己等等.
@@ -48,3 +50,30 @@ Q10: 您是否願意嘗試新的方法來應對您目前面臨的狀況?
 * 這只是一份範例問卷, 需要根據實際情況進行調整
 * 在諮詢過程中, 心理師需要仔細觀察個案的反應, 並根據個案的狀況進行適當的調整
 * 必要時, 心理師需要提供個案專業的幫助, 例如轉介其他資源"""
+
+
+def execute_p0_post_effect(questions: list[QuestionType]):
+    """ Inject static question into the generate questions """
+    questions.append(QuestionType(type=QuestionTypeEnum.label,
+                                  content="最後想邀請您做一個小小的問卷，請您仔細回想在最近一星期中(包括今天)，這些問題使您感到困擾或苦惱的程度，分別給予0-4分的分數，0分是完全沒有，4分是非常厲害"))
+
+    questions.append(QuestionType(type=QuestionTypeEnum.number, content="感覺緊張不安"))
+    questions.append(QuestionType(type=QuestionTypeEnum.number, content="感覺憂鬱"))
+    questions.append(QuestionType(type=QuestionTypeEnum.number, content="情緒低落"))
+    questions.append(QuestionType(type=QuestionTypeEnum.number, content="覺得比不上別人"))
+    questions.append(QuestionType(type=QuestionTypeEnum.number, content="睡眠困難，譬如難以入睡、易醒或早醒"))
+    questions.append(QuestionType(type=QuestionTypeEnum.number, content="有自殺的想法"))
+
+    return questions
+
+
+def execute_p1_post_effect(questions: list[QuestionType]):
+    questions.append(QuestionType(type=QuestionTypeEnum.label,
+                                  content="我理解有些話題可能會讓您感到不舒服或難以回答。如果您覺得不願意回應某些問題，您可以隨時跳過這些話題或暫時休息"))
+    return questions
+
+
+def execute_p2_post_effect(questions: list[QuestionType]):
+    questions.append(QuestionType(type=QuestionTypeEnum.label,
+                                  content="建議您可以從問卷中挑選至少5題您比較感興趣的話題回覆，幫助我們更了解您的狀況，為您訂製更貼合情況的治療策略"))
+    return questions

@@ -25,7 +25,6 @@ Related theme, sequence matter
 {basic_info.sorting_reason}\
 """
 
-
 def questionaries_to_string(questionnaires: list[QuestionType]):
     questionnaires_text = ''
 
@@ -41,3 +40,12 @@ def questionaries_to_string(questionnaires: list[QuestionType]):
             questionnaires_text += f'{q.content}: {q.answer}\n'
 
     return questionnaires_text
+
+def questionnaire_records_to_string(questionnaire_records: list[list[QuestionType]]):
+    whole_questionnaires_text = ''
+
+    for i, q in enumerate(questionnaire_records):
+        whole_questionnaires_text += f"** Survey: {i+1} **\n"
+        whole_questionnaires_text += questionaries_to_string(q) +'\n\n'
+
+    return whole_questionnaires_text

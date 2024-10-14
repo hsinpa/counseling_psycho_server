@@ -9,6 +9,12 @@ class QuestionTypeEnum(str, Enum):
     label = 'label'
     number = 'number'
 
+class GenQuestionParameterInterface(BaseModel):
+    system_prompt: str
+    human_prompt: str
+    few_shot: str
+    process_count: int
+
 class QuestionType(BaseModel):
     type: QuestionTypeEnum = Field(default=QuestionTypeEnum.text)
     content: str

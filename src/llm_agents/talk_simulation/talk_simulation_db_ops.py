@@ -19,10 +19,6 @@ def db_ops_get_simulation_info(session_id: str):
         theme_checkboxes = list(map(lambda x: GLOBAL_SIMULATION_CHECKBOX_DICT[x], result['theme_checkboxes']))
         result['theme_checkboxes'] = theme_checkboxes
 
-        # Rephrase questionnaire
-        questionnaire_len = len(result['questionnaires'])
-        result['questionnaires'] = result['questionnaires'][questionnaire_len - 1]
-
     return result
 
 def db_ops_get_simulation_external_view(session_id: str):
@@ -33,7 +29,6 @@ def db_ops_get_simulation_external_view(session_id: str):
     result = sync_db_ops(sql_syntax=sql_syntax, fetch_type=FetchType.One, parameters=[session_id])
 
     # Rephrase questionnaire
-    print(result['questionnaires'])
     questionnaire_len = len(result['questionnaires'])
     result['questionnaires'] = result['questionnaires'][questionnaire_len - 1]
 
@@ -58,7 +53,6 @@ def db_ops_save_gen_questionnaire(session_id: str, questionnaires: list[Question
     items_dict = [item.model_dump() for item in questionnaires]
     json_string = json.dumps(items_dict, indent=4, ensure_ascii=False)
 
-
     if process_count_flag is False:
         fetch_sql_syntax = (f"SELECT questionnaires FROM {TABLE} WHERE session_id=%s")
         fetch_result = sync_db_ops(sql_syntax=fetch_sql_syntax, fetch_type=FetchType.One, parameters=[session_id])
@@ -67,11 +61,14 @@ def db_ops_save_gen_questionnaire(session_id: str, questionnaires: list[Question
             return
 
         questionnaires_len = len(fetch_result['questionnaires'])
-        fetch_result['questionnaires'][clamp(questionnaires_len - 1, 0, questionnaires_len)] = json_string
-        update_sql_syntax = f"""UPDATE {TABLE} SET questionnaires=%s, report_flag=TRUE WHERE session_id=%s"""
+        questionnaires_index = clamp(questionnaires_len - 1, 0, questionnaires_len)
+        previous_json_row =  json.dumps(fetch_result['questionnaires'][questionnaires_index], indent=4, ensure_ascii=False)
+
+        update_sql_syntax = f"""UPDATE {TABLE} SET questionnaires = array_replace(questionnaires, %s::jsonb, %s::jsonb), 
+        report_flag=TRUE WHERE session_id=%s"""
 
         sync_db_ops(sql_syntax=update_sql_syntax,
-                    parameters=[fetch_result['questionnaires'], session_id])
+                    parameters=[previous_json_row, json_string, session_id])
     else:
         update_sql_syntax = f"""UPDATE {TABLE} SET questionnaires=array_append(questionnaires, %s), 
         report_flag=TRUE WHERE session_id=%s"""
