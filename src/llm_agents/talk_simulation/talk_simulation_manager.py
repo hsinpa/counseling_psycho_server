@@ -13,6 +13,6 @@ class TalkSimulationManager:
         agent = TalkSimQuestionnaireAgent(self._user_input)
         questions = await agent.execute_pipeline()
 
-        db_ops_save_gen_questionnaire(self._user_input.session_id, questions)
+        db_ops_save_gen_questionnaire(self._user_input.session_id, questions, process_count_flag=True)
 
         return questions

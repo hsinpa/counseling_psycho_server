@@ -29,9 +29,9 @@ CREATE TABLE IF NOT EXISTS talk_simulation (
     theme_checkboxes text[3],
     theme_reason TEXT,
     sorting_reason TEXT,
-    questionnaires JSONB,
+    questionnaires JSONB[] DEFAULT ARRAY[]::JSONB[],
     report TEXT,
-    process_count INT DEFAULT 0, /* Number of process, the user generate questionnaires, maximum 3 times  */
+    report_flag BOOLEAN DEFAULT TRUE,
     session_id TEXT NOT NULL,
     created_date DATE NOT NULL DEFAULT CURRENT_DATE
 );

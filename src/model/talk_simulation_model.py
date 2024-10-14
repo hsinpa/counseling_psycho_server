@@ -14,10 +14,13 @@ class SimulationThemeCheckboxType(BaseModel):
 class SimulationThemeCheckboxesType(BaseModel):
     checkboxes: list[SimulationThemeCheckboxType]
 
-class SimulationReportInput(BaseModel):
+class SimulationQuizInput(BaseModel):
+    session_id: str
+    questionnaires: list[QuestionType]
+
+class StreamSimulationInput(BaseModel):
     session_id: str
     socket_id: str
-    questionnaires: list[QuestionType]
 
 class SimulationQuesUserInputType(BaseModel):
     age: int

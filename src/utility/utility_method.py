@@ -5,6 +5,8 @@ from typing import List
 from src.llm_agents.prompt.theory_prompt import THEORY_REPORT_TEXT, USER_INFO_TEXT
 from src.types.router_input_type import AnalysisInputQuestionnaireType, UserMetaType
 
+def clamp(value: int, min_value: int, max_value: int):
+    return max(min_value, min(value, max_value))
 
 def chunk(lst: list, n: int):
     it = iter(lst)
