@@ -10,14 +10,16 @@ from src.llm_agents.talk_simulation.talk_simulation_helper import questionaries_
     questionnaire_records_to_string
 from src.llm_agents.talk_simulation.talk_simulation_type import QuestionType
 from src.model.talk_simulation_model import SimulationQuesUserInputType, StreamSimulationInput
+from src.service.relation_db.sql_client_interface import SQLClientInterface
 
 
 class ReportTheoryManager:
-    def __init__(self, user_input: StreamSimulationInput):
+    def __init__(self, client: SQLClientInterface, user_input: StreamSimulationInput):
         self._user_input = user_input
+        self._sql_client = client
 
     async def execute_report_pipeline(self):
-        user_info_json = db_ops_get_simulation_info(self._user_input.session_id)
+        user_info_json = db_ops_get_simulation_info(self._sql_client, self._user_input.session_id)
         user_info: SimulationQuesUserInputType = SimulationQuesUserInputType(**user_info_json)
 
         question_list_adapter = TypeAdapter(List[List[QuestionType]])

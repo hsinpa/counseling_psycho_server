@@ -7,6 +7,8 @@ from src.llm_agents.talk_simulation.talk_simulation_db_ops import db_ops_get_sim
 from src.llm_agents.talk_simulation.questionaire.talk_sim_questionnaire_manager import TalkSimulationManager
 from src.model.talk_simulation_model import SimulationThemeCheckboxesType, SimulationQuesUserInputType, \
     GLOBAL_SIMULATION_CHECKBOXES, SimulationQuizInput, StreamSimulationInput
+from src.service.relation_db.postgresql_db_client import PostgreSQLClient
+from src.websocket.websocket_manager import get_websocket
 
 router = APIRouter(prefix="/api/talk_simulation", tags=["talk_simulation"])
 
@@ -18,8 +20,8 @@ def get_simulation_checkboxes() -> SimulationThemeCheckboxesType:
 @router.get("/get_simulation_talk/{session_id}")
 async def get_simulation_talk(session_id: str):
     # try:
-    #     print(session_id)
-    return db_ops_get_simulation_external_view(session_id)
+    postgres_client = PostgreSQLClient()
+    return db_ops_get_simulation_external_view(postgres_client, session_id)
     # except Exception as e:
     #     raise HTTPException(status_code=404, detail="Session do not exist")
 
@@ -27,7 +29,9 @@ async def get_simulation_talk(session_id: str):
 @router.post("/gen_simulation_quiz")
 async def gen_simulation_quiz(user_input: SimulationQuesUserInputType):
     # try:
-    talk_sim_manager = TalkSimulationManager()
+    postgres_client = PostgreSQLClient()
+
+    talk_sim_manager = TalkSimulationManager(postgres_client)
 
     questions = await talk_sim_manager.exec_new_questionnaire_pipeline(user_input)
 
@@ -38,7 +42,9 @@ async def gen_simulation_quiz(user_input: SimulationQuesUserInputType):
 @router.post("/iterate_simulation_quiz/{session_id}")
 async def iterate_simulation_quiz(session_id: str):
     # try:
-    talk_sim_manager = TalkSimulationManager()
+    postgres_client = PostgreSQLClient()
+
+    talk_sim_manager = TalkSimulationManager(postgres_client)
 
     questions = await talk_sim_manager.exec_iterate_questionnaire_pipeline(session_id)
 
@@ -52,7 +58,9 @@ async def iterate_simulation_quiz(session_id: str):
 @router.post("/gen_simulation_answer/{session_id}")
 async def gen_simulation_answer(session_id: str):
     try:
-        answer_sim_manager = AnswerQuestionManager(session_id)
+        postgres_client = PostgreSQLClient()
+
+        answer_sim_manager = AnswerQuestionManager(postgres_client, session_id)
 
         return await answer_sim_manager.execute_questionnaire_pipeline()
 
@@ -70,9 +78,22 @@ async def update_simulation_quiz(user_input: SimulationQuizInput):
 
 @router.post("/gen_simulation_report")
 async def gen_simulation_report(user_input: StreamSimulationInput):
-    answer_sim_manager = ReportTheoryManager(user_input)
+    postgres_client = PostgreSQLClient()
+    websocket_manager = get_websocket()
+    # try:
+    if websocket_manager.register_block_id(user_input.session_id+user_input.socket_id):
 
-    return await answer_sim_manager.execute_report_pipeline()
+        answer_sim_manager = ReportTheoryManager(postgres_client, user_input)
+
+        full_report = await answer_sim_manager.execute_report_pipeline()
+
+        websocket_manager.deregister_block_id(user_input.session_id+user_input.socket_id)
+
+        return full_report
+    return 'Socket is already running'
+    # except Exception as e:
+    #     websocket_manager.deregister_block_id(user_input.session_id + user_input.socket_id)
+    #     raise HTTPException(status_code=404, detail="Session id do not exist")
 
 @router.post("/sgen_simulation_report")
 def sgen_simulation_report(user_input: StreamSimulationInput, background_tasks: BackgroundTasks):

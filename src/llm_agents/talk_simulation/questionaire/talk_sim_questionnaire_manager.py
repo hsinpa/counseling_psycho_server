@@ -12,9 +12,13 @@ from src.llm_agents.talk_simulation.talk_simulation_db_ops import db_ops_save_ba
 from src.llm_agents.talk_simulation.talk_simulation_helper import questionnaire_records_to_string
 from src.llm_agents.talk_simulation.talk_simulation_type import GenQuestionParameterInterface, QuestionType
 from src.model.talk_simulation_model import SimulationQuesUserInputType
+from src.service.relation_db.sql_client_interface import SQLClientInterface
 
 
 class TalkSimulationManager:
+
+    def __init__(self, client: SQLClientInterface):
+        self._sql_client = client
 
     async def exec_new_questionnaire_pipeline(self, user_input: SimulationQuesUserInputType):
         db_ops_save_basic_info(user_input)
@@ -34,7 +38,7 @@ class TalkSimulationManager:
         return questions
 
     async def exec_iterate_questionnaire_pipeline(self, session_id: str):
-        user_info_json = db_ops_get_simulation_info(session_id)
+        user_info_json = db_ops_get_simulation_info(self._sql_client, session_id)
         user_info: SimulationQuesUserInputType = SimulationQuesUserInputType(**user_info_json)
 
         question_list_adapter = TypeAdapter(List[List[QuestionType]])

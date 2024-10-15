@@ -3,16 +3,18 @@ import json
 from src.llm_agents.talk_simulation.talk_simulation_type import QuestionType
 from src.model.talk_simulation_model import SimulationQuesUserInputType, GLOBAL_SIMULATION_CHECKBOX_DICT
 from src.service.relation_db.postgres_db_manager import sync_db_ops, FetchType
+from src.service.relation_db.postgresql_db_client import PostgreSQLClient
+from src.service.relation_db.sql_client_interface import SQLClientInterface
 from src.utility.utility_method import clamp
 
 TABLE = 'talk_simulation'
 
-def db_ops_get_simulation_info(session_id: str):
+def db_ops_get_simulation_info(client: SQLClientInterface, session_id: str):
     """ Should be used by internal functions only, do not exposed """
     sql_syntax = (f"SELECT * "
                   f"FROM {TABLE} WHERE session_id=%s")
 
-    result = sync_db_ops(sql_syntax=sql_syntax, fetch_type=FetchType.One, parameters=[session_id])
+    result = client.sync_db_ops(sql_syntax=sql_syntax, fetch_type=FetchType.One, parameters=[session_id])
 
     if result is not None:
         # Rephrase theme checkbox
@@ -21,12 +23,12 @@ def db_ops_get_simulation_info(session_id: str):
 
     return result
 
-def db_ops_get_simulation_external_view(session_id: str):
+def db_ops_get_simulation_external_view(client: SQLClientInterface, session_id: str):
     """ Information grab by external API"""
     sql_syntax = (f"SELECT id, report, questionnaires, array_length(questionnaires, 1) as process_count, report_flag "
                   f"FROM {TABLE} WHERE session_id=%s")
 
-    result = sync_db_ops(sql_syntax=sql_syntax, fetch_type=FetchType.One, parameters=[session_id])
+    result = client.sync_db_ops(sql_syntax=sql_syntax, fetch_type=FetchType.One, parameters=[session_id])
 
     # Rephrase questionnaire
     questionnaire_len = len(result['questionnaires'])

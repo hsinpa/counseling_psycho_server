@@ -6,6 +6,7 @@ from fastapi import WebSocket
 
 class WebSocketManager:
     __instance = None
+    blocked_id_set: set[str] = set()
 
     def __new__(cls):
         if cls.__instance is None:
@@ -30,6 +31,15 @@ class WebSocketManager:
 
     async def send_personal_message(self, message: str, websocket: WebSocket):
         await websocket.send_text(message)
+
+    def register_block_id(self, block_id: str):
+        if block_id in self.blocked_id_set:
+            return False
+        self.blocked_id_set.add(block_id)
+        return True
+
+    def deregister_block_id(self, block_id: str):
+        self.blocked_id_set.remove(block_id)
 
 
 websocket_manager = WebSocketManager()
