@@ -2,7 +2,7 @@ import json
 
 from src.llm_agents.talk_simulation.talk_simulation_type import QuestionType
 from src.model.talk_simulation_model import SimulationQuesUserInputType, GLOBAL_SIMULATION_CHECKBOX_DICT
-from src.service.relation_db.postgres_db_manager import sync_db_ops, FetchType
+from src.service.relation_db.postgres_db_manager import sync_db_ops, FetchType, async_db_ops
 from src.service.relation_db.postgresql_db_client import PostgreSQLClient
 from src.service.relation_db.sql_client_interface import SQLClientInterface
 from src.utility.utility_method import clamp
@@ -51,13 +51,13 @@ def db_ops_save_basic_info(user_input: SimulationQuesUserInputType):
                             user_input.education, checkboxes, user_input.theme_reason, user_input.sorting_reason])
 
 
-def db_ops_save_gen_questionnaire(session_id: str, questionnaires: list[QuestionType], process_count_flag: bool = False):
+async def db_ops_save_gen_questionnaire(session_id: str, questionnaires: list[QuestionType], process_count_flag: bool = False):
     items_dict = [item.model_dump() for item in questionnaires]
     json_string = json.dumps(items_dict, indent=4, ensure_ascii=False)
 
     if process_count_flag is False:
         fetch_sql_syntax = (f"SELECT questionnaires FROM {TABLE} WHERE session_id=%s")
-        fetch_result = sync_db_ops(sql_syntax=fetch_sql_syntax, fetch_type=FetchType.One, parameters=[session_id])
+        fetch_result = await async_db_ops(sql_syntax=fetch_sql_syntax, fetch_type=FetchType.One, parameters=[session_id])
 
         if fetch_result is None:
             return

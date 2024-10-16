@@ -20,9 +20,6 @@ from src.websocket.websocket_manager import websocket_manager
 
 load_dotenv()
 
-if sys.platform == "win32":
-    asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
-
 app = FastAPI(openapi_url="/docs/openapi.json", docs_url="/docs")
 app.include_router(questionnaire_router)
 app.include_router(multi_theory_router)

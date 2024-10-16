@@ -70,7 +70,7 @@ async def gen_simulation_answer(session_id: str):
 @router.put("/update_simulation_quiz")
 async def update_simulation_quiz(user_input: SimulationQuizInput):
     # try:
-    db_ops_save_gen_questionnaire(user_input.session_id, user_input.questionnaires)
+    await db_ops_save_gen_questionnaire(user_input.session_id, user_input.questionnaires)
 
     return {"status": True}
     # except Exception as e:

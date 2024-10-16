@@ -9,3 +9,23 @@ Slot_Advanced_Questionnaire_With_No_Answer = [{"type": "text", "answer": "", "co
                                               {"type": "text", "answer": "", "content": "您覺得哪些事情會讓您感到緊張不安呢？例如人際關係、工作壓力、財務問題等等。"},
                                               {"type": "text", "answer": "", "content": "您覺得哪些事情會讓您感到憂鬱或情緒低落呢？例如工作不順利、人際關係不佳、感情問題等等。"},
                                               {"type": "label", "answer": "", "content": "建議您可以從問卷中挑選至少5題您比較感興趣的話題回覆，幫助我們更了解您的狀況，為您訂製更貼合情況的治療策略"}]
+
+Slot_Begin_Questionnaire_With_Answer =[
+    {"type": "text","content": "請問您目前是單身嗎？","answer": "是，我目前是單身。"},
+    {"type": "text","content": "請問您目前和家人住在一起嗎？","answer": "是，我目前和家人住在一起。"},
+    {"type": "text","content": "請問您目前居住的城市是？","answer": "我目前居住在台北市。"},
+    {"type": "text","content": "您對於理想中的工作環境和工作內容有哪些期待？","answer": "我希望工作環境能夠和諧，團隊合作融洽，工作內容具有挑戰性且有成長空間。"},
+    {"type": "text","content": "您覺得目前自己的身心狀況對您找工作造成了哪些影響？","answer": "我的壓力和焦慮感偶爾會影響到求職的積極性和專注度。"},
+    {"type": "text","content": "您希望透過心理諮商，在哪些方面獲得幫助？","answer": "我希望在壓力管理、情緒調節以及提升自我價值感方面獲得幫助。"},
+    {"type": "text","content": "當您感到壓力或焦慮時，您通常會如何處理？","answer": "我通常會散步或聽音樂來放鬆，有時會與朋友聊聊。"},
+    {"type": "text","content": "您覺得跟媽媽相處時，哪些事情讓您感到不舒服？","answer": "有時候她過於關心我的生活細節，讓我覺得有點壓力。"},
+    {"type": "text","content": "您對目前自己跟爸爸的關係，有什麼樣的理解？","answer": "我覺得我們的關係較為淡漠，但彼此還是有基本的尊重。"},
+    {"type": "text","content": "您身邊有哪些人可以支持您？您會跟他們分享自己的困擾嗎？","answer": "我有幾位朋友和家人可以支持我，我會偶爾與他們分享我的困擾。"},
+    {"type": "label","content": "最後想邀請您做一個小小的問卷，請您仔細回想在最近一星期中(包括今天)，這些問題使您感到困擾或苦惱的程度，分別給予0-4分的分數，0分是完全沒有，4分是非常厲害", "answer": "" },
+    {"type": "number","content": "感覺緊張不安","answer": "2"},
+    {"type": "number","content": "感覺憂鬱","answer": "3"},
+    {"type": "number","content": "情緒低落","answer": "3"},
+    {"type": "number","content": "覺得比不上別人","answer": "2"},
+    {"type": "number","content": "睡眠困難，譬如難以入睡、易醒或早醒","answer": "2"},
+    {"type": "number","content": "有自殺的想法","answer": "0"}
+]
