@@ -16,7 +16,7 @@ def get_conn_uri():
     user_id = os.environ['POSTGRES_USER']
     password = os.environ['POSTGRES_PASSWORD']
     postgres_db = os.environ['POSTGRES_DB']
-    postgres_host = os.environ['LOCALHOST']
+    postgres_host = os.environ['POSTGRES_HOST']
 
     conn_str = f"host={postgres_host} port=5432 dbname={postgres_db} user={user_id} password={password} connect_timeout=10"
     return conn_str
