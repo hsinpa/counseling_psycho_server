@@ -9,3 +9,19 @@ services:
       - POSTGRES_PASSWORD=counselAI
       - POSTGRES_USER=counsel_user
       - POSTGRES_DB=counsel_db
+
+  pgadmin4:
+      container_name: pgadmin4
+      image: dpage/pgadmin4
+      restart: "always"
+      environment:
+        PGADMIN_DEFAULT_EMAIL: "hsinpa@gmail.com"
+        PGADMIN_DEFAULT_PASSWORD: "counselAI"
+        PGADMIN_CONFIG_SESSION_EXPIRATION_TIME: 365
+        PGADMIN_CONFIG_MAX_SESSION_IDLE_TIME: 60
+      volumes:
+        - pgadmin4-data:/var/lib/pgadmin
+      ports:
+        - "5050:80"
+      extra_hosts:
+        - "host.docker.internal:host-gateway"
