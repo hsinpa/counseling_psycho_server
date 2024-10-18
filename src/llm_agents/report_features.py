@@ -9,7 +9,7 @@ from src.types.router_input_type import InputMediaStrategyType, AnalysisInputQue
 from src.utility.simple_prompt_factory import SimplePromptFactory
 from src.utility.simple_prompt_streamer import SimplePromptStreamer
 from src.utility.static_text import Gemini_Model_1_5
-from src.utility.theory_utility import psycho_theory_dict
+from src.utility.theory_utility import psycho_theory_dict, GLOBAL_PSYCHO_THEORY_ARRAY
 from src.utility.utility_method import group_user_persoanl_info, group_user_input_theory_quiz
 
 
@@ -49,7 +49,7 @@ async def stream_multi_theory_report(analysis_input: MultiTheoryInputType):
     psycho_dict = psycho_theory_dict()
     if analysis_input.theory_id in psycho_dict:
         theory_obj: MultiTheoryDataType = psycho_dict[analysis_input.theory_id]
-        simple_factory = SimplePromptFactory(llm_model=get_gemini_model(Gemini_Model_1_5),
+        simple_factory = SimplePromptFactory(llm_model=get_gpt_model(),
             trace_langfuse=True, trace_name='Multi_Theory_Report')
         simple_streamer = SimplePromptStreamer(socket_id=analysis_input.user_id, session_id=analysis_input.session_id,
                                                event_tag=SocketEvent.bot)
@@ -72,6 +72,12 @@ async def stream_mix_theory_report(analysis_input: MixTheoryInputType):
     psycho_dict = psycho_theory_dict()
     theory_dimension_list: list[str] = []
     theory_name_list: list[str] = []
+
+    # selected_questionnaire_list: list[MultiTheoryDataType] = []
+    # for index, theory in enumerate(GLOBAL_PSYCHO_THEORY_ARRAY.theory):
+    #     if theory.id in analysis_input.theory_id:
+    #         selected_questionnaire_list.append(theory)
+
     for p_theory in analysis_input.theory_id:
         if p_theory in psycho_dict:
             theory = psycho_dict[p_theory]
