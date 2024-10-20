@@ -20,6 +20,7 @@ class MixTheoryRespType(BaseModel):
     theory_id: list[str]
     theory_name: list[str]
     content: str
+    tokens: list[str]
 
 class MultiTheoryDataType(BaseModel):
     id: str
