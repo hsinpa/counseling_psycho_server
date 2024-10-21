@@ -3,6 +3,7 @@ from langgraph.graph.graph import CompiledGraph
 from src.llm_agents.mix_theory.mix_theory_agent import MixTheoryAgent
 from src.model.multi_theory_model import MixTheoryInputType, MultiTheoryDataType
 from src.utility.theory_utility import GLOBAL_PSYCHO_THEORY_ARRAY
+from langfuse.callback import CallbackHandler
 
 
 class MixTheoryManager:
@@ -21,8 +22,10 @@ class MixTheoryManager:
         r = await compiled_graph.ainvoke({
             'selected_theory_list': selected_questionnaire_list,
             'user_info': self._user_input.content
-        })
-
-        print(r)
+        },
+            config={"run_name": 'MIX_Theory_Report',
+                    "callbacks": [CallbackHandler()]
+            }
+        )
 
         return r
