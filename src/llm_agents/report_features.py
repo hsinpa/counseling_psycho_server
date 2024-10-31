@@ -49,7 +49,7 @@ async def stream_multi_theory_report(analysis_input: MultiTheoryInputType):
     psycho_dict = psycho_theory_dict()
     if analysis_input.theory_id in psycho_dict:
         theory_obj: MultiTheoryDataType = psycho_dict[analysis_input.theory_id]
-        simple_factory = SimplePromptFactory(llm_model=get_gpt_model(),
+        simple_factory = SimplePromptFactory(llm_model=get_gemini_model(),
             trace_langfuse=True, trace_name='Multi_Theory_Report')
         simple_streamer = SimplePromptStreamer(socket_id=analysis_input.user_id, session_id=analysis_input.session_id,
                                                event_tag=SocketEvent.bot)

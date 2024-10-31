@@ -7,6 +7,7 @@ from src.llm_agents.mix_theory.mix_theory_manager import MixTheoryManager
 from src.llm_agents.report_features import stream_mix_theory_report, stream_multi_theory_report
 from src.model.multi_theory_model import MultiTheoriesDataType, MultiTheoryInputType, MultiTheoryDataType, \
     MultiTheoryRespType, MixTheoryInputType, MixTheoryRespType
+from src.utility.static_text import MAX_TOKEN
 from src.utility.theory_utility import psycho_theory_json
 from src.websocket.websocket_manager import get_websocket
 
@@ -24,6 +25,9 @@ def get_multi_theory() -> MultiTheoriesDataType:
 @router.post("/output_multi_theory_report")
 async def output_multi_theory_report(analysis_input: MultiTheoryInputType,
                                      background_tasks: BackgroundTasks) -> MultiTheoryRespType:
+    # Limit input size
+    analysis_input.content = analysis_input.content[0:MAX_TOKEN]
+
     background_tasks.add_task(stream_multi_theory_report, analysis_input)
 
     return MultiTheoryRespType(id=analysis_input.session_id,
@@ -35,6 +39,8 @@ async def output_multi_theory_report(analysis_input: MultiTheoryInputType,
 @router.post("/output_mix_theory_report")
 async def output_mix_theory_report(analysis_input: MixTheoryInputType,
                                    background_tasks: BackgroundTasks) -> MixTheoryRespType:
+    # Limit input size
+    analysis_input.content = analysis_input.content[0:MAX_TOKEN]
 
     mix_theory_manager = MixTheoryManager(analysis_input)
     tokens = [str(uuid4()) for x in range(3)]

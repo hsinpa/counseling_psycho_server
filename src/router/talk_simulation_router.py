@@ -8,6 +8,7 @@ from src.llm_agents.talk_simulation.questionaire.talk_sim_questionnaire_manager 
 from src.model.talk_simulation_model import SimulationThemeCheckboxesType, SimulationQuesUserInputType, \
     GLOBAL_SIMULATION_CHECKBOXES, SimulationQuizInput, StreamSimulationInput
 from src.service.relation_db.postgresql_db_client import PostgreSQLClient
+from src.utility.static_text import MAX_TOKEN
 from src.websocket.websocket_manager import get_websocket
 
 router = APIRouter(prefix="/api/talk_simulation", tags=["talk_simulation"])
@@ -31,6 +32,10 @@ async def gen_simulation_quiz(user_input: SimulationQuesUserInputType):
     # try:
     postgres_client = PostgreSQLClient()
 
+    # Limit input size
+    user_input.theme_reason = user_input.theme_reason[0:MAX_TOKEN]
+    user_input.sorting_reason = user_input.sorting_reason[0:MAX_TOKEN]
+
     talk_sim_manager = TalkSimulationManager(postgres_client)
 
     questions = await talk_sim_manager.exec_new_questionnaire_pipeline(user_input)
@@ -49,7 +54,6 @@ async def iterate_simulation_quiz(session_id: str):
     questions = await talk_sim_manager.exec_iterate_questionnaire_pipeline(session_id)
 
     return questions
-
 
     # except Exception as e:
     #     raise HTTPException(status_code=404, detail="Checkbox not found")

@@ -21,7 +21,7 @@ Related theme, sequence matter
 [Why pick these theme]
 {basic_info.theme_reason}
 
-[Why sort this way]
+[User's background]
 {basic_info.sorting_reason}\
 """
 
