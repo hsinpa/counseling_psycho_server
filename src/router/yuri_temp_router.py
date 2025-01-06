@@ -32,3 +32,26 @@ async def get_record(p_input: YuriGetTrainRecordType):
     url = f'http://34.127.119.34:3000/TrainingRecordsDatabase/{p_input.hospitalId}/searchByCaregiverId?caregiverId={p_input.caregiverId}'
     r = requests.get(url, headers=headers)
     return r.json()
+
+
+@router.get("/audio_transcript")
+async def get_record():
+    audio_path = './assets/audio/en_conversation_02.mp3'
+    definition_data = {
+        "locales": ["en-US"],
+        "diarization": {
+            "maxSpeakers": 2,
+            "enabled": True
+        }
+    }
+    print(json.dumps(definition_data))
+    with open(audio_path, "rb") as audio_file:
+        form_data = {
+            'audio':  ("audio_file.mp3", audio_file, "audio/mpeg"),
+            'definition': (None, json.dumps(definition_data), "application/json")
+        }
+        headers = {'Ocp-Apim-Subscription-Key': ''}
+        url = f'https://eastus.api.cognitive.microsoft.com/speechtotext/transcriptions:transcribe?api-version=2024-11-15'
+        r = requests.post(url, headers=headers, files=form_data)
+        return r.json()
+
