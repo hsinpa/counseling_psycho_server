@@ -3,7 +3,7 @@ from fastapi import APIRouter, BackgroundTasks, HTTPException
 from src.llm_agents.chatbot.chatbot_manager import ChatbotManager
 from src.llm_agents.chatbot.db_ops.chatbot_relation_db import get_chatroom_message
 from src.model.chatbot_model import ChatbotUserInputType
-from src.websocket.websocket_manager import get_websocket
+from src.service.streaming.websocket_manager import get_websocket
 
 router = APIRouter(prefix="/api/chatbot", tags=["Chatbot"])
 socket_manager = get_websocket()

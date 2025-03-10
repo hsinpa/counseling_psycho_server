@@ -1,4 +1,3 @@
-import asyncio
 import typing
 
 from fastapi import WebSocket

@@ -9,7 +9,7 @@ from src.model.talk_simulation_model import SimulationThemeCheckboxesType, Simul
     GLOBAL_SIMULATION_CHECKBOXES, SimulationQuizInput, StreamSimulationInput
 from src.service.relation_db.postgresql_db_client import PostgreSQLClient
 from src.utility.static_text import MAX_TOKEN
-from src.websocket.websocket_manager import get_websocket
+from src.service.streaming.websocket_manager import get_websocket
 
 router = APIRouter(prefix="/api/talk_simulation", tags=["talk_simulation"])
 

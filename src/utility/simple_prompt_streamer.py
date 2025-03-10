@@ -3,9 +3,8 @@ import uuid
 from typing import Any
 
 from langchain_core.runnables import RunnableSerializable
-
 from src.model.general_model import StreamingDataChunkType, DataChunkType
-from src.websocket.websocket_manager import get_websocket
+from src.service.streaming.websocket_manager import get_websocket
 
 
 class SimplePromptStreamer:

@@ -1,39 +1,38 @@
 import asyncio
 import json
-import sys
 import uuid
 
 from dotenv import load_dotenv
-from fastapi import FastAPI, WebSocket, WebSocketDisconnect
+from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Request
+from fastapi.responses import StreamingResponse
 
 from src.model.general_model import SocketEvent
 from src.router.questionnaire_router import router as questionnaire_router
 from src.router.multi_theory_router import router as multi_theory_router
-from src.router.yuri_temp_router import router as yuri_router
 from src.router.chatbot_router import router as chatbot_router
 from src.router.talk_simulation_router import router as talk_router
+from src.router.supervisor_router import router as supervisor_router
 
 from fastapi.middleware.cors import CORSMiddleware
 
+from src.service.streaming.sse_manager import get_sse
 from src.service.vector_db.vector_db_manager import VectorDBManager
-from src.websocket.websocket_manager import websocket_manager
+from src.service.streaming.websocket_manager import websocket_manager
 
 load_dotenv()
 
 app = FastAPI(openapi_url="/docs/openapi.json", docs_url="/docs")
 app.include_router(questionnaire_router)
 app.include_router(multi_theory_router)
-app.include_router(yuri_router)
 app.include_router(chatbot_router)
 app.include_router(talk_router)
+app.include_router(supervisor_router)
 
 origins = [
     "http://localhost",
     "http://localhost:5173",
     "https://counseling-psycho.vercel.app",
     "https://counseling-psycho-chatbot.vercel.app",
-    "https://itri-mqtt-doll-git-dev-hsinpas-projects.vercel.app",
-    "https://itri-mqtt-doll.vercel.app",
 ]
 
 app.add_middleware(
@@ -64,3 +63,8 @@ async def websocket_endpoint(websocket: WebSocket):
     except WebSocketDisconnect:
         print('websocket disconnect user '+g_socket_id)
         websocket_manager.disconnect(g_socket_id)
+
+@app.get("/sse/{sse_id}")
+async def sse_endpoint(sse_id: str, request: Request):
+    """Endpoint that streams events to the client."""
+    return StreamingResponse(get_sse().process_event_loop(sse_id, request), media_type="text/event-stream")
