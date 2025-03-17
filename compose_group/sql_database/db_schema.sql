@@ -36,3 +36,12 @@ CREATE TABLE IF NOT EXISTS talk_simulation (
     created_date DATE NOT NULL DEFAULT CURRENT_DATE
 );
 CREATE INDEX talk_simulation_index ON talk_simulation (session_id);
+
+CREATE TABLE IF NOT EXIST user_account (
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    username TEXT,
+    password_hash TEXT,
+    email TEXT UNIQUE,
+    login_type TEXT,
+    created_date DATE NOT NULL DEFAULT CURRENT_DATE
+)
