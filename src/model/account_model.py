@@ -19,14 +19,17 @@ class AccountTokenModel(BaseModel):
     email: str
     token: str
 
-class AccountAuthResp(BaseModel):
-    username: str
-    email: str
-    login_type: LoginType
-
+class AccountAuthModel(BaseModel):
     auth_token: str
     refresh_token: str
 
     auth_expire_date: datetime.datetime = Field(..., description='UTC 1 hour')
     refresh_expire_date: datetime.datetime = Field(..., description='UTC 7 days')
+
+
+class AccountReturnResp(AccountAuthModel):
+    username: str
+    email: str
+    login_type: LoginType
+
     status: int = Field(default=200, description='Account status')
