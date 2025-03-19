@@ -52,3 +52,13 @@ def parse_block(code: str, raw_message: str) -> str:
         print(e)
 
     return raw_message
+
+
+def is_valid_email(email):
+    # Email validation pattern
+    pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
+
+    # Check if the email matches the pattern
+    if re.match(pattern, email):
+        return True
+    return False

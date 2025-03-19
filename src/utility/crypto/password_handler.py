@@ -1,8 +1,16 @@
 from argon2 import PasswordHasher
 from argon2.exceptions import VerifyMismatchError
 import os
+import datetime
+import secrets
+import jwt
+from dotenv import load_dotenv
 
+load_dotenv()
 SERVER_HASH_KEY = os.environ.get('ACCOUNT_HASH_KEY').encode('utf-8')
+
+Hour1_Second = 1 * 1 * 60 * 60
+Day7_Second = 7 * 24 * 60 * 60
 
 # Configure Argon2id hasher with lower memory requirements
 # These parameters are adjusted for servers with limited resources
@@ -69,3 +77,32 @@ def verify_password(password: str, stored_hash: str):
         # Handle any other exceptions (corrupted hash, etc.)
         print(f"Error verifying password: {e}")
         return False
+
+def generate_auth_token(user_id):
+    # Create a short-lived token (1 hour)
+    payload = {
+        'user_id': user_id,
+        'exp': datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(seconds=Hour1_Second),
+        'iat': datetime.datetime.now(datetime.timezone.utc),
+        'token_type': 'access'
+    }
+    return payload, jwt.encode(payload, SERVER_HASH_KEY, algorithm='HS256')
+
+def generate_refresh_token(user_id):
+    # Create a longer-lived token (7 days)
+    payload = {
+        'user_id': user_id,
+        'exp': datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(seconds=Day7_Second),
+        'iat': datetime.datetime.now(datetime.timezone.utc),
+        'token_type': 'refresh'
+    }
+    return payload, jwt.encode(payload, SERVER_HASH_KEY, algorithm='HS256')
+
+def verify_token(token: str):
+    try:
+        payload = jwt.decode(token, SERVER_HASH_KEY, algorithms=['HS256'])
+        return payload
+    except jwt.ExpiredSignatureError:
+        return {'error': 'Token expired'}
+    except jwt.InvalidTokenError:
+        return {'error': 'Invalid token'}
