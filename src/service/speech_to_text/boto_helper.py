@@ -95,6 +95,8 @@ class BotoHelper:
         boto_client = self._create_client(BotoClientEnum.transcribe)
 
         status = boto_client.get_transcription_job(TranscriptionJobName=job_name)
+
+        print('status', status)
         job_status = status['TranscriptionJob']['TranscriptionJobStatus']
 
         if job_status == 'COMPLETED':

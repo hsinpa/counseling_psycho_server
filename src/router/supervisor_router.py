@@ -26,13 +26,12 @@ async def upload_speech_to_text(
     s3_url = await asyncio.to_thread(boto_helper.upload_to_s3, audio_file,  file_content, s3_bucket, s3_key)
     transcribe_response = await asyncio.to_thread(boto_helper.request_transcribe, session_id, langcode, s3_bucket, s3_key)
 
-    print('transcribe_response', transcribe_response)
+    # print('transcribe_response', transcribe_response)
 
     return {'s3_bucket': s3_bucket, 's3_key': s3_key}
 
 @router.get("/retrieve_speech_to_text/{session_id}")
 async def retrieve_speech_to_text(session_id: str) -> TranscribeStatus:
-    print(session_id)
     boto_helper = BotoHelper()
 
     status, transcript_uri  = await asyncio.to_thread(boto_helper.get_transcribe_status, session_id)

@@ -11,7 +11,7 @@ from src.utility.simple_prompt_streamer import SimplePromptStreamer
 from src.utility.static_text import Gemini_Model_1_5
 from src.utility.theory_utility import psycho_theory_dict, GLOBAL_PSYCHO_THEORY_ARRAY
 from src.utility.utility_method import group_user_persoanl_info, group_user_input_theory_quiz
-
+from langfuse.callback import CallbackHandler
 
 async def output_individual_strategy(user_input: InputMediaStrategyType, prompt_template: str):
     simple_streamer = SimplePromptStreamer(socket_id=user_input.user_id, session_id=user_input.session_id,
@@ -50,7 +50,7 @@ async def stream_multi_theory_report(analysis_input: MultiTheoryInputType):
     if analysis_input.theory_id in psycho_dict:
         theory_obj: MultiTheoryDataType = psycho_dict[analysis_input.theory_id]
         simple_factory = SimplePromptFactory(llm_model=get_gemini_model(),
-            trace_langfuse=True, trace_name='Multi_Theory_Report')
+            trace_name='Multi_Theory_Report', langfuse_callback=CallbackHandler(user_id='hsinpa'))
         simple_streamer = SimplePromptStreamer(socket_id=analysis_input.user_id, session_id=analysis_input.session_id,
                                                event_tag=SocketEvent.bot)
 
@@ -88,7 +88,7 @@ async def stream_mix_theory_report(analysis_input: MixTheoryInputType):
     simple_streamer = SimplePromptStreamer(socket_id=analysis_input.user_id, session_id=analysis_input.session_id,
                                            event_tag=SocketEvent.bot)
     simple_factory = SimplePromptFactory(llm_model=get_gemini_model(Gemini_Model_1_5),
-        trace_langfuse=True, trace_name='Multi_Theory_Report')
+        trace_name='Multi_Theory_Report', langfuse_callback=CallbackHandler(user_id='hsinpa'))
     chain = simple_factory.create_chain(output_parser=StrOutputParser(),
                                         human_prompt_text=MIX_THEORY_CREATION_PROMPT,
                                         partial_variables={'theory': ','.join(theory_name_list),

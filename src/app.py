@@ -66,6 +66,7 @@ async def websocket_endpoint(websocket: WebSocket):
         print('websocket disconnect user '+g_socket_id)
         websocket_manager.disconnect(g_socket_id)
 
+
 @app.get("/sse/{sse_id}")
 async def sse_endpoint(sse_id: str, request: Request):
     """Endpoint that streams events to the client."""

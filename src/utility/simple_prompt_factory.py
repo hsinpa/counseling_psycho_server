@@ -1,8 +1,6 @@
 from langchain_core.language_models import BaseChatModel
 from langchain_core.output_parsers import BaseOutputParser
-from langchain.schema.messages import SystemMessage
 from langchain.prompts import ChatPromptTemplate, HumanMessagePromptTemplate
-from langchain_core.prompts import AIMessagePromptTemplate
 from langfuse.callback import CallbackHandler
 
 from src.utility.simple_factory_type import simple_message_convert, messages_langchain_convert
@@ -14,16 +12,12 @@ class SimplePromptFactory:
     def __init__(
             self,
             llm_model: BaseChatModel,
-            trace_langfuse: bool = False,
-            trace_name: str = None
+            trace_name: str = None,
+            langfuse_callback: CallbackHandler = None,
     ):
-        self._langfuse_handler = None
-
-        if trace_langfuse is True:
-            self._langfuse_handler = CallbackHandler(user_id='hsinpa')
-
         self._llm = llm_model
         self.trace_name = trace_name
+        self._langfuse_handler = langfuse_callback
 
     def create_chain(
             self,
@@ -34,14 +28,12 @@ class SimplePromptFactory:
             partial_variables: dict = None,
             prompt_template: ChatPromptTemplate = None
     ):
-
         if partial_variables is None:
             partial_variables = {}
         if input_variables is None:
             input_variables = []
         if system_prompt_text is None:
             system_prompt_text = "You are a helpful assistant."
-
         if prompt_template is None:
             prompt = self._create_prompt(system_prompt_text, human_prompt_text, input_variables, partial_variables)
         else:
