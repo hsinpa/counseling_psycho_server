@@ -1,3 +1,4 @@
+import json
 import re
 from itertools import islice
 from typing import List
@@ -53,6 +54,13 @@ def parse_block(code: str, raw_message: str) -> str:
 
     return raw_message
 
+def parse_json(raw_message: str) -> dict:
+    try:
+        return json.loads(parse_block('json', raw_message))
+
+    except Exception as e:
+        print('parse_json fail to parse ', e)
+        raise e
 
 def is_valid_email(email):
     # Email validation pattern

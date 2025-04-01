@@ -59,6 +59,8 @@ def transcribe_mp3(
     # Wait for completion
     while True:
         status = transcribe.get_transcription_job(TranscriptionJobName=job_name)
+        print('s3 status', status)
+
         job_status = status['TranscriptionJob']['TranscriptionJobStatus']
 
         if job_status == 'COMPLETED':
