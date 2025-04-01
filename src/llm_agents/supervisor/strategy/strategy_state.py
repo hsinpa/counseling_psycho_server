@@ -10,3 +10,4 @@ class StrategyState(TypedDict):
 
     relevant_history_precipitants: str
     coping_strategy: str
+    situations_relevant_to_issue: str

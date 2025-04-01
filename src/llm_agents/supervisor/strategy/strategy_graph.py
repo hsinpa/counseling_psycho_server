@@ -10,6 +10,8 @@ from src.llm_agents.supervisor.strategy.prompt.strategy_2_2_en_prompt import \
 from src.llm_agents.supervisor.strategy.prompt.strategy_2_3_1_en_prompt import \
     STRATEGY_PROMPT_2_2_1_RELEVANT_HISTORY_PRECIPITANTS
 from src.llm_agents.supervisor.strategy.prompt.strategy_2_3_2_en_prompt import STRATEGY_PROMPT_2_3_2_COPING_STRATEGY
+from src.llm_agents.supervisor.strategy.prompt.strategy_2_3_3_en_prompt import \
+    STRATEGY_PROMPT_2_3_3_SITUATION_RELEVANT_ISSUE
 from src.llm_agents.supervisor.strategy.strategy_state import StrategyState
 from src.utility.simple_prompt_factory import SimplePromptFactory
 from src.utility.static_text import OpenAI_Model_4o, Gemini_Model_2_0_Flash
@@ -80,7 +82,7 @@ class StrategyGraph(GraphAgent):
         chain = prompt_factory.create_chain(
             output_parser=StrOutputParser(),
             human_prompt_text=STRATEGY_PROMPT_2_3_2_COPING_STRATEGY,
-        ).with_config({"run_name": '2-3-1 Relevant History Precipitants'})
+        ).with_config({"run_name": '2-3-2 Coping Strategy'})
 
         r = await chain.ainvoke({'conversation': state['transcribe_text'],
                                  'cognitive_model': state['cognitive_model'],
@@ -89,6 +91,19 @@ class StrategyGraph(GraphAgent):
 
         return {'coping_strategy': r}
 
+    async def _situation_relevant_issue_node(self, state: StrategyState):
+        """Step 2_3_3"""
+        prompt_factory = SimplePromptFactory(llm_model=self._llm_loader.get_llm_model(OpenAI_Model_4o))
+        chain = prompt_factory.create_chain(
+            output_parser=StrOutputParser(),
+            human_prompt_text=STRATEGY_PROMPT_2_3_3_SITUATION_RELEVANT_ISSUE,
+        ).with_config({"run_name": '2-3-3 Situation Relevant Issue'})
+
+        r = await chain.ainvoke({'cognitive_model': state['cognitive_model'],
+                                 'therapy_issue_and_objective': state['therapy_issue_objective']})
+        return {'situations_relevant_to_issue': r}
+
+
     def create_graph(self) -> CompiledGraph:
         g_workflow = StateGraph(StrategyState)
 
@@ -96,12 +111,16 @@ class StrategyGraph(GraphAgent):
         g_workflow.add_node('core_intermediate_belief_node', self._core_intermediate_belief_node)
         g_workflow.add_node('relevant_history_precipitants_node', self._relevant_history_precipitants_node)
         g_workflow.add_node('copy_strategy_node', self._coping_strategy_node)
+        g_workflow.add_node('situation_relevant_issue_node', self._situation_relevant_issue_node)
 
         g_workflow.add_edge(START, 'cognitive_model_node')
         g_workflow.add_edge('cognitive_model_node', 'core_intermediate_belief_node')
+        g_workflow.add_edge('cognitive_model_node', 'situation_relevant_issue_node')
+
+
         g_workflow.add_edge('core_intermediate_belief_node', 'relevant_history_precipitants_node')
         g_workflow.add_edge('relevant_history_precipitants_node', 'copy_strategy_node')
         g_workflow.add_edge('copy_strategy_node', END)
 
-        return g_workflow.compiled()
+        return g_workflow.compile()
 
