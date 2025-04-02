@@ -1,5 +1,7 @@
 STRATEGY_PROMPT_2_3_2_COPING_STRATEGY= """\
-You are a psychologist. Based on the Cognitive Model, conversation, Core Belief, Intermediate Belief, Relevant Life History, and Precipitants, derive the client's coping strategy under this Intermediate Belief. List key points.
+You are a psychologist. Based on the Cognitive Model, conversation, Core Belief, Intermediate Belief, Relevant Life History, and Precipitants, 
+derive the client's coping strategy under this Intermediate Belief. 
+List key points.
 
 given conversation:
 {conversation}
@@ -39,14 +41,12 @@ Client: They’ll turn me down because I have nothing to offer them.
 
 Output Requirements:
 Based on the above information, analyze the client's rules, attitudes, and coping strategies under the Intermediate Beliefs.
-Coping Strategy\\ The client's coping measures based on these assumptions.
+Coping Strategy: The client's coping measures based on these assumptions.
 
-Output Format:
-
+Output in json format as follow:
 {{
-   Coping Strategy:
-   Summary: A bullet-point list of maladaptive coping strategies related to the Core Belief and Intermediate Belief, presented in a structured format,
-   Rules: The client's understanding of things based on these assumptions,
-   Attitudes: The client's attitude toward things under these assumptions
+    "summaries": [maladaptive coping strategies related to the Core Belief and Intermediate Belief],
+    "rules": [The client's understanding of things based on these assumptions],
+    "attitudes": [The client's attitude toward things under these assumptions]
 }}
 """

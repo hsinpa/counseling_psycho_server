@@ -7,10 +7,17 @@ given core_belief_and_intermediate_belief:
 given cognitive_model:
 {cognitive_model}
 
-Output format
-{{situation n: "",
-mean of A.T. : ""
-}}
-
 Note: mean of A.T. refers to one of the core beliefs.\
+
+Lastly output in JSON format as following:
+```json
+{{
+    "situations": [
+        {{
+            "situation": "",
+            "mean_of_AT": ""
+        }}
+    ]
+}}
+```
 """

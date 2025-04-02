@@ -11,18 +11,19 @@ Emotion\\ A subjective feeling triggered by a situation or thought, which affect
 Physiological Response\\ The body's automatic reaction to emotions, such as changes in heart rate, muscle tension, or energy levels.
 Behavior\\ The actions taken in response to a situation, thought, or emotion, which can reinforce or alter future experiences.
 
-Output Format:
+Lastly output in JSON format as following:
 
-{{Situation 1: "",
-Automatic Thought: "",
-Emotion: "",
-Physiological Response: "",
-Behavior: ""
-}},
-{{Situation n: "",
-Automatic Thought: "",
-Emotion: "",
-Physiological Response: "",
-Behavior: ""
-}}\
+```json
+{{
+    "cognitive_model": [
+        {{
+            "situation": "",
+            "automatic_thought": "",
+            "emotion": "",
+            "physiological_response": "",
+            "behavior": ""
+        }}
+    ]
+}}
+```
 """

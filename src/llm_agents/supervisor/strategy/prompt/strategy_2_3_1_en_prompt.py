@@ -14,11 +14,11 @@ Output Requirements:
 Based on the cognitive model and conversation, compile a bullet point summary of relevant life history and the precipitants that trigger core beliefs.
 Relevant life history includes significant events such as ongoing or periodic family conflict, parental divorce, and negative interactions with parents, siblings, teachers, or peers in which the child felt blamed, criticized, or devalued. Other factors may include serious medical conditions or disabilities, the loss of significant others, bullying, physical or sexual abuse, emotional trauma, and adverse life circumstances such as frequent relocations, poverty, trauma, or chronic discrimination. Additionally, youths may have perceived—whether accurately or not—that they did not measure up to their siblings, were different from or demeaned by peers, failed to meet the expectations of parents, teachers, or others, or that their parents favored a sibling over them.
 
-Output Format:
-
+Output in JSON format as follows:
+```json
 {{
-   Relevant Life History and Precipitants:
-   Relevant Life History: list key points,
-   Precipitants: precipitants to the current disorder
+    "relevant_life_history": [key point],
+    "precipitants": [precipitants to the current disorder]
 }}
+```
 """

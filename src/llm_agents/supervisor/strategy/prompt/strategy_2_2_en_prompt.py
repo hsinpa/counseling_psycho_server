@@ -49,19 +49,28 @@ Worthless Core Beliefs
 "I am evil."
 "I don't deserve to live."
 
+note: Intermediate beliefs are the client's attitudes and assumptions about themselves and the world.
+
 Output Requirements:
 Summarize situations 1 to n into a single Core Belief and organize Intermediate Beliefs (attitudes and assumptions).
 
-Output format:
+Lastly output in JSON format as following:
+```json
 {{
-[Core Belief Type: Helplessness, Unlovability, or Worthlessness,
-Explanation: Based on the above core belief categories, analyze the conversation record and summarize the client's core beliefs,
-Client's Core Belief: Find suitable sentences from the core belief types for summarization, list them in order, and number them.
-],
-[Intermediate Belief n: "",
-Positive Assumption: "",
-Negative Assumption: "",
-]
+    "core_beliefs": [
+        {{
+            "core_belief_type": "Helplessness, Unlovability, or Worthlessness",
+            "explanation": "Based on the above core belief categories, analyze the conversation record and summarize the client's core beliefs",
+            "client_core_belief": [Find suitable sentences from the core belief types for summarization, list them in order]
+        }}   
+    ],
+    "intermediate_beliefs": [
+        {{
+            "intermediate_belief": "",
+            "positive_assumption": "",
+            "negative_assumption": ""
+        }}
+    ]
 }}
-note: Intermediate beliefs are the client's attitudes and assumptions about themselves and the world.\
+```
 """

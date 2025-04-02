@@ -3,6 +3,7 @@ import pytest
 from src.llm_agents.llm_model import classic_llm_loader
 from src.llm_agents.supervisor.prerequisite.prerequisite_graph import PrerequisiteGraph
 from src.llm_agents.supervisor.supervisor_main_graph import SupervisorGraph
+from src.repository.supervisor_repo import SupervisorRepo
 from src.utility.langfuse_helper import get_langfuse_callback
 
 
@@ -29,17 +30,7 @@ async def test_supervisor_plan():
     with open("./assets/text/mock/mock_conversation_1.txt", encoding='utf-8') as f:
         mock_data: str = f.read()
 
-    supervisor_graph = SupervisorGraph(llm_loader=classic_llm_loader)
-    graph = supervisor_graph.create_graph()
+    supervisor_repo = SupervisorRepo(llm_loader=classic_llm_loader)
+    repo_result = await supervisor_repo.generate_analysis_report(mock_data)
 
-    graph_result = await graph.ainvoke(
-        {'transcribe_text': mock_data},
-        {
-            "run_name": "Supervisor Full Graph",
-            "callbacks": [get_langfuse_callback()],
-        },
-    )
-
-    print('pre_requisites', graph_result['pre_requisites'])
-    print('strategy', graph_result['strategy'])
-    print('homework_assignment', graph_result['homework_assignment'])
+    print(repo_result)
