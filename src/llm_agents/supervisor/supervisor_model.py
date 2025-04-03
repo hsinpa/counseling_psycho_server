@@ -2,6 +2,42 @@ from typing import List
 
 from pydantic import BaseModel
 
+
+# region Issue and Treatment strategies
+class TherapyIssueObjective(BaseModel):
+    title: str
+    objective: str
+
+class TreatmentStrategy(BaseModel):
+    issue: str
+    goal: str
+    treatment_direction: str
+    depth: str
+    intervention_techniques: List[str]
+    improvement_methods: List[str]
+
+class IssueTreatmentStrategy(BaseModel):
+    therapy_issue_objective: TherapyIssueObjective
+    treatment_strategy: TreatmentStrategy
+    next_therapy_goal: str
+    title: str
+    range: List[str]
+
+# endregion
+
+# region Homework
+class SingleHomework(BaseModel):
+    title: str
+    goal: str
+    task: str
+    steps: list[str]
+
+class HomeworkAssignment(BaseModel):
+    homeworks: list[SingleHomework]
+    reflection_questions: list[str]
+# endregion
+
+# region Case Conceptualization
 class MeanOfAT(BaseModel):
     situation: str
     mean_of_AT: str
@@ -42,3 +78,10 @@ class CaseConceptualizationModel(BaseModel):
     mean_of_AT: list[MeanOfAT]
     cognitive_model: list[SingleCognitiveModel]
     coping_strategy: CopingStrategy
+
+# endregion
+
+class SupervisorAnalysisRespModel(BaseModel):
+    case_conceptualization: CaseConceptualizationModel
+    homework_assignment: HomeworkAssignment
+    issue_treatment_strategies: List[IssueTreatmentStrategy]

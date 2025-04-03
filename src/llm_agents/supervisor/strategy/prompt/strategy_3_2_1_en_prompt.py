@@ -13,10 +13,18 @@ given knowledge_graph:
 given next_session_therapy_direction:
 {next_session_therapy_direction}
 
-Output Requirement: Design the next therapy goal for each treatment issue, from Issue 1 to Issue N.
+Output Requirement: Design the next therapy goal for each treatment issue, from Issue 1 to Issue N, by sequence.
 
-{{Next Therapy Goal:
-Issue N: "",
-Goal: ""
+Output JSON, with the format as follow
+
+```json
+{{
+    "next_therapy_goals": [
+        {{
+            "issue": "The name of issue",
+            "goal": "",
+        }}
+    ]
 }}
+```\
 """

@@ -10,14 +10,24 @@ given action_plan:
 given knowledge_graph:
 {knowledge_graph_issue}
 
-output format:
-{{Homework Title N: "",
-Goal: "",
-Task: "",
-Step: ,
-Example:
-}},
-{{Reflection Questions (for next session): ,
-Question n: ""
-}}\
+
+Last output in JSON format, with following format
+
+```json
+{{
+    "homeworks": [
+        {{
+            "title": "title of homework",
+            "goal": "Goal of homework",
+            "task": "The action to take for homework", 
+            "steps": [
+                How to accomplish this homework in steps
+            ]
+        }}
+    ],
+    "reflection_questions": [
+        The possible reflection questions for next session, in string format
+    ]
+}}
+```
 """

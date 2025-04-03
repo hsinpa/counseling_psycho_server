@@ -29,14 +29,21 @@ Role-Playing\\ Using role-playing to explore automatic thoughts, develop adaptiv
 Using the Pie Technique\\ Utilizing pie charts to visually represent the patient’s thoughts, helping them set goals or analyze root causes.
 Self-Comparison and Credit List\\ Encouraging patients to compare themselves with their lowest state and record positive aspects of their daily life.
 
-Output requirements:　From Issue 1 to Issue N, design a treatment strategy for each issue.
+Output requirements:　From Issue 1 to Issue N, design a treatment strategy for each issue, by sequence.
 
-Output format:
-{{Issue n: "" ,
-Goal: The main aim of treatment—helping the patient challenge their belief that life is meaningless and guiding them toward meaningful activities,
-Intervention Techniques: List the intervention techniques employed and describe the methods of intervention,
-Treatment direction: The strategy for therapy—reframing negative thoughts, encouraging structured activities, and promoting alternative ways of thinking,
-Depth: The level of intervention. Here, it is moderate, focusing on practical activities rather than deep existential discussions,
-Improvement Methods: Outline the concrete action plans implemented under this strategy.
+Output JSON, with the format as follow
+```json
+{{
+    "issues": [
+        {{
+            "issue": "The name of issue",
+            "goal": "The main aim of treatment—helping the patient challenge their belief that life is meaningless and guiding them toward meaningful activities",
+            "treatment_direction": "The strategy for therapy—reframing negative thoughts, encouraging structured activities, and promoting alternative ways of thinking",
+            "depth": "The level of intervention. Here, it is moderate, focusing on practical activities rather than deep existential discussions",
+            "intervention_techniques": [List the intervention techniques employed and describe the methods of intervention, in string array format],
+            "improvement_methods": [List of concrete action plans implemented under this strategy, in string array format]
+        }}
+    ]
 }}
+```\
 """

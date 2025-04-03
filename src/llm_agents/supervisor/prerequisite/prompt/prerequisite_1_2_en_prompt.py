@@ -41,15 +41,15 @@ Creativity and Potential Development: Artistic growth, writing, entrepreneurship
 Output Requirements:
 The conversation consists of N statements. For each therapeutic issue, provide an annotation and describe the therapeutic objective.
 
-Output format:
-{{Therapeutic Issues:
-[Tn-Tn: List the therapeutic issue,
-Therapeutic Objective: Explain the reason for addressing this issue and the expected outcome
-],
-[Tn-Tn: List the therapeutic issue,
-Therapeutic Objective: Explain the reason for addressing this issue and the expected outcome
-],
-[Tn-Tn: List the therapeutic issue,
-Therapeutic Objective: Explain the reason for addressing this issue and the expected outcome
-]}}\
+Output JSON, with the format as follow:
+```json
+{{
+    "therapeutic_issues": [
+        {{
+            "title": "Tn-Tn: List the therapeutic issue",
+            "objective": "Explain the reason for addressing this issue and the expected outcome"
+        }}
+    ]
+}}
+```\
 """
