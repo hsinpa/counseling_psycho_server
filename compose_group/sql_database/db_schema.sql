@@ -47,3 +47,13 @@ CREATE TABLE IF NOT EXISTS user_account (
     created_date DATE NOT NULL DEFAULT CURRENT_DATE
 );
 CREATE INDEX email_index ON user_account (email);
+
+CREATE TABLE IF NOT EXISTS transcript(
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    session_id TEXT,
+    full_text TEXT,
+    segments JSONB[] DEFAULT ARRAY[]::JSONB[],
+
+    created_date DATE NOT NULL DEFAULT CURRENT_DATE
+);
+CREATE INDEX session_id ON transcript (session_id);
