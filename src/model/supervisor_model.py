@@ -32,4 +32,8 @@ class TranscribeStatus(BaseModel):
 # region API
 class RetrieveSpeechToTextInputModel(BaseModel):
     session_id: str
+
+class AnalyzeSpeechToReportInputModel(BaseModel):
+    speech_text: str
+    session_id: str
 # endregion

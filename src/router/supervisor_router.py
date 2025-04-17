@@ -1,8 +1,14 @@
 import asyncio
 from fastapi import APIRouter, UploadFile, File, Form
+from pydantic import TypeAdapter
 
+from src.llm_agents.llm_model import classic_llm_loader
+from src.llm_agents.supervisor.database.transcript_db_ops import TranscriptDBOps
+from src.llm_agents.supervisor.supervisor_model import SupervisorAnalysisRespModel
 from src.model.supervisor_model import SpeechToTextLangEnum, RetrieveSpeechToTextInputModel, TranscribeStatus, \
-    TranscriptData, TranscribeProgressEnum
+    TranscriptData, TranscribeProgressEnum, AnalyzeSpeechToReportInputModel, TranscriptSegment
+from src.repository.supervisor_repo import SupervisorRepo
+from src.service.relation_db.postgresql_db_client import PostgreSQLClient
 from src.service.speech_to_text.boto_helper import BotoHelper
 
 router = APIRouter(prefix="/api/supervisor", tags=["Supervisor"])
@@ -37,9 +43,29 @@ async def retrieve_speech_to_text(session_id: str) -> TranscribeStatus:
     status, transcript_uri  = await asyncio.to_thread(boto_helper.get_transcribe_status, session_id)
 
     if status == TranscribeProgressEnum.complete and transcript_uri is not None:
+        transcript_db = TranscriptDBOps(PostgreSQLClient())
         transcript_data: TranscriptData = await asyncio.to_thread(boto_helper.retrieve_transcribe,
                                                                   transcript_uri)
 
+        await transcript_db.db_ops_insert_transcript_info(session_id, transcript_data)
         return TranscribeStatus(status=status, transcript_data=transcript_data)
 
     return TranscribeStatus(status=status)
+
+@router.post("/retrieve_speech_to_text")
+async def analyze_speech_to_report(p_input: AnalyzeSpeechToReportInputModel) -> SupervisorAnalysisRespModel:
+    with open("./assets/text/mock/mock_conversation_2.txt", encoding='utf-8') as f:
+        mock_data: str = f.read()
+
+    supervisor_repo = SupervisorRepo(llm_loader=classic_llm_loader)
+    repo_result = await supervisor_repo.generate_analysis_report(mock_data)
+
+    return repo_result
+
+
+@router.post("/get")
+async def get():
+    transcript_db = TranscriptDBOps(PostgreSQLClient())
+    result = await transcript_db.db_ops_get_transcript_info('asdfasdf')
+
+    return result
