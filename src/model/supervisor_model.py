@@ -5,16 +5,17 @@ from pydantic import BaseModel
 from fastapi import UploadFile
 
 class SpeechToTextLangEnum(str, Enum):
-    en_us: str = "en-US",
-    zh_tw: str = "zh-TW",
+    en_us = "en-US",
+    zh_tw = "zh-TW",
 
 class TranscribeProgressEnum(str, Enum):
-    in_progress: str = "IN_PROGRESS",
-    complete: str = "COMPLETED",
-    fail: str = "FAILED",
-
+    in_progress = "IN_PROGRESS",
+    in_analyze = "IN_ANALYZE",
+    complete = "COMPLETED",
+    fail = "FAILED",
 
 class TranscriptSegment(BaseModel):
+    id: str
     speaker: str
     start_time: str
     end_time: str

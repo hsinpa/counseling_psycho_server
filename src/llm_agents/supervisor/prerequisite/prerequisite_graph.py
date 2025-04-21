@@ -20,7 +20,7 @@ from src.llm_agents.supervisor.prerequisite.prompt.prerequisite_1_6_en_prompt im
 from src.llm_agents.supervisor.prerequisite.prompt.prerequisite_3_1_en_prompt import \
     PREREQUISITE_PROMPT_3_1_THERAPY_DIRECTION
 from src.utility.simple_prompt_factory import SimplePromptFactory
-from src.utility.static_text import OpenAI_Model_4o, Gemini_Model_2_0_Flash
+from src.utility.static_text import OpenAI_Model_4o, Gemini_Model_2_0_Flash, OpenAI_Model_41_mini
 from src.utility.utility_method import parse_json
 
 
@@ -30,7 +30,7 @@ class PrerequisiteGraph(GraphAgent):
 
     async def _treatment_framework_node(self, state: PrerequisiteState):
         """Step 1_1"""
-        prompt_factory = SimplePromptFactory(llm_model=self._llm_loader.get_llm_model(OpenAI_Model_4o))
+        prompt_factory = SimplePromptFactory(llm_model=self._llm_loader.get_llm_model(OpenAI_Model_41_mini))
         chain = prompt_factory.create_chain(
             output_parser=StrOutputParser(),
             human_prompt_text=PREREQUISITE_PROMPT_1_1_TREATMENT_FRAMEWORK,
@@ -42,7 +42,7 @@ class PrerequisiteGraph(GraphAgent):
 
     async def _therapy_issue_objective_node(self, state: PrerequisiteState):
         """Step 1_2"""
-        prompt_factory = SimplePromptFactory(llm_model=self._llm_loader.get_llm_model(OpenAI_Model_4o))
+        prompt_factory = SimplePromptFactory(llm_model=self._llm_loader.get_llm_model(OpenAI_Model_41_mini))
         chain = prompt_factory.create_chain(
             output_parser=StrOutputParser(),
             human_prompt_text=PREREQUISITE_PROMPT_1_2_THERAPY_OBJECTIVE,

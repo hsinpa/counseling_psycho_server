@@ -1,5 +1,6 @@
 import json
 import os
+import uuid
 from enum import Enum
 import boto3
 from fastapi import UploadFile, File, Form
@@ -79,6 +80,7 @@ class BotoHelper:
 
                 speakers_segments.append(
                     TranscriptSegment(
+                        id=str(uuid.uuid4()),
                         speaker=speaker,
                         start_time=start_time,
                         end_time=end_time,

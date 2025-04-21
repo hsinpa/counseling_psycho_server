@@ -17,7 +17,7 @@ from src.llm_agents.supervisor.strategy.prompt.strategy_3_2_1_en_prompt import S
 from src.llm_agents.supervisor.strategy.prompt.strategy_3_2_2_en_prompt import STRATEGY_PROMPT_3_2_2_TREATMENT_STRATEGY
 from src.llm_agents.supervisor.strategy.strategy_state import StrategyState
 from src.utility.simple_prompt_factory import SimplePromptFactory
-from src.utility.static_text import OpenAI_Model_4o, Gemini_Model_2_0_Flash
+from src.utility.static_text import OpenAI_Model_4o, Gemini_Model_2_0_Flash, OpenAI_Model_41_mini
 from src.utility.utility_method import parse_json
 from langchain_core.output_parsers import StrOutputParser
 
@@ -29,7 +29,7 @@ class StrategyGraph(GraphAgent):
 
     async def _cognitive_model_node(self, state: StrategyState):
         """Step 2_1"""
-        prompt_factory = SimplePromptFactory(llm_model=self._llm_loader.get_llm_model(OpenAI_Model_4o))
+        prompt_factory = SimplePromptFactory(llm_model=self._llm_loader.get_llm_model(OpenAI_Model_41_mini))
         chain = prompt_factory.create_chain(
             output_parser=StrOutputParser(),
             human_prompt_text=STRATEGY_PROMPT_2_1_COGNITIVE_MODEL,
@@ -96,7 +96,7 @@ class StrategyGraph(GraphAgent):
 
     async def _situation_relevant_issue_node(self, state: StrategyState):
         """Step 2_3_3"""
-        prompt_factory = SimplePromptFactory(llm_model=self._llm_loader.get_llm_model(OpenAI_Model_4o))
+        prompt_factory = SimplePromptFactory(llm_model=self._llm_loader.get_llm_model(OpenAI_Model_41_mini))
         chain = prompt_factory.create_chain(
             output_parser=StrOutputParser(),
             human_prompt_text=STRATEGY_PROMPT_2_3_3_SITUATION_RELEVANT_ISSUE,

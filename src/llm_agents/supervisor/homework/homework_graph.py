@@ -6,7 +6,7 @@ from src.llm_agents.supervisor.homework.prompt.homework_3_2_3_en_prompt import  
     HOMEWORK_3_2_3_ACTION_PLAN_PROMPT
 from src.llm_agents.supervisor.homework.prompt.homework_3_2_4_en_prompt import HOMEWORK_3_2_4_ASSIGNMENT_PROMPT
 from src.utility.simple_prompt_factory import SimplePromptFactory
-from src.utility.static_text import OpenAI_Model_4o, Gemini_Model_2_0_Flash
+from src.utility.static_text import OpenAI_Model_4o, Gemini_Model_2_0_Flash, OpenAI_Model_41_mini
 from src.utility.utility_method import parse_json
 from langchain_core.output_parsers import StrOutputParser
 
@@ -32,7 +32,7 @@ class HomeworkGraph(GraphAgent):
         return {'action_plan': r}
 
     async def _homework_assignment_node(self, state: HomeworkState):
-        prompt_factory = SimplePromptFactory(llm_model=self._llm_loader.get_llm_model(OpenAI_Model_4o))
+        prompt_factory = SimplePromptFactory(llm_model=self._llm_loader.get_llm_model(OpenAI_Model_41_mini))
         chain = prompt_factory.create_chain(
             output_parser=StrOutputParser(),
             human_prompt_text=HOMEWORK_3_2_4_ASSIGNMENT_PROMPT,
