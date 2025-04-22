@@ -1,4 +1,6 @@
 import asyncio
+from http.client import HTTPException
+
 from fastapi import APIRouter, UploadFile, File, Form
 from pydantic import TypeAdapter
 
@@ -38,19 +40,19 @@ async def upload_speech_to_text(
 
 @router.get("/retrieve_speech_to_text/{session_id}")
 async def retrieve_speech_to_text(session_id: str) -> TranscribeStatus:
+    # Retrieve from DB
     transcript_db = TranscriptDBOps(PostgreSQLClient())
-    result = await transcript_db.db_ops_get_transcript_info(session_id)
+    db_result = await transcript_db.db_ops_get_transcript_info(session_id)
 
-    if result is not None:
-        return TranscribeStatus(status=TranscribeProgressEnum.complete, transcript_data=result)
+    if db_result is not None:
+        return TranscribeStatus(status=TranscribeProgressEnum.complete, transcript_data=db_result)
 
+    # Query AWS Transcribe
     try:
         boto_helper = BotoHelper()
-
         status, transcript_uri  = await asyncio.to_thread(boto_helper.get_transcribe_status, session_id)
 
         if status == TranscribeProgressEnum.complete and transcript_uri is not None:
-            transcript_db = TranscriptDBOps(PostgreSQLClient())
             transcript_data: TranscriptData = await asyncio.to_thread(boto_helper.retrieve_transcribe,
                                                                       transcript_uri)
 
@@ -59,7 +61,7 @@ async def retrieve_speech_to_text(session_id: str) -> TranscribeStatus:
 
         return TranscribeStatus(status=status)
     except Exception as e:
-        print(f'retrieve_speech_to_text fail {session_id}', e)
+        print(f'retrieve_speech_to_text session {session_id} fail', e)
         return TranscribeStatus(status=TranscribeProgressEnum.fail)
 
 @router.post("/retrieve_speech_to_text")
