@@ -11,7 +11,8 @@ from abc import ABC, abstractmethod
 
 from langchain_core.language_models import BaseChatModel, FakeListChatModel
 from src.service.vector_db.vector_static import TEXT_EMBEDDING_SIZE
-from src.utility.static_text import OpenAI_Model_4o_mini, Gemini_Model_1_5, Gemini_Model_2_0_Flash, OpenAI_Model_4o
+from src.utility.static_text import OpenAI_Model_4o_mini, Gemini_Model_2_0_Flash, OpenAI_Model_4o, \
+    OpenAI_Model_41_mini
 
 load_dotenv()
 
@@ -27,7 +28,7 @@ def get_gpt_model(model_name: str = OpenAI_Model_4o_mini, temperature: float = 0
     )
 
 
-def get_gemini_model(model_name: str = Gemini_Model_1_5, temperature: float = 0.75,
+def get_gemini_model(model_name: str = Gemini_Model_2_0_Flash, temperature: float = 0.75,
                      json_schema: Dict[str, Any] = None, **kwargs):
     safety_settings = {
         HarmCategory.HARM_CATEGORY_UNSPECIFIED: SafetySetting.HarmBlockThreshold.BLOCK_NONE,
@@ -66,6 +67,7 @@ class ClassicILLMLoader(ILLMLoader):
     def __init__(self, preload=False):
         self._table = {OpenAI_Model_4o_mini: self._gpt_model,
                        OpenAI_Model_4o: self._gpt_model,
+                       OpenAI_Model_41_mini: self._gpt_model,
                        Gemini_Model_2_0_Flash: self._gemini_model}
         self._preload_table = {}
         if preload:

@@ -33,3 +33,9 @@ class TranscriptDBOps:
 
         await self._client.async_db_ops(sql_syntax=sql_syntax, fetch_type=FetchType.Idle, parameters=[session_id, transcript_data.full_text, items_dict])
 
+    async def db_ops_update_transcript_info(self, session_id: str, transcript_data: TranscriptData):
+        items_dict = [Jsonb(item.model_dump()) for item in transcript_data.segments]
+
+        sql_syntax = f"UPDATE {self._table_name} SET full_text=%s, segments=%s::jsonb[] WHERE session_id=%s"
+        await self._client.async_db_ops(sql_syntax=sql_syntax, fetch_type=FetchType.Idle,
+                                        parameters=[transcript_data.full_text, items_dict, session_id])

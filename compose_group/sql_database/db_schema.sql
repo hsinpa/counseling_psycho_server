@@ -56,4 +56,19 @@ CREATE TABLE IF NOT EXISTS transcript(
 
     created_date DATE NOT NULL DEFAULT CURRENT_DATE
 );
-CREATE INDEX session_id ON transcript (session_id);
+CREATE INDEX transcript_session ON transcript (session_id);
+
+CREATE TABLE IF NOT EXISTS supervisor_report(
+    id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    transcript_id INT,
+    session_id TEXT,
+
+    case_conceptualization JSONB,
+    homework_assignment JSONB,
+    issue_treatment_strategies JSONB[] DEFAULT ARRAY[]::JSONB[],
+
+    created_date DATE NOT NULL DEFAULT CURRENT_DATE,
+
+    CONSTRAINT fk_transcript FOREIGN KEY(transcript_id) REFERENCES transcript(id)
+);
+CREATE INDEX supervisor_report_session ON supervisor_report (session_id);

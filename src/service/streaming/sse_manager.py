@@ -7,8 +7,8 @@ class SSEResponseManager(StreamingInterface):
     def __init__(self):
         self._sse_dict = {}
 
-    async def queue_message(self, stream_id: str, data: str):
-        q: asyncio.Queue = self.get_sse_queue(stream_id)
+    async def queue_message(self, sse_id: str, data: str):
+        q: asyncio.Queue = self.get_sse_queue(sse_id)
         await q.put(data)
 
     def get_sse_queue(self, sse_id: str):
