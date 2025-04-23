@@ -48,27 +48,30 @@ CREATE TABLE IF NOT EXISTS user_account (
 );
 CREATE INDEX email_index ON user_account (email);
 
+CREATE TYPE status_type AS ENUM ('complete', 'in_progress');
 CREATE TABLE IF NOT EXISTS transcript(
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-    session_id TEXT,
+    file_name TEXT,
+    session_id TEXT UNIQUE,
+    user_id TEXT,
     full_text TEXT,
+    status status_type NOT NULL DEFAULT 'in_progress',
     segments JSONB[] DEFAULT ARRAY[]::JSONB[],
 
     created_date DATE NOT NULL DEFAULT CURRENT_DATE
 );
 CREATE INDEX transcript_session ON transcript (session_id);
+CREATE INDEX transcript_user ON transcript (user_id);
 
 CREATE TABLE IF NOT EXISTS supervisor_report(
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     transcript_id INT,
-    session_id TEXT,
+    status status_type NOT NULL DEFAULT 'in_progress',
 
     case_conceptualization JSONB,
     homework_assignment JSONB,
     issue_treatment_strategies JSONB[] DEFAULT ARRAY[]::JSONB[],
 
     created_date DATE NOT NULL DEFAULT CURRENT_DATE,
-
     CONSTRAINT fk_transcript FOREIGN KEY(transcript_id) REFERENCES transcript(id)
 );
-CREATE INDEX supervisor_report_session ON supervisor_report (session_id);

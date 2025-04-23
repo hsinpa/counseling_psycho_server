@@ -5,7 +5,7 @@ from enum import Enum
 import boto3
 from fastapi import UploadFile, File, Form
 import urllib.request
-from src.model.supervisor_model import TranscribeProgressEnum, TranscribeStatus, TranscriptSegment, TranscriptData
+from src.model.supervisor_model import TranscribeProgressEnum, TranscriptSegment, TranscriptData
 
 
 class BotoClientEnum(str, Enum):

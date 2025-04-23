@@ -38,3 +38,14 @@ class AnalyzeSpeechToReportInputModel(BaseModel):
     session_id: str
     socket_id: Optional[str] = Field('', description='ID For Socket')
 # endregion
+
+# region DB Type
+class TranscriptDBType(BaseModel):
+    id: int
+    session_id: str
+    user_id: str
+    full_text: str
+    status: str
+    segments: list[TranscriptSegment]
+
+# endregion
