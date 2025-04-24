@@ -1,5 +1,5 @@
 import asyncio
-from fastapi import APIRouter, UploadFile, File, Form, BackgroundTasks
+from fastapi import APIRouter, UploadFile, File, Form, BackgroundTasks, HTTPException
 from src.llm_agents.llm_model import classic_llm_loader
 from src.llm_agents.supervisor.database.supervisor_db_ops import SupervisorReportDBOps
 from src.llm_agents.supervisor.database.transcript_db_ops import TranscriptDBOps
@@ -77,6 +77,19 @@ async def retrieve_speech_to_text(session_id: str) -> TranscribeStatus:
         print(f'retrieve_speech_to_text session {session_id} fail', e)
         return TranscribeStatus(status=TranscribeProgressEnum.fail)
 
+
+@router.get("/get_speech_to_report/{session_id}")
+async def get_speech_to_report(session_id: str):
+    postgres_client = PostgreSQLClient()
+    supervisor_report_db = SupervisorReportDBOps(postgres_client)
+
+    report = await supervisor_report_db.db_ops_get_supervisor_report(session_id)
+
+    if report is None:
+        raise HTTPException(status_code=404, detail=f"report from {session_id} do not exist")
+
+    return report
+
 @router.post("/analyze_speech_to_report")
 async def analyze_speech_to_report(p_input: AnalyzeSpeechToReportInputModel) -> SupervisorAnalysisRespModel:
     postgres_client = PostgreSQLClient()
@@ -84,14 +97,16 @@ async def analyze_speech_to_report(p_input: AnalyzeSpeechToReportInputModel) -> 
     transcript_db = TranscriptDBOps(postgres_client)
 
     full_text = transcript_segment_to_text(p_input.segments)
+    transcript_data = await transcript_db.db_ops_get_transcript_info(p_input.session_id)
     await transcript_db.db_ops_update_transcript_info(p_input.session_id,
-                                                TranscriptData(full_text=full_text, segments=p_input.segments))
+                                                TranscriptData(full_text=full_text, segments=p_input.segments),
+                                                status=DB_TRANSCRIPT_STATUS_COMPLETE)
 
     supervisor_repo = SupervisorRepo(llm_loader=classic_llm_loader)
     repo_result = await supervisor_repo.generate_analysis_report(full_text)
 
     await supervisor_report_db.db_ops_insert_supervisor_report(
-        session_id=p_input.session_id,
+        transcript_id=transcript_data.id,
         analysis_data=repo_result
     )
 

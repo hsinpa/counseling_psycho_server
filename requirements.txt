@@ -6,7 +6,8 @@ langchain==0.3.22
 langgraph==0.3.25
 langchain-core==0.3.50
 langchain-openai==0.3.12
-langchain-google-vertexai==2.0.20
+langchain-google-vertexai==2.0.13
+google-cloud-aiplatform==1.78.0
 langfuse==2.60.3
 qdrant-client==1.13.3
 pydantic==2.11.3
