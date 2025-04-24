@@ -25,7 +25,7 @@ class TranscriptDBOps:
         return None
 
     async def db_ops_get_transcript_list(self, user_id: str):
-        sql_syntax = (f"SELECT session_id, file_name, created_date "
+        sql_syntax = (f"SELECT session_id, file_name, status, created_date "
                       f"FROM {self._table_name} WHERE user_id=%s")
 
         return await self._client.async_db_ops(sql_syntax=sql_syntax, fetch_type=FetchType.Many, parameters=[user_id])
