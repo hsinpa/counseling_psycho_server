@@ -98,6 +98,7 @@ async def analyze_speech_to_report(p_input: AnalyzeSpeechToReportInputModel) -> 
 
     full_text = transcript_segment_to_text(p_input.segments)
     transcript_data = await transcript_db.db_ops_get_transcript_info(p_input.session_id)
+
     await transcript_db.db_ops_update_transcript_info(p_input.session_id,
                                                 TranscriptData(full_text=full_text, segments=p_input.segments),
                                                 status=DB_TRANSCRIPT_STATUS_COMPLETE)

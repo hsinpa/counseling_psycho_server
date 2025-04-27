@@ -2,6 +2,11 @@ from typing import List
 
 from pydantic import BaseModel
 
+Table = ''
+
+DB_TRANSCRIPT_TABLE = 'transcript'
+DB_SUPERVISOR_REPORT_TABLE = 'supervisor_report'
+
 
 # region Issue and Treatment strategies
 class TherapyIssueObjective(BaseModel):
