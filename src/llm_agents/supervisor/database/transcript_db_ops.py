@@ -25,10 +25,11 @@ class TranscriptDBOps:
         return None
 
     async def db_ops_get_transcript_list(self, user_id: str):
-        sql_syntax = (f"SELECT t.session_id, t.file_name, t.status, t.created_date, sr.status as report_status "
+        sql_syntax = (f"SELECT DISTINCT ON (t.id) t.session_id, t.file_name, t.status, t.created_date, sr.status as report_status "
                       f"FROM {DB_TRANSCRIPT_TABLE} t "
                       f"LEFT JOIN {DB_SUPERVISOR_REPORT_TABLE} sr ON sr.transcript_id = t.id "
-                      f"WHERE user_id=%s")
+                      f"WHERE user_id=%s "
+                      f"ORDER  BY t.id, sr.created_date DESC NULLS LAST")
 
         return await self._client.async_db_ops(sql_syntax=sql_syntax, fetch_type=FetchType.Many, parameters=[user_id])
 
