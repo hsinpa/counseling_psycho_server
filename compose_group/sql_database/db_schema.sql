@@ -19,7 +19,6 @@ CREATE TABLE IF NOT EXISTS chatbot_messages (
 );
 CREATE INDEX messages_session_index ON chatbot_messages (session_id, user_id);
 
-
 CREATE TABLE IF NOT EXISTS talk_simulation (
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     age INT,
@@ -53,6 +52,7 @@ CREATE TABLE IF NOT EXISTS transcript(
     id INT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     file_name TEXT,
     session_id TEXT UNIQUE,
+    lang_code TEXT NOT NUlL DEFAULT 'en-US',
     user_id TEXT,
     full_text TEXT,
     status status_type NOT NULL DEFAULT 'in_progress',

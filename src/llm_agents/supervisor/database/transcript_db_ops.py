@@ -8,6 +8,9 @@ from src.service.relation_db.postgres_db_manager import FetchType
 from src.service.relation_db.sql_client_interface import SQLClientInterface
 from psycopg.types.json import Jsonb
 
+from src.utility.static_text import DB_TRANSCRIPT_STATUS_IN_PROGRESS
+
+
 class TranscriptDBOps:
     def __init__(self, client: SQLClientInterface):
         self._client = client
@@ -31,8 +34,10 @@ class TranscriptDBOps:
                       f"WHERE user_id=%s "
                       f"ORDER  BY t.id, sr.created_date DESC NULLS LAST")
 
-        return await self._client.async_db_ops(sql_syntax=sql_syntax, fetch_type=FetchType.Many, parameters=[user_id])
+        transcript_list = await self._client.async_db_ops(sql_syntax=sql_syntax, fetch_type=FetchType.Many, parameters=[user_id])
+        transcript_list.reverse()
 
+        return transcript_list
     async def db_ops_get_transcript_info(self, session_id: str):
         sql_syntax = (f"SELECT t.*, sr.status as report_status "
                       f"FROM {DB_TRANSCRIPT_TABLE} t "
@@ -45,15 +50,16 @@ class TranscriptDBOps:
 
         return None
 
-    async def db_ops_insert_transcript_info(self, session_id: str, user_id: str, file_name: str,
-                                            transcript_data: TranscriptData):
+    async def db_ops_insert_transcript_info(self, session_id: str, user_id: str, file_name: str, lang_code: str,
+                                            transcript_data: TranscriptData, status: str = DB_TRANSCRIPT_STATUS_IN_PROGRESS):
         items_dict = [Jsonb(item.model_dump()) for item in transcript_data.segments]
 
-        sql_syntax = (f"INSERT INTO {DB_TRANSCRIPT_TABLE} (session_id, user_id, file_name, full_text, segments) "
-                      f"VALUES(%s, %s, %s, %s, %s::jsonb[])")
+        sql_syntax = (f"INSERT INTO {DB_TRANSCRIPT_TABLE} (session_id, user_id, file_name, full_text, lang_code, status, segments) "
+                      f"VALUES(%s, %s, %s, %s, %s, %s, %s::jsonb[])")
 
         await self._client.async_db_ops(sql_syntax=sql_syntax, fetch_type=FetchType.Idle,
-                                        parameters=[session_id, user_id, file_name, transcript_data.full_text, items_dict])
+                                        parameters=[session_id, user_id, file_name, transcript_data.full_text,
+                                                    lang_code, status, items_dict])
 
     async def db_ops_update_transcript_info(self, session_id: str, transcript_data: TranscriptData, status: str):
         items_dict = [Jsonb(item.model_dump()) for item in transcript_data.segments]
