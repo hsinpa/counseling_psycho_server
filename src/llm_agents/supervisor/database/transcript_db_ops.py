@@ -28,7 +28,7 @@ class TranscriptDBOps:
         return None
 
     async def db_ops_get_transcript_list(self, user_id: str):
-        sql_syntax = (f"SELECT DISTINCT ON (t.id) t.session_id, t.file_name, t.status, t.created_date, sr.status as report_status "
+        sql_syntax = (f"SELECT DISTINCT ON (t.id) t.id, t.session_id, t.file_name, t.status, t.created_date, sr.status as report_status "
                       f"FROM {DB_TRANSCRIPT_TABLE} t "
                       f"LEFT JOIN {DB_SUPERVISOR_REPORT_TABLE} sr ON sr.transcript_id = t.id "
                       f"WHERE user_id=%s "
@@ -68,3 +68,15 @@ class TranscriptDBOps:
 
         await self._client.async_db_ops(sql_syntax=sql_syntax, fetch_type=FetchType.Idle,
                                         parameters=[transcript_data.full_text, items_dict, status, session_id])
+
+    async def db_ops_update_transcript_name(self, file_name: str, session_id: str):
+        sql_syntax = f"UPDATE {DB_TRANSCRIPT_TABLE} SET file_name=%s WHERE session_id=%s"
+        await self._client.async_db_ops(sql_syntax=sql_syntax, fetch_type=FetchType.Idle,
+                                        parameters=[file_name, session_id])
+
+    async def db_ops_delete_transcript(self, transcript_id: int):
+        del_report_syntax = f"DELETE FROM {DB_SUPERVISOR_REPORT_TABLE} WHERE transcript_id=%s"
+        del_transcript_syntax = f"DELETE FROM {DB_TRANSCRIPT_TABLE} WHERE id=%s"
+
+        await self._client.async_db_ops(sql_syntax=del_report_syntax, fetch_type=FetchType.Idle, parameters=[transcript_id])
+        await self._client.async_db_ops(sql_syntax=del_transcript_syntax, fetch_type=FetchType.Idle, parameters=[transcript_id])
