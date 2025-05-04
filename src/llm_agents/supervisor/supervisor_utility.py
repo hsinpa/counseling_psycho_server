@@ -4,12 +4,12 @@ import uuid
 from src.model.supervisor_model import TranscriptSegment
 
 def text_to_transcript_segment(txt_content: str) -> list[TranscriptSegment]:
-    segments = [seg.strip() for seg in txt_content.split("\n\n") if seg.strip()]
+    segments = [seg.strip() for seg in txt_content.split("\n") if seg.strip()]
 
     processed_segments: list[TranscriptSegment] = []
     for segment in segments:
         # Simplified regex - just look for t or p at start, ignore number details
-        match = re.match(r"^([tp])\d*:\s*(.*)", segment, re.IGNORECASE | re.DOTALL)
+        match = re.match(r"^([TP]\d*|Therapist|Patient):\s*(.*)", segment, re.IGNORECASE | re.DOTALL)
 
         if match:
             segment_type = match.group(1).lower()  # Normalize to uppercase
