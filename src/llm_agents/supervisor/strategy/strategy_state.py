@@ -6,6 +6,7 @@ class StrategyState(TypedDict):
     next_session_therapy_direction: str
     treatment_effectiveness: str
 
+    client_situations: str
     cognitive_model: str
 
     core_intermediate_belief: str

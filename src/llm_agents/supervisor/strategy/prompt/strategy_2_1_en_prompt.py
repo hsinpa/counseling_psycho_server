@@ -4,12 +4,14 @@ You are a psychologist. Based on the conversation record, identify and mark the 
 given conversation:
 {conversation}
 
-Output Requirements: Summarize events that evoke the client's feelings into major categories as "situations" and present them in bullet points.
-Situation\\  refers to an external event, internal experience, or physical state that triggers a cognitive or emotional response. It can include environmental occurrences, social interactions, physiological sensations, or personal experiences that initiate a thought process.
-Automatic Thought\\ A spontaneous and often subconscious thought that arises in response to a situation, influencing emotions and behavior.
+given situation:
+{client_situations}
+
+Output Requirements: Label each situation.
+Automatic Thought\\ refers to a spontaneous and often subconscious thought that arises in the client when facing a particular situation, and it influences their emotional and behavioral responses.
 Emotion\\ A subjective feeling triggered by a situation or thought, which affects physiological and behavioral responses.
 Physiological Response\\ The body's automatic reaction to emotions, such as changes in heart rate, muscle tension, or energy levels.
-Behavior\\ The actions taken in response to a situation, thought, or emotion, which can reinforce or alter future experiences.
+Behavior\\ Observable external behaviors (e.g., social withdrawal), excluding internal mental processes (e.g., suicidal ideation, rumination).
 
 Lastly output in JSON format as following:
 

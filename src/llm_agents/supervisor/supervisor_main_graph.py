@@ -5,6 +5,7 @@ from langgraph.graph import StateGraph
 from src.llm_agents.agent_interface import GraphAgent
 from src.llm_agents.llm_model import ILLMLoader
 from src.llm_agents.supervisor.homework.homework_graph import HomeworkGraph
+from src.llm_agents.supervisor.case_concept.case_concept_graph import CaseConceptGraph
 from src.llm_agents.supervisor.prerequisite.prerequisite_graph import PrerequisiteGraph
 from src.llm_agents.supervisor.strategy.strategy_graph import StrategyGraph
 from src.llm_agents.supervisor.supervisor_main_state import SupervisorMainState
@@ -26,17 +27,30 @@ class SupervisorGraph(GraphAgent):
             },
         )
 
-        return {'pre_requisites': graph_result}
+        return {'prerequisite': graph_result}
+
+
+    async def _case_concept_node(self, state: SupervisorMainState):
+        case_concept_graph = CaseConceptGraph(llm_loader=self._llm_loader)
+        graph = case_concept_graph.create_graph()
+
+        graph_result = await graph.ainvoke(
+            {'transcribe_text': state['transcribe_text']},
+            {
+                "run_name": "Case Concept Graph",
+            },
+        )
+
+        return {'case_concept': graph_result}
 
     async def _strategy_node(self, state: SupervisorMainState):
         strategy_graph = StrategyGraph(llm_loader=self._llm_loader)
         graph = strategy_graph.create_graph()
 
         graph_result = await graph.ainvoke(
-            {'transcribe_text': state['transcribe_text'],
-                'therapy_issue_objective': state['pre_requisites']['therapy_issue_objective'],
-                'treatment_effectiveness': state['pre_requisites']['treatment_effectiveness'],
-                'next_session_therapy_direction': state['pre_requisites']['next_session_therapy_direction'],
+            {
+                'transcribe_text': state['transcribe_text'],
+                'therapy_issue_objective': state['prerequisite']['therapy_issue_objective'],
              },
             {
                 "run_name": "Strategy Graph",
@@ -51,7 +65,7 @@ class SupervisorGraph(GraphAgent):
 
         graph_result = await graph.ainvoke(
             {'transcribe_text': state['transcribe_text'],
-                'therapy_issue_objective': state['pre_requisites']['therapy_issue_objective'],
+                'therapy_issue_objective': state['case_concept']['therapy_issue_objective'],
                 'knowledge_graph_issue': state['strategy']['knowledge_graph_issue'],
              },
             {
@@ -65,13 +79,16 @@ class SupervisorGraph(GraphAgent):
     def create_graph(self) -> CompiledGraph:
         g_workflow = StateGraph(SupervisorMainState)
 
-        g_workflow.add_node('prerequisite_graph', self._prerequisite_node)
+        g_workflow.add_node('prerequisite_node', self._prerequisite_node)
+        # g_workflow.add_node('case_concept_graph', self._case_concept_node)
         g_workflow.add_node('strategy_graph', self._strategy_node)
-        g_workflow.add_node('homework_graph', self._homework_node)
+        # g_workflow.add_node('homework_graph', self._homework_node)
 
-        g_workflow.set_entry_point('prerequisite_graph')
-        g_workflow.add_edge('prerequisite_graph', 'strategy_graph')
-        g_workflow.add_edge('strategy_graph', 'homework_graph')
-        g_workflow.add_edge('homework_graph', END)
+        g_workflow.set_entry_point('prerequisite_node')
+        g_workflow.add_edge('prerequisite_node', 'strategy_graph')
+
+        # g_workflow.add_edge('case_concept_graph', 'strategy_graph')
+        # g_workflow.add_edge('strategy_graph', 'homework_graph')
+        g_workflow.add_edge('strategy_graph', END)
 
         return g_workflow.compile()

@@ -6,7 +6,6 @@ from langchain_core.output_parsers import StrOutputParser
 from src.llm_agents.agent_interface import GraphAgent
 from src.llm_agents.llm_model import ILLMLoader
 from src.llm_agents.supervisor.case_concept.case_concept_state import CaseConceptState
-from src.llm_agents.supervisor.prerequisite.prerequisite_state import PrerequisiteState
 from src.llm_agents.supervisor.prerequisite.prompt.prerequisite_1_1_en_prompt import \
     PREREQUISITE_PROMPT_1_1_TREATMENT_FRAMEWORK
 from src.llm_agents.supervisor.prerequisite.prompt.prerequisite_1_2_en_prompt import \
@@ -15,11 +14,11 @@ from src.utility.simple_prompt_factory import SimplePromptFactory
 from src.utility.static_text import OpenAI_Model_41_mini
 
 
-class PrerequisiteGraph(GraphAgent):
+class CaseConceptGraph(GraphAgent):
     def __init__(self, llm_loader: ILLMLoader):
         self._llm_loader = llm_loader
 
-    async def _treatment_framework_node(self, state: PrerequisiteState):
+    async def _treatment_framework_node(self, state: CaseConceptState):
         """Step 1_1"""
         prompt_factory = SimplePromptFactory(llm_model=self._llm_loader.get_llm_model(OpenAI_Model_41_mini))
         chain = prompt_factory.create_chain(
@@ -31,7 +30,7 @@ class PrerequisiteGraph(GraphAgent):
 
         return {'treatment_framework': r}
 
-    async def _therapy_issue_objective_node(self, state: PrerequisiteState):
+    async def _therapy_issue_objective_node(self, state: CaseConceptState):
         """Step 1_2"""
         prompt_factory = SimplePromptFactory(llm_model=self._llm_loader.get_llm_model(OpenAI_Model_41_mini))
         chain = prompt_factory.create_chain(
@@ -44,7 +43,7 @@ class PrerequisiteGraph(GraphAgent):
         return {'therapy_issue_objective': r}
 
     def create_graph(self) -> CompiledGraph:
-        g_workflow = StateGraph(PrerequisiteState)
+        g_workflow = StateGraph(CaseConceptState)
 
         g_workflow.add_node('start_node', lambda x: x)
         g_workflow.add_node('treatment_framework_node', self._treatment_framework_node)
