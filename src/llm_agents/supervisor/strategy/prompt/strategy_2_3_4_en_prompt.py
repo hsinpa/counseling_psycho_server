@@ -1,6 +1,7 @@
 STRATEGY_PROMPT_2_3_4_KNOWLEDGE_GRAPH_ISSUE = """\
-You are a psychologist. Based on the given therapy issue, cognitive model, core belief and intermediate belief, coping strategy, relevant history, and precipitants, create a Knowledge Graph for each issue. Present the relationships in a triple format:
-Triple format: ( head, relation, tail )
+You are a psychologist. Based on the given therapy issue, cognitive model, core belief and intermediate belief, coping strategy, relevant history, and precipitants, 
+create a Knowledge Graph for the chosen issue: {chosen_issue}. Present the relationships in a triple format:
+Triple format: (head, relation, tail)
 
 given therapy_issue_and_objective:
 {therapy_issue_and_objective}
@@ -30,7 +31,7 @@ Relationships between nodes in the Knowledge Graph:
 (Automatic Thoughts, Generate, Emotions)
 (Automatic Thoughts, Generate, Behavior)
 (Automatic Thoughts, Are Affected By, Core Beliefs)
-(Core Beliefs, Generate, Automatic Thoughts)
+(Core Beliefs, Generate, Automatic Thoughts(A.T.))
 (Automatic Thoughts, Lead To, Coping Strategies)
 (Coping Strategies, Generate, Behavior)
 (Core Beliefs, Generate, Intermediate Beliefs)
@@ -44,12 +45,18 @@ Compare the issue and situations, and list the emotions, behaviors, and automati
 Compare the issue and situations, remove unrelated elements, and select the intermediate beliefs relevant to the situations. Then, list the coping strategies associated with these intermediate beliefs.
 
 Output Format:
-{{Knowledge Graph 1:
+{{
+  "Knowledge Graph X: [Therapeutic Issue Name] ([Session Range])":
+  ["(NodeA, Relationship, NodeB)",
+  "(NodeC, Relationship, NodeD)",
+  "...more triples..."
 
-}},
-{{Knowledge Graph N:
-
+  ],
+  "Nodes":
+  ["NodeA": "Description of NodeA",
+   "NodeB": "Description of NodeB",
+   "NodeC": "Description of NodeC",
+   "...more nodes...": "..."
+  ]
 }}
-
-Note: List the content of each head and tail in the Knowledge Graph.\
 """

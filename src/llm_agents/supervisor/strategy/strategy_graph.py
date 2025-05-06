@@ -1,9 +1,9 @@
+import asyncio
 from langgraph.graph.graph import CompiledGraph
 from langgraph.constants import END, START
 from langgraph.graph import StateGraph
 from src.llm_agents.agent_interface import GraphAgent
 from src.llm_agents.llm_model import ILLMLoader
-from src.llm_agents.supervisor.homework.homework_graph import HomeworkGraph
 from src.llm_agents.supervisor.strategy.prompt.strategy_2_1_1_en_prompt import STRATEGY_PROMPT_2_1_1_SITUATIONS
 from src.llm_agents.supervisor.strategy.prompt.strategy_2_1_en_prompt import STRATEGY_PROMPT_2_1_COGNITIVE_MODEL
 from src.llm_agents.supervisor.strategy.prompt.strategy_2_2_1_en_prompt import STRATEGY_PROMPT_2_2_1_MEAN_OF_AT
@@ -14,11 +14,13 @@ from src.llm_agents.supervisor.strategy.prompt.strategy_2_3_1_en_prompt import \
 from src.llm_agents.supervisor.strategy.prompt.strategy_2_3_2_en_prompt import STRATEGY_PROMPT_2_3_2_COPING_STRATEGY
 from src.llm_agents.supervisor.strategy.prompt.strategy_2_3_3_en_prompt import \
     STRATEGY_PROMPT_2_3_3_SITUATION_RELEVANT_ISSUE
+from src.llm_agents.supervisor.strategy.prompt.strategy_2_3_4_en_prompt import \
+    STRATEGY_PROMPT_2_3_4_KNOWLEDGE_GRAPH_ISSUE
 from src.llm_agents.supervisor.strategy.prompt.strategy_3_2_1_en_prompt import STRATEGY_PROMPT_3_2_1_NEXT_THERAPY_GOAL
 from src.llm_agents.supervisor.strategy.prompt.strategy_3_2_2_en_prompt import STRATEGY_PROMPT_3_2_2_TREATMENT_STRATEGY
 from src.llm_agents.supervisor.strategy.strategy_state import StrategyState
 from src.utility.simple_prompt_factory import SimplePromptFactory
-from src.utility.static_text import OpenAI_Model_4o, Gemini_Model_2_0_Flash, OpenAI_Model_41_mini
+from src.utility.static_text import Gemini_Model_2_0_Flash, OpenAI_Model_41_mini
 from src.utility.utility_method import parse_json
 from langchain_core.output_parsers import StrOutputParser
 
@@ -106,6 +108,37 @@ class StrategyGraph(GraphAgent):
 
         return {'coping_strategy': r}
 
+    async def _batch_knowledge_graph_issue_node(self, state: StrategyState):
+        therapeutic_issues: list = parse_json(state['therapy_issue_objective'])['therapeutic_issues']
+        results = []
+
+        async with asyncio.TaskGroup() as tg:
+            # Store task references if you need results
+            tasks = [tg.create_task(self._knowledge_graph_issue_node(state, i)) for i in therapeutic_issues]
+
+        for task in tasks:
+            results.append(task.result())
+
+        return {'knowledge_graph_issue': '\n'.join(results)}
+
+    async def _knowledge_graph_issue_node(self, state: StrategyState, issue: dict):
+        """Step 2_3_4"""
+        prompt_factory = SimplePromptFactory(llm_model=self._llm_loader.get_llm_model(Gemini_Model_2_0_Flash))
+        chain = prompt_factory.create_chain(
+            output_parser=StrOutputParser(),
+            human_prompt_text=STRATEGY_PROMPT_2_3_4_KNOWLEDGE_GRAPH_ISSUE,
+        ).with_config({"run_name": '2-3-4 Batch Knowledge Graph'})
+
+        r = await chain.ainvoke({'coping_strategy': state['coping_strategy'],
+                                 'therapy_issue_and_objective': state['therapy_issue_objective'],
+                                 'chosen_issue': issue,
+                                 'cognitive_model': state['cognitive_model'],
+                                 'situations_relevant_to_issue': state['situations_relevant_to_issue'],
+                                 'relevant_history_and_precipitants': state['relevant_history_precipitants'],
+                                 'core_belief_and_intermediate_belief': state['core_intermediate_belief']})
+
+        return r
+
     async def _situation_relevant_issue_node(self, state: StrategyState):
         """Step 2_3_3"""
         prompt_factory = SimplePromptFactory(llm_model=self._llm_loader.get_llm_model(OpenAI_Model_41_mini))
@@ -117,23 +150,6 @@ class StrategyGraph(GraphAgent):
         r = await chain.ainvoke({'cognitive_model': state['cognitive_model'],
                                  'therapy_issue_and_objective': state['therapy_issue_objective']})
         return {'situations_relevant_to_issue': r}
-
-    async def _knowledge_graph_issue_node(self, state: StrategyState):
-        """Step 2_3_4"""
-        prompt_factory = SimplePromptFactory(llm_model=self._llm_loader.get_llm_model(Gemini_Model_2_0_Flash))
-        chain = prompt_factory.create_chain(
-            output_parser=StrOutputParser(),
-            human_prompt_text=STRATEGY_PROMPT_2_3_3_SITUATION_RELEVANT_ISSUE,
-        ).with_config({"run_name": '2-3-4 Knowledge Graph of Issue'})
-
-        r = await chain.ainvoke({'cognitive_model': state['cognitive_model'],
-                                 'therapy_issue_and_objective': state['therapy_issue_objective'],
-                                 'core_belief_and_intermediate_belief':  state['core_intermediate_belief'],
-                                 'coping_strategy': state['coping_strategy'],
-                                 'relevant_history_and_precipitants': state['relevant_history_precipitants'],
-                                 'situations_relevant_to_issue': state['situations_relevant_to_issue'],
-                                 })
-        return {'knowledge_graph_issue': r}
 
     async def _next_therapy_goal_node(self, state: StrategyState):
         """Step 3_2_1"""
@@ -173,7 +189,7 @@ class StrategyGraph(GraphAgent):
         g_workflow.add_node('copy_strategy_node', self._coping_strategy_node)
         g_workflow.add_node('mean_of_at_node', self._mean_of_at_node)
         g_workflow.add_node('situation_relevant_issue_node', self._situation_relevant_issue_node)
-        g_workflow.add_node('knowledge_graph_issue_node', self._knowledge_graph_issue_node)
+        g_workflow.add_node('knowledge_graph_issue_node', self._batch_knowledge_graph_issue_node)
 
         g_workflow.add_node('next_therapy_goal_node', self._next_therapy_goal_node)
         g_workflow.add_node('treatment_strategy_node', self._treatment_strategy_node)
@@ -187,12 +203,10 @@ class StrategyGraph(GraphAgent):
         g_workflow.add_edge('core_intermediate_belief_node', 'mean_of_at_node')
         g_workflow.add_edge('core_intermediate_belief_node', 'relevant_history_precipitants_node')
         g_workflow.add_edge('relevant_history_precipitants_node', 'copy_strategy_node')
-        g_workflow.add_edge('copy_strategy_node', END)
 
-        # g_workflow.add_edge('knowledge_graph_issue_node', 'next_therapy_goal_node')
-        # g_workflow.add_edge('knowledge_graph_issue_node', 'treatment_strategy_node')
-        #
-        # g_workflow.add_edge(['next_therapy_goal_node', 'treatment_strategy_node'], 'final_merge_node')
-        # g_workflow.add_edge('final_merge_node', END)
+        g_workflow.add_edge(['copy_strategy_node', 'situation_relevant_issue_node'], 'knowledge_graph_issue_node')
+
+        g_workflow.add_edge('knowledge_graph_issue_node', 'final_merge_node')
+        g_workflow.add_edge('final_merge_node', END)
 
         return g_workflow.compile()

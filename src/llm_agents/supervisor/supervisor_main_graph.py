@@ -65,7 +65,7 @@ class SupervisorGraph(GraphAgent):
 
         graph_result = await graph.ainvoke(
             {'transcribe_text': state['transcribe_text'],
-                'therapy_issue_objective': state['case_concept']['therapy_issue_objective'],
+                'therapy_issue_objective': state['prerequisite']['therapy_issue_objective'],
                 'knowledge_graph_issue': state['strategy']['knowledge_graph_issue'],
              },
             {

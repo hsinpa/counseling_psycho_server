@@ -21,5 +21,3 @@ async def test_supervisor_requisite_plan():
             "callbacks": [get_langfuse_callback()],
         },
     )
-
-    print(graph_result)
