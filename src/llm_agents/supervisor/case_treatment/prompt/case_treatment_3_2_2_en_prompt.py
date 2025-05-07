@@ -35,7 +35,7 @@ Output in JSON format, the schema is define as follows
 {{
     "issues": [
     {{
-        "title": "name of the issue",
+        "issue": "name of the issue",
         "steps": [
             {{
                 "index": number (index number of this step),

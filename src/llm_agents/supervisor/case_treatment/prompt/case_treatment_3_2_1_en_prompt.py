@@ -25,7 +25,8 @@ Output in JSON format, the schema is define as follows
     "issues": [
     {{
         "issue": "name of the issue",
-        "goal"
+        "focus_of_stepped_care": "to prioritize treatment focus, it is necessary to include the cognitive, emotional, and behavioral dimensions. (e.g. cognition - emotion - behavior)",
+        "goal": "goal of issue",
         "steps": [
             {{
                 "title": "title of this step",

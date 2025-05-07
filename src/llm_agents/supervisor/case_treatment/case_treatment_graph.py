@@ -77,19 +77,18 @@ class CaseTreatmentGraph(GraphAgent):
         r = await chain.ainvoke(
             {
                 "case_treatment_information": state["case_treatment_information"],
-                "method": Methods,
-                "therapeutic_hierarchy": THERAPEUTIC_HIERARCHY,
+                "case_treatment_strategy": state['case_treatment_strategy'],
             }
         )
 
-        return {'case_treatment_strategy': r}
+        return {'case_phase_evaluation_criteria': r}
 
     def create_graph(self) -> CompiledGraph:
         g_workflow = StateGraph(CaseTreatmentState)
 
         g_workflow.add_node('case_treatment_info_node', self._case_treatment_info_node)
         g_workflow.add_node('case_treatment_strategy_node', self._case_treatment_strategy_node)
-        g_workflow.add_node('case_criteria_evaluation_node', self._case_treatment_info_node)
+        g_workflow.add_node('case_criteria_evaluation_node', self._case_criteria_evaluation_node)
 
         g_workflow.set_entry_point('case_treatment_info_node')
 

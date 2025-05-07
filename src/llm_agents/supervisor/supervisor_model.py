@@ -9,24 +9,23 @@ DB_SUPERVISOR_REPORT_TABLE = 'supervisor_report'
 
 
 # region Issue and Treatment strategies
-class TherapyIssueObjective(BaseModel):
-    title: str
-    objective: str
+class TreatmentEvaluation(BaseModel):
+    phase_specific_evaluation_criteria: str
+    challenge: str
+    emotional_disturbance: str
+    recommended_step_to_swift_to: str
 
-class TreatmentStrategy(BaseModel):
-    issue: str
-    goal: str
-    treatment_direction: str
-    depth: str
-    intervention_techniques: List[str]
-    improvement_methods: List[str]
+class TreatmentStep(BaseModel):
+    title: str
+    therapeutic_goal: str
+    explanation_of_technique: str
 
 class IssueTreatmentStrategy(BaseModel):
-    therapy_issue_objective: TherapyIssueObjective
-    treatment_strategy: TreatmentStrategy
-    next_therapy_goal: str
-    title: str
-    range: List[str]
+    treatment_evaluations: TreatmentEvaluation
+    treatment_steps: TreatmentStep
+    issue: str
+    goal: str
+    focus_of_stepped_care: str
 
 # endregion
 
@@ -36,6 +35,7 @@ class SingleHomework(BaseModel):
     goal: str
     task: str
     steps: list[str]
+    example: list[str]
 
 class HomeworkAssignment(BaseModel):
     homeworks: list[SingleHomework]
@@ -45,7 +45,7 @@ class HomeworkAssignment(BaseModel):
 # region Case Conceptualization
 class MeanOfAT(BaseModel):
     situation: str
-    mean_of_AT: str
+    meaning_of_AT: str
 
 class RelevantHistoryPrecipitant(BaseModel):
     relevant_life_history: list[str]
@@ -80,7 +80,7 @@ class SingleCognitiveModel(BaseModel):
 class CaseConceptualizationModel(BaseModel):
     core_intermediate_belief: CoreIntermediateBelief
     relevant_history_precipitants: RelevantHistoryPrecipitant
-    mean_of_AT: list[MeanOfAT]
+    meaning_of_AT: list[MeanOfAT]
     cognitive_model: list[SingleCognitiveModel]
     coping_strategy: CopingStrategy
 

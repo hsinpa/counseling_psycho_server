@@ -31,9 +31,9 @@ Output in JSON format, the schema is define as follows
         "symptom_characteristics": "",
         "intervention_technique_type": "choose from the eight major types",
         "specific_therapy_method": "a specific approach within the eight major types",
-        "therapy_direction": "a specific approach within the eight major types",
-        "treatment_difficulty": "a specific approach within the eight major types",
-        "treatment_limitation": "a specific approach within the eight major types"    
+        "therapy_direction": "",
+        "treatment_difficulty": "",
+        "treatment_limitation": ""    
     }}
     ]
 }}
