@@ -11,8 +11,9 @@ given action_plan:
 ```
 given knowledge_graph:
 ```
-{Knowledge_Graph_of_Issue}
+{knowledge_graph_issue}
 ```
+
 Requirements:
 Based on the information from the Knowledge Graph of the issue, extract relevant insights from the conversation to design a series of homework assignments.
 1. Design homework assignments based on this session's dialogue. The homework must include both cognitive and behavioral components.
@@ -29,7 +30,10 @@ Last output in JSON format, with following format
             "goal": "Goal of homework",
             "task": "The action to take for homework", 
             "steps": [
-                How to accomplish this homework in steps
+                Executable plan step on this homework; in string format
+            ],
+            "example": [
+                Example per step, on how patient can perform the plan step in daily life; in string format
             ]
         }}
     ],

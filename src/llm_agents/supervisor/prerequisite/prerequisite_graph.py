@@ -5,7 +5,7 @@ from langchain_core.output_parsers import StrOutputParser
 
 from src.llm_agents.agent_interface import GraphAgent
 from src.llm_agents.llm_model import ILLMLoader
-from src.llm_agents.supervisor.case_concept.case_concept_state import CaseConceptState
+from src.llm_agents.supervisor.case_treatment.case_treatment_state import CaseTreatmentState
 from src.llm_agents.supervisor.prerequisite.prerequisite_state import PrerequisiteState
 from src.llm_agents.supervisor.prerequisite.prompt.prerequisite_1_1_en_prompt import \
     PREREQUISITE_PROMPT_1_1_TREATMENT_FRAMEWORK

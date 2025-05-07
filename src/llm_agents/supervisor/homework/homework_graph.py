@@ -32,7 +32,7 @@ class HomeworkGraph(GraphAgent):
         return {'action_plan': r}
 
     async def _homework_assignment_node(self, state: HomeworkState):
-        prompt_factory = SimplePromptFactory(llm_model=self._llm_loader.get_llm_model(OpenAI_Model_41_mini))
+        prompt_factory = SimplePromptFactory(llm_model=self._llm_loader.get_llm_model(Gemini_Model_2_0_Flash))
         chain = prompt_factory.create_chain(
             output_parser=StrOutputParser(),
             human_prompt_text=HOMEWORK_3_2_4_ASSIGNMENT_PROMPT,
