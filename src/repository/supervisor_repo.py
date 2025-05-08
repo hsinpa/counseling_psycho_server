@@ -71,8 +71,8 @@ class SupervisorRepo:
         treatment_strategy_raw = parse_json(state['case_treatment']['case_treatment_strategy'])
         treatment_evaluation_raw = parse_json(state['case_treatment']['case_phase_evaluation_criteria'])
 
-        for treatment_strategy_json, treatment_evaluation_json  in zip(treatment_strategy_raw['issue'],
-                                                        treatment_evaluation_raw['issue']):
+        for treatment_strategy_json, treatment_evaluation_json  in zip(treatment_strategy_raw['issues'],
+                                                        treatment_evaluation_raw['issues']):
             issue_name = treatment_strategy_json['issue']
             goal = treatment_strategy_json['goal']
             focus_of_stepped_care = treatment_strategy_json['focus_of_stepped_care']

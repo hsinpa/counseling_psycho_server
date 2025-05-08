@@ -12,7 +12,7 @@ DB_SUPERVISOR_REPORT_TABLE = 'supervisor_report'
 class TreatmentEvaluation(BaseModel):
     phase_specific_evaluation_criteria: str
     challenge: str
-    emotional_disturbance: str
+    emotional_disturbance: bool
     recommended_step_to_swift_to: str
 
 class TreatmentStep(BaseModel):
@@ -21,8 +21,8 @@ class TreatmentStep(BaseModel):
     explanation_of_technique: str
 
 class IssueTreatmentStrategy(BaseModel):
-    treatment_evaluations: TreatmentEvaluation
-    treatment_steps: TreatmentStep
+    treatment_evaluations: list[TreatmentEvaluation]
+    treatment_steps: list[TreatmentStep]
     issue: str
     goal: str
     focus_of_stepped_care: str

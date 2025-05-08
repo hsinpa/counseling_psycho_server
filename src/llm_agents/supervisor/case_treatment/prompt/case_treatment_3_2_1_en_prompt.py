@@ -18,6 +18,7 @@ Also, consider where the issue appears within the overall treatment framework, a
 
 Note: Before scheduling any behavioral activity, ensure there is a preceding step focused on emotional stabilization.
 Choosing the focus of the column 'steps' with special care: to prioritize treatment focus, it is necessary to include the cognitive, emotional, and behavioral dimensions. (e.g. cognition - emotion - behavior)
+The size of column 'steps' array, can not exceed six.
 
 Output in JSON format, the schema is define as follows
 ```json

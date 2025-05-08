@@ -11,7 +11,7 @@ from src.utility.langfuse_helper import get_langfuse_callback
 @pytest.mark.asyncio
 async def test_supervisor_requisite_plan():
     # Arrange
-    with open("./assets/text/mock/mock_conversation_1.txt", encoding='utf-8') as f:
+    with open("./assets/text/mock/mock_conversation_2.txt", encoding='utf-8') as f:
         mock_data: str = f.read()
 
     supervisor_graph = SupervisorGraph(llm_loader=classic_llm_loader)

@@ -18,8 +18,6 @@ from src.llm_agents.supervisor.case_treatment.prompt.case_treatment_data import 
     THERAPEUTIC_HIERARCHY,
     Methods,
 )
-from src.llm_agents.supervisor.prerequisite.prompt.prerequisite_1_2_en_prompt import \
-    PREREQUISITE_PROMPT_1_2_THERAPY_OBJECTIVE
 from src.utility.simple_prompt_factory import SimplePromptFactory
 from src.utility.static_text import Gemini_Model_2_0_Flash
 
