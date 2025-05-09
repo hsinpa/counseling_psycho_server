@@ -1,7 +1,7 @@
 from fastapi import APIRouter, BackgroundTasks, HTTPException
 
-from src.llm_agents.chatbot.chatbot_manager import ChatbotManager
-from src.llm_agents.chatbot.db_ops.chatbot_relation_db import get_chatroom_message
+from src.feature.chatbot.chatbot_manager import ChatbotManager
+from src.feature.chatbot.db_ops.chatbot_relation_db import get_chatroom_message
 from src.model.chatbot_model import ChatbotUserInputType
 from src.service.streaming.websocket_manager import get_websocket
 

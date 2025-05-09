@@ -2,8 +2,8 @@ import json
 
 import pytest
 
-from src.llm_agents.llm_model import classic_llm_loader
-from src.llm_agents.supervisor.supervisor_main_graph import SupervisorGraph
+from src.feature.llm_model import classic_llm_loader
+from src.feature.supervisor.supervisor_main_graph import SupervisorGraph
 from src.repository.supervisor_repo import SupervisorRepo
 from src.utility.langfuse_helper import get_langfuse_callback
 

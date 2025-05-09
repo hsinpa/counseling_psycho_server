@@ -1,11 +1,11 @@
 from typing import List
 
-from src.llm_agents.llm_model import ILLMLoader
-from src.llm_agents.supervisor.supervisor_model import CaseConceptualizationModel, CoreIntermediateBelief, \
+from src.feature.llm_model import ILLMLoader
+from src.feature.supervisor.supervisor_model import CaseConceptualizationModel, CoreIntermediateBelief, \
     RelevantHistoryPrecipitant, MeanOfAT, SingleCognitiveModel, CopingStrategy, SupervisorAnalysisRespModel, \
     HomeworkAssignment, IssueTreatmentStrategy, TreatmentStep, TreatmentEvaluation
-from src.llm_agents.supervisor.supervisor_main_graph import SupervisorGraph
-from src.llm_agents.supervisor.supervisor_main_state import SupervisorMainState
+from src.feature.supervisor.supervisor_main_graph import SupervisorGraph
+from src.feature.supervisor.supervisor_main_state import SupervisorMainState
 from src.utility.langfuse_helper import get_langfuse_callback
 from src.utility.utility_method import parse_json
 from pydantic import TypeAdapter

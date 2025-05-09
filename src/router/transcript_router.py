@@ -1,7 +1,7 @@
 import asyncio
 from fastapi import APIRouter, UploadFile, File, Form
-from src.llm_agents.supervisor.database.transcript_db_ops import TranscriptDBOps
-from src.llm_agents.supervisor.supervisor_utility import (
+from src.feature.supervisor.database.transcript_db_ops import TranscriptDBOps
+from src.feature.supervisor.supervisor_utility import (
     text_to_transcript_segment,
 )
 from src.model.supervisor_model import SpeechToTextLangEnum, RetrieveSpeechToTextInputModel, TranscribeStatus, \

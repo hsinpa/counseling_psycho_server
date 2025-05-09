@@ -1,10 +1,10 @@
 from fastapi import APIRouter, HTTPException, BackgroundTasks
 
-from src.llm_agents.talk_simulation.answers.answer_question_manager import AnswerQuestionManager
-from src.llm_agents.talk_simulation.detail_report.report_theory_manager import ReportTheoryManager
-from src.llm_agents.talk_simulation.talk_simulation_db_ops import db_ops_get_simulation_external_view, \
+from src.feature.talk_simulation.answers.answer_question_manager import AnswerQuestionManager
+from src.feature.talk_simulation.detail_report.report_theory_manager import ReportTheoryManager
+from src.feature.talk_simulation.talk_simulation_db_ops import db_ops_get_simulation_external_view, \
     db_ops_save_gen_questionnaire
-from src.llm_agents.talk_simulation.questionaire.talk_sim_questionnaire_manager import TalkSimulationManager
+from src.feature.talk_simulation.questionaire.talk_sim_questionnaire_manager import TalkSimulationManager
 from src.model.talk_simulation_model import SimulationThemeCheckboxesType, SimulationQuesUserInputType, \
     GLOBAL_SIMULATION_CHECKBOXES, SimulationQuizInput, StreamSimulationInput
 from src.service.relation_db.postgresql_db_client import PostgreSQLClient

@@ -1,9 +1,9 @@
 from fastapi import APIRouter, BackgroundTasks, HTTPException
-from src.llm_agents.llm_model import classic_llm_loader
-from src.llm_agents.supervisor.database.supervisor_db_ops import SupervisorReportDBOps
-from src.llm_agents.supervisor.database.transcript_db_ops import TranscriptDBOps
-from src.llm_agents.supervisor.supervisor_model import SupervisorAnalysisRespModel
-from src.llm_agents.supervisor.supervisor_utility import (
+from src.feature.llm_model import classic_llm_loader
+from src.feature.supervisor.database.supervisor_db_ops import SupervisorReportDBOps
+from src.feature.supervisor.database.transcript_db_ops import TranscriptDBOps
+from src.feature.supervisor.supervisor_model import SupervisorAnalysisRespModel
+from src.feature.supervisor.supervisor_utility import (
     transcript_segment_to_text,
 )
 from src.model.supervisor_model import TranscriptData, AnalyzeSpeechToReportInputModel

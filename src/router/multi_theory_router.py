@@ -2,8 +2,8 @@ from uuid import uuid4
 
 from fastapi import APIRouter, HTTPException, BackgroundTasks
 
-from src.llm_agents.mix_theory.mix_theory_manager import MixTheoryManager
-from src.llm_agents.report_features import stream_multi_theory_report
+from src.feature.mix_theory.mix_theory_manager import MixTheoryManager
+from src.feature.report_features import stream_multi_theory_report
 from src.model.multi_theory_model import MultiTheoriesDataType, MultiTheoryInputType, \
     MultiTheoryRespType, MixTheoryInputType, MixTheoryRespType
 from src.utility.static_text import MAX_TOKEN
