@@ -30,16 +30,14 @@ Last output in JSON format, with following format
             "goal": "Goal of homework",
             "task": "The action to take for homework", 
             "steps": [
-                Executable plan step on this homework; in string format
-            ],
-            "example": [
-                Example per step, on how patient can perform the plan step in daily life; in string format
+                {{
+                    "plan": "string type; Executable plan step on this homework; in string format",
+                    "example": "string type; one concrete example on how patient can perform the plan step in daily life"
+                }}
             ]
         }}
     ],
-    "reflection_questions": [
-        The possible reflection questions for next session, in string format
-    ]
+    "reflection_questions": ["The possible reflection questions for next session"]
 }}
 ```
 """

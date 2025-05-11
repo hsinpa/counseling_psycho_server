@@ -50,15 +50,16 @@ class SupervisorRepo:
         cognitive_model_adapter = TypeAdapter(List[SingleCognitiveModel])
         cognitive_models = cognitive_model_adapter.validate_python(cognitive_model_json['cognitive_model'])
 
-        coping_strategy_json = parse_json(state['strategy']['coping_strategy'])
-        coping_strategy = CopingStrategy(**coping_strategy_json)
+        coping_strategy_json = parse_json(state['strategy']['coping_strategies'])
+        coping_strategy_adapter = TypeAdapter(List[CopingStrategy])
+        coping_strategies = coping_strategy_adapter.validate_python(coping_strategy_json['strategies'])
 
         return CaseConceptualizationModel(
             core_intermediate_belief=core_intermediate_belief,
             relevant_history_precipitants=relevant_history_precipitants,
             meaning_of_AT=mean_of_AT,
             cognitive_model=cognitive_models,
-            coping_strategy=coping_strategy,
+            coping_strategies=coping_strategies,
         )
 
     def _post_process_homework(self, state: SupervisorMainState) -> HomeworkAssignment:

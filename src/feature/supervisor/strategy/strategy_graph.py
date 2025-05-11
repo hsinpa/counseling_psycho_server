@@ -106,7 +106,7 @@ class StrategyGraph(GraphAgent):
                                  'relevant_history_and_precipitants': state['relevant_history_precipitants'],
                                  'core_belief_and_intermediate_belief': state['core_intermediate_belief']})
 
-        return {'coping_strategy': r}
+        return {'coping_strategies': r}
 
     async def _situation_relevant_issue_node(self, state: StrategyState):
         """Step 2_3_3"""
@@ -141,7 +141,7 @@ class StrategyGraph(GraphAgent):
             human_prompt_text=STRATEGY_PROMPT_2_3_4_KNOWLEDGE_GRAPH_ISSUE,
         ).with_config({"run_name": '2-3-4 Batch Knowledge Graph'})
 
-        r = await chain.ainvoke({'coping_strategy': state['coping_strategy'],
+        r = await chain.ainvoke({'coping_strategy': state['coping_strategies'],
                                  'therapy_issue_and_objective': state['therapy_issue_objective'],
                                  'chosen_issue': issue,
                                  'cognitive_model': state['cognitive_model'],

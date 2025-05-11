@@ -31,12 +31,15 @@ class IssueTreatmentStrategy(BaseModel):
 # endregion
 
 # region Homework
+class SingleHomeworkStep(BaseModel):
+    plan: str
+    example: str
+
 class SingleHomework(BaseModel):
     title: str
     goal: str
     task: str
-    steps: list[str]
-    example: list[str]
+    steps: list[SingleHomeworkStep]
 
 class HomeworkAssignment(BaseModel):
     homeworks: list[SingleHomework]
@@ -67,9 +70,10 @@ class CoreIntermediateBelief(BaseModel):
     intermediate_beliefs: list[IntermediateBelief]
 
 class CopingStrategy(BaseModel):
-    summaries: List[str]
-    rules: List[str]
-    attitudes: List[str]
+    title: str
+    summary: str
+    rule: str
+    attitude: str
 
 class SingleCognitiveModel(BaseModel):
     situation: str
@@ -83,7 +87,7 @@ class CaseConceptualizationModel(BaseModel):
     relevant_history_precipitants: RelevantHistoryPrecipitant
     meaning_of_AT: list[MeanOfAT]
     cognitive_model: list[SingleCognitiveModel]
-    coping_strategy: CopingStrategy
+    coping_strategies: list[CopingStrategy]
 
 # endregion
 

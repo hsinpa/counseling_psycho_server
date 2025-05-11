@@ -45,8 +45,11 @@ Coping Strategy: The client's coping measures based on these assumptions.
 
 Output in json format as follow:
 {{
-    "summaries": [maladaptive coping strategies related to the Core Belief and Intermediate Belief],
-    "rules": [The client's understanding of things based on these assumptions],
-    "attitudes": [The client's attitude toward things under these assumptions]
+    "strategies": [
+        title: "The concise and short name of this strategy. Maximum two words, and can not be duplicate to other strategies",
+        "summary": "string type, maladaptive coping strategies related to the Core Belief and Intermediate Belief",
+        "rule": "string type,the client's understanding of things based on these assumptions",
+        "attitude": "string type, the client's attitude toward things under these assumptions"
+    ]
 }}
 """

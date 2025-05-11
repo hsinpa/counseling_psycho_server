@@ -13,6 +13,6 @@ class StrategyState(TypedDict):
     meaning_of_AT: str
 
     relevant_history_precipitants: str
-    coping_strategy: str
+    coping_strategies: str
     situations_relevant_to_issue: str
     knowledge_graph_issue: str
