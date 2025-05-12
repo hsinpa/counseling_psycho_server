@@ -10,7 +10,7 @@ from src.feature.supervisor.supervisor_model import SupervisorAnalysisRespModel
 from src.feature.supervisor.supervisor_utility import (
     transcript_segment_to_text,
 )
-from src.model.supervisor_model import TranscriptData, AnalyzeSpeechToReportInputModel
+from src.model.supervisor_model import TranscriptData, AnalyzeSpeechToReportInputModel, RetrieveSpeechToTextInputModel
 from src.repository.supervisor_repo import SupervisorRepo
 from src.service.relation_db.postgresql_db_client import PostgreSQLClient
 from src.service.streaming.sse_manager import get_sse
@@ -61,6 +61,35 @@ async def analyze_speech_to_report(p_input: AnalyzeSpeechToReportInputModel) -> 
 async def async_analyze_speech_to_report(p_input: AnalyzeSpeechToReportInputModel, background_tasks: BackgroundTasks):
     background_tasks.add_task(analyze_speech_to_report, p_input)
     return {'session_id': p_input.session_id, 'socket_id': p_input.socket_id}
+
+
+@router.post("/manual_trigger_supervisor_analysis",
+         response_class=StreamingResponse,          # OpenAPI metadata
+         responses={200: {"content": {
+             "application/vnd.openxmlformats-officedocument.wordprocessingml.document": {}
+         }}})
+async def export_analyze_speech_to_report(p_input: RetrieveSpeechToTextInputModel) -> StreamingResponse:
+    report = await get_speech_to_report(p_input.session_id)
+
+    analysis_resp = SupervisorAnalysisRespModel(
+        case_conceptualization=report["case_conceptualization"],
+        homework_assignment=report["homework_assignment"],
+        issue_treatment_strategies=report["issue_treatment_strategies"],
+    )
+
+    supervisor_docx_exporter = SupervisorDocxExporter()
+    buffer = supervisor_docx_exporter.export(analysis_resp)
+
+    headers = {
+        "Content-Disposition": 'attachment; filename="report.docx"'
+    }
+
+    return StreamingResponse(
+        buffer,
+        media_type="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        headers=headers,
+    )
+
 
 @router.post("/manual_trigger_supervisor_analysis",
          response_class=StreamingResponse,          # OpenAPI metadata
