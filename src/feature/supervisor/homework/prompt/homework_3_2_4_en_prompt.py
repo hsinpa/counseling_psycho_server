@@ -14,11 +14,10 @@ given knowledge_graph:
 {knowledge_graph_issue}
 ```
 
-Requirements:
+output requirements:
 Based on the information from the Knowledge Graph of the issue, extract relevant insights from the conversation to design a series of homework assignments.
-1. Design homework assignments based on this session's dialogue. The homework must include both cognitive and behavioral components.
-2. To encourage clients to self-reflect between sessions, create three questions based on this week’s assignment, each consisting of only one question. 
-The goals are to increase self-awareness, enhance cognitive restructuring, develop emotion regulation skills, and promote behavioral activation, laying the foundation for the next phase of treatment.
+1. Design 1-3 homework assignments based on this session's dialogue. The homework must include both cognitive and behavioral components.
+2. To encourage clients to self-reflect between sessions, create three questions based on this week’s assignment, each consisting of only one question. The goals are to increase self-awareness, enhance cognitive restructuring, develop emotion regulation skills, and promote behavioral activation, laying the foundation for the next phase of treatment.
 
 Last output in JSON format, with following format
 
