@@ -63,7 +63,7 @@ async def async_analyze_speech_to_report(p_input: AnalyzeSpeechToReportInputMode
     return {'session_id': p_input.session_id, 'socket_id': p_input.socket_id}
 
 
-@router.post("/manual_trigger_supervisor_analysis",
+@router.post("/trigger_supervisor_analysis",
          response_class=StreamingResponse,          # OpenAPI metadata
          responses={200: {"content": {
              "application/vnd.openxmlformats-officedocument.wordprocessingml.document": {}
