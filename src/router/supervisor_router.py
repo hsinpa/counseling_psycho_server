@@ -44,10 +44,15 @@ async def analyze_speech_to_report(p_input: AnalyzeSpeechToReportInputModel) -> 
                                                 status=DB_TRANSCRIPT_STATUS_COMPLETE)
 
     supervisor_repo = SupervisorRepo(llm_loader=classic_llm_loader)
+
+    supervisor_db_id_dict = await supervisor_report_db.db_ops_insert_empty_supervisor_report(
+        transcript_id=transcript_data.id,
+    )
+    supervisor_db_id = supervisor_db_id_dict['id']
     repo_result = await supervisor_repo.generate_analysis_report(full_text)
 
-    await supervisor_report_db.db_ops_insert_supervisor_report(
-        transcript_id=transcript_data.id,
+    await supervisor_report_db.db_ops_update_supervisor_report(
+        supervisor_report_id=supervisor_db_id,
         analysis_data=repo_result
     )
 
