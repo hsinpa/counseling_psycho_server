@@ -27,6 +27,7 @@ class TranscriptData(BaseModel):
 
 class TranscribeStatus(BaseModel):
     status: TranscribeProgressEnum
+    report_status: TranscribeProgressEnum
     transcript_data: Optional[TranscriptData] = None
 
 # region API

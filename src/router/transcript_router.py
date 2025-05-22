@@ -73,10 +73,13 @@ async def retrieve_speech_to_text(session_id: str) -> TranscribeStatus:
     db_result = await transcript_db.db_ops_get_transcript_info(session_id)
 
     if db_result is not None and db_result.status == DB_TRANSCRIPT_STATUS_COMPLETE:
-        return TranscribeStatus(status=TranscribeProgressEnum.complete, transcript_data=TranscriptData(
-            full_text=db_result.full_text,
-            segments=db_result.segments,
-        ))
+        return TranscribeStatus(status=TranscribeProgressEnum.complete,
+            report_status=TranscribeProgressEnum.complete,
+            transcript_data=TranscriptData(
+                                full_text=db_result.full_text,
+                                segments=db_result.segments,
+            )
+        )
 
     # Query AWS Transcribe
     try:
@@ -89,12 +92,11 @@ async def retrieve_speech_to_text(session_id: str) -> TranscribeStatus:
 
             await transcript_db.db_ops_update_transcript_info(session_id, transcript_data, DB_TRANSCRIPT_STATUS_COMPLETE)
 
-            return TranscribeStatus(status=status, transcript_data=transcript_data)
-
-        return TranscribeStatus(status=status)
+            return TranscribeStatus(status=status, report_status=TranscribeProgressEnum.fail, transcript_data=transcript_data)
+        return TranscribeStatus(status=status, report_status=TranscribeProgressEnum.fail)
     except Exception as e:
         print(f'retrieve_speech_to_text session {session_id} fail', e)
-        return TranscribeStatus(status=TranscribeProgressEnum.fail)
+        return TranscribeStatus(status=TranscribeProgressEnum.fail, report_status=TranscribeProgressEnum.fail)
 
 @router.delete("/delete_transcript")
 async def delete_transcript(param_input: RetrieveSpeechToTextInputModel):

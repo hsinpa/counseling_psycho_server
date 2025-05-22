@@ -30,25 +30,12 @@ async def get_speech_to_report(session_id: str):
 
     return report
 
-@router.post("/analyze_speech_to_report")
-async def analyze_speech_to_report(p_input: AnalyzeSpeechToReportInputModel) -> SupervisorAnalysisRespModel:
+async def analyze_speech_to_report(p_input: AnalyzeSpeechToReportInputModel, supervisor_db_id: int) -> SupervisorAnalysisRespModel:
     postgres_client = PostgreSQLClient()
     supervisor_report_db = SupervisorReportDBOps(postgres_client)
-    transcript_db = TranscriptDBOps(postgres_client)
-
-    full_text = transcript_segment_to_text(p_input.segments)
-    transcript_data = await transcript_db.db_ops_get_transcript_info(p_input.session_id)
-
-    await transcript_db.db_ops_update_transcript_info(p_input.session_id,
-                                                TranscriptData(full_text=full_text, segments=p_input.segments),
-                                                status=DB_TRANSCRIPT_STATUS_COMPLETE)
-
     supervisor_repo = SupervisorRepo(llm_loader=classic_llm_loader)
+    full_text = transcript_segment_to_text(p_input.segments)
 
-    supervisor_db_id_dict = await supervisor_report_db.db_ops_insert_empty_supervisor_report(
-        transcript_id=transcript_data.id,
-    )
-    supervisor_db_id = supervisor_db_id_dict['id']
     repo_result = await supervisor_repo.generate_analysis_report(full_text)
 
     await supervisor_report_db.db_ops_update_supervisor_report(
@@ -64,7 +51,24 @@ async def analyze_speech_to_report(p_input: AnalyzeSpeechToReportInputModel) -> 
 
 @router.post("/async_analyze_speech_to_report")
 async def async_analyze_speech_to_report(p_input: AnalyzeSpeechToReportInputModel, background_tasks: BackgroundTasks):
-    background_tasks.add_task(analyze_speech_to_report, p_input)
+    postgres_client = PostgreSQLClient()
+    supervisor_report_db = SupervisorReportDBOps(postgres_client)
+    transcript_db = TranscriptDBOps(postgres_client)
+
+    full_text = transcript_segment_to_text(p_input.segments)
+    transcript_data = await transcript_db.db_ops_get_transcript_info(p_input.session_id)
+
+    await transcript_db.db_ops_update_transcript_info(p_input.session_id,
+                                                TranscriptData(full_text=full_text, segments=p_input.segments),
+                                                status=DB_TRANSCRIPT_STATUS_COMPLETE)
+
+    supervisor_db_id_dict = await supervisor_report_db.db_ops_insert_empty_supervisor_report(
+        transcript_id=transcript_data.id,
+    )
+    supervisor_db_id = supervisor_db_id_dict['id']
+
+    background_tasks.add_task(analyze_speech_to_report, p_input, supervisor_db_id)
+
     return {'session_id': p_input.session_id, 'socket_id': p_input.socket_id}
 
 
