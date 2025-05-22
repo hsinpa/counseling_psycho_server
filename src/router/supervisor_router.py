@@ -28,6 +28,7 @@ async def get_speech_to_report(session_id: str):
     if report is None:
         raise HTTPException(status_code=404, detail=f"report from {session_id} do not exist")
 
+    print(report)
     return report
 
 async def analyze_speech_to_report(p_input: AnalyzeSpeechToReportInputModel, supervisor_db_id: int) -> SupervisorAnalysisRespModel:

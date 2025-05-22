@@ -26,8 +26,8 @@ class TranscriptData(BaseModel):
     segments: list[TranscriptSegment]
 
 class TranscribeStatus(BaseModel):
-    status: TranscribeProgressEnum
-    report_status: TranscribeProgressEnum
+    status: str
+    report_status: str
     transcript_data: Optional[TranscriptData] = None
 
 # region API
@@ -47,6 +47,7 @@ class TranscriptDBType(BaseModel):
     user_id: str
     full_text: str
     status: str
+    report_status: Optional[str] = None
     segments: list[TranscriptSegment]
 
 # endregion

@@ -19,7 +19,7 @@ class SupervisorReportDBOps:
         sql_syntax = (f"SELECT sr.* FROM {DB_SUPERVISOR_REPORT_TABLE} sr "
                       f"JOIN {DB_TRANSCRIPT_TABLE} t ON sr.transcript_id = t.id "
                       f"WHERE t.session_id=%s "
-                      f"ORDER BY sr.created_date DESC LIMIT 1")
+                      f"ORDER BY sr.id DESC LIMIT 1")
 
         return await self._client.async_db_ops(sql_syntax=sql_syntax, fetch_type=FetchType.One,
                                         parameters=[session_id])

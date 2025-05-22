@@ -21,6 +21,8 @@ class TranscriptDBOps:
             segments = segments_adapter.validate_python(raw_data['segments'])
             del raw_data['segments']
 
+            print('convert_db_data_to_pydantic_type', raw_data)
+
             return TranscriptDBType(
                 **raw_data,
                 segments=segments
