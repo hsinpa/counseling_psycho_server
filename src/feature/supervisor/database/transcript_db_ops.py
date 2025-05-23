@@ -47,7 +47,7 @@ class TranscriptDBOps:
         sql_syntax = (f"SELECT t.*, sr.status as report_status, sr.id as supervisor_report_id "
                       f"FROM {DB_TRANSCRIPT_TABLE} t "
                       f"LEFT JOIN {DB_SUPERVISOR_REPORT_TABLE} sr ON sr.transcript_id = t.id "
-                      f"WHERE session_id=%s")
+                      f"WHERE session_id=%s ORDER BY sr.id DESC")
 
         result = await self._client.async_db_ops(sql_syntax=sql_syntax, fetch_type=FetchType.One, parameters=[session_id])
         if result is not None:
