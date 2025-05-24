@@ -1,13 +1,13 @@
 from typing import List
 
-from src.llm_agents.llm_model import ILLMLoader
-from src.llm_agents.supervisor.supervisor_model import CaseConceptualizationModel, CoreIntermediateBelief, \
+from src.feature.llm_model import ILLMLoader
+from src.feature.supervisor.supervisor_model import CaseConceptualizationModel, CoreIntermediateBelief, \
     RelevantHistoryPrecipitant, MeanOfAT, SingleCognitiveModel, CopingStrategy, SupervisorAnalysisRespModel, \
-    HomeworkAssignment, IssueTreatmentStrategy, TherapyIssueObjective, TreatmentStrategy
-from src.llm_agents.supervisor.supervisor_main_graph import SupervisorGraph
-from src.llm_agents.supervisor.supervisor_main_state import SupervisorMainState
+    HomeworkAssignment, IssueTreatmentStrategy, TreatmentStep, TreatmentEvaluation
+from src.feature.supervisor.supervisor_main_graph import SupervisorGraph
+from src.feature.supervisor.supervisor_main_state import SupervisorMainState
 from src.utility.langfuse_helper import get_langfuse_callback
-from src.utility.utility_method import parse_json
+from src.utility.utility_method import parse_json, clamp
 from pydantic import TypeAdapter
 
 
@@ -42,7 +42,7 @@ class SupervisorRepo:
         relevant_history_precipitants_json = parse_json(state['strategy']['relevant_history_precipitants'])
         relevant_history_precipitants = RelevantHistoryPrecipitant(**relevant_history_precipitants_json)
 
-        mean_of_AT_json = parse_json(state['strategy']['mean_of_AT'])
+        mean_of_AT_json = parse_json(state['strategy']['meaning_of_AT'])
         mean_of_AT_adapter = TypeAdapter(List[MeanOfAT])
         mean_of_AT = mean_of_AT_adapter.validate_python(mean_of_AT_json['situations'])
 
@@ -50,15 +50,16 @@ class SupervisorRepo:
         cognitive_model_adapter = TypeAdapter(List[SingleCognitiveModel])
         cognitive_models = cognitive_model_adapter.validate_python(cognitive_model_json['cognitive_model'])
 
-        coping_strategy_json = parse_json(state['strategy']['coping_strategy'])
-        coping_strategy = CopingStrategy(**coping_strategy_json)
+        coping_strategy_json = parse_json(state['strategy']['coping_strategies'])
+        coping_strategy_adapter = TypeAdapter(List[CopingStrategy])
+        coping_strategies = coping_strategy_adapter.validate_python(coping_strategy_json['strategies'])
 
         return CaseConceptualizationModel(
             core_intermediate_belief=core_intermediate_belief,
             relevant_history_precipitants=relevant_history_precipitants,
-            mean_of_AT=mean_of_AT,
+            meaning_of_AT=mean_of_AT,
             cognitive_model=cognitive_models,
-            coping_strategy=coping_strategy,
+            coping_strategies=coping_strategies,
         )
 
     def _post_process_homework(self, state: SupervisorMainState) -> HomeworkAssignment:
@@ -67,25 +68,35 @@ class SupervisorRepo:
 
     def _post_issue_treament_strategy(self, state: SupervisorMainState) -> List[IssueTreatmentStrategy]:
         issue_treatment_strategies: List[IssueTreatmentStrategy] = []
-        therapy_issue_objective_json = parse_json(state['pre_requisites']['therapy_issue_objective'])
-        treatment_strategy_json = parse_json(state['strategy']['treatment_strategy'])
-        next_therapy_goal_json = parse_json(state['strategy']['next_therapy_goal'])
 
-        for therapeutic_issue, treatment_strategy, next_therapy_goal,  in zip(therapy_issue_objective_json['therapeutic_issues'],
-                                                                              treatment_strategy_json['issues'],
-                                                                              next_therapy_goal_json['next_therapy_goals']):
-            issue_objective = TherapyIssueObjective(**therapeutic_issue)
-            treatment_strategy = TreatmentStrategy(**treatment_strategy)
-            next_goal: str = next_therapy_goal['goal']
+        treatment_strategy_raw = parse_json(state['case_treatment']['case_treatment_strategy'])
+        treatment_evaluation_raw = parse_json(state['case_treatment']['case_phase_evaluation_criteria'])
 
-            issue_title, issue_talk_range = parse_therapy_issue_name(issue_objective.title)
-            issue_treatment_strategies.append(IssueTreatmentStrategy(
-                therapy_issue_objective=issue_objective,
-                treatment_strategy=treatment_strategy,
-                next_therapy_goal=next_goal,
-                title=issue_title,
-                range=issue_talk_range,
-            ))
+        for treatment_strategy_json, treatment_evaluation_json  in zip(treatment_strategy_raw['issues'],
+                                                        treatment_evaluation_raw['issues']):
+            issue_name = treatment_strategy_json['issue']
+            goal = treatment_strategy_json['goal']
+            focus_of_stepped_care = treatment_strategy_json['focus_of_stepped_care']
+
+            treatment_step_adapter = TypeAdapter(List[TreatmentStep])
+            treatment_steps = treatment_step_adapter.validate_python(treatment_strategy_json['steps'])
+
+            treatment_evaluation_adapter = TypeAdapter(List[TreatmentEvaluation])
+            treatment_evaluations = treatment_evaluation_adapter.validate_python(treatment_evaluation_json['steps'])
+
+            # Make sure the step index, make sense
+            for index, evaluation in enumerate(treatment_evaluations):
+                evaluation.recommended_swift_step_index = clamp(evaluation.recommended_swift_step_index, 0, max(0, index))
+
+            issue_treatment_strategies.append(
+                IssueTreatmentStrategy(
+                    treatment_evaluations=treatment_evaluations,
+                    treatment_steps=treatment_steps,
+                    issue= issue_name,
+                    goal= goal,
+                    focus_of_stepped_care=focus_of_stepped_care,
+                )
+            )
 
         return issue_treatment_strategies
 

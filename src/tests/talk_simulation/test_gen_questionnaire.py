@@ -4,13 +4,13 @@ from typing import List
 import pytest
 from pydantic import TypeAdapter
 
-from src.llm_agents.talk_simulation.questionaire.gen_question_prompt import GENERATE_SIMULATION_QUESTION_SYSTEM_PROMPT, \
+from src.feature.talk_simulation.questionaire.gen_question_prompt import GENERATE_SIMULATION_QUESTION_SYSTEM_PROMPT, \
     GENERATE_SIMULATION_QUESTION_HUMAN_PROMPT, GENERATE_SIMULATION_ADVANCED_QUESTION_HUMAN_PROMPT, \
     GENERATE_SIMULATION_ADVANCED_QUESTION_SYSTEM_PROMPT
-from src.llm_agents.talk_simulation.questionaire.gen_question_static import LAST_QUESTION
-from src.llm_agents.talk_simulation.questionaire.talk_sim_questionnaire_agent import TalkSimQuestionnaireAgent
-from src.llm_agents.talk_simulation.talk_simulation_helper import questionnaire_records_to_string
-from src.llm_agents.talk_simulation.talk_simulation_type import GenQuestionParameterInterface, QuestionType
+from src.feature.talk_simulation.questionaire.gen_question_static import LAST_QUESTION
+from src.feature.talk_simulation.questionaire.talk_sim_questionnaire_agent import TalkSimQuestionnaireAgent
+from src.feature.talk_simulation.talk_simulation_helper import questionnaire_records_to_string
+from src.feature.talk_simulation.talk_simulation_type import GenQuestionParameterInterface, QuestionType
 from src.model.talk_simulation_model import SimulationQuesUserInputType
 from src.tests.dataset.questionnaires import Slot_Begin_Questionnaire_With_Answer
 from src.tests.talk_simulation.test_gen_answer import user_info

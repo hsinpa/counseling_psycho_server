@@ -3,7 +3,7 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from src.llm_agents.talk_simulation.talk_simulation_type import QuestionType
+from src.feature.talk_simulation.talk_simulation_type import QuestionType
 
 
 class SimulationThemeCheckboxType(BaseModel):

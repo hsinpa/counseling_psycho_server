@@ -3,8 +3,8 @@ from typing import List
 import pytest
 from pydantic import TypeAdapter
 
-from src.llm_agents.talk_simulation.answers.answer_question_agent import AnswerQuestionAgent
-from src.llm_agents.talk_simulation.talk_simulation_type import QuestionType
+from src.feature.talk_simulation.answers.answer_question_agent import AnswerQuestionAgent
+from src.feature.talk_simulation.talk_simulation_type import QuestionType
 from src.model.talk_simulation_model import SimulationQuesUserInputType
 from src.tests.dataset.questionnaires import Slot_Advanced_Questionnaire_With_No_Answer
 from src.tests.dataset.user_info import Basic_User_Info

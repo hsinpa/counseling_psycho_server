@@ -1,14 +1,14 @@
 import asyncio
 from fastapi import APIRouter, UploadFile, File, Form
-from src.llm_agents.supervisor.database.transcript_db_ops import TranscriptDBOps
-from src.llm_agents.supervisor.supervisor_utility import (
+from src.feature.supervisor.database.transcript_db_ops import TranscriptDBOps
+from src.feature.supervisor.supervisor_utility import (
     text_to_transcript_segment,
 )
 from src.model.supervisor_model import SpeechToTextLangEnum, RetrieveSpeechToTextInputModel, TranscribeStatus, \
     TranscriptData, TranscribeProgressEnum
 from src.service.relation_db.postgresql_db_client import PostgreSQLClient
 from src.service.speech_to_text.boto_helper import BotoHelper
-from src.utility.static_text import DB_TRANSCRIPT_STATUS_COMPLETE
+from src.utility.static_text import DB_TRANSCRIPT_STATUS_COMPLETE, DB_TRANSCRIPT_STATUS_IN_FAIL
 
 router = APIRouter(prefix="/api/transcript", tags=["Transcript"])
 
@@ -73,10 +73,13 @@ async def retrieve_speech_to_text(session_id: str) -> TranscribeStatus:
     db_result = await transcript_db.db_ops_get_transcript_info(session_id)
 
     if db_result is not None and db_result.status == DB_TRANSCRIPT_STATUS_COMPLETE:
-        return TranscribeStatus(status=TranscribeProgressEnum.complete, transcript_data=TranscriptData(
-            full_text=db_result.full_text,
-            segments=db_result.segments,
-        ))
+        return TranscribeStatus(status=DB_TRANSCRIPT_STATUS_COMPLETE,
+            report_status=db_result.report_status if db_result.report_status is not None else DB_TRANSCRIPT_STATUS_IN_FAIL,
+            transcript_data=TranscriptData(
+                                full_text=db_result.full_text,
+                                segments=db_result.segments,
+            )
+        )
 
     # Query AWS Transcribe
     try:
@@ -89,12 +92,11 @@ async def retrieve_speech_to_text(session_id: str) -> TranscribeStatus:
 
             await transcript_db.db_ops_update_transcript_info(session_id, transcript_data, DB_TRANSCRIPT_STATUS_COMPLETE)
 
-            return TranscribeStatus(status=status, transcript_data=transcript_data)
-
-        return TranscribeStatus(status=status)
+            return TranscribeStatus(status=status, report_status=DB_TRANSCRIPT_STATUS_IN_FAIL, transcript_data=transcript_data)
+        return TranscribeStatus(status=status, report_status=DB_TRANSCRIPT_STATUS_IN_FAIL)
     except Exception as e:
         print(f'retrieve_speech_to_text session {session_id} fail', e)
-        return TranscribeStatus(status=TranscribeProgressEnum.fail)
+        return TranscribeStatus(status=DB_TRANSCRIPT_STATUS_IN_FAIL, report_status=DB_TRANSCRIPT_STATUS_IN_FAIL)
 
 @router.delete("/delete_transcript")
 async def delete_transcript(param_input: RetrieveSpeechToTextInputModel):

@@ -7,10 +7,6 @@ from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Request
 from fastapi.responses import StreamingResponse
 
 from src.model.general_model import SocketEvent
-from src.router.questionnaire_router import router as questionnaire_router
-from src.router.multi_theory_router import router as multi_theory_router
-from src.router.chatbot_router import router as chatbot_router
-from src.router.talk_simulation_router import router as talk_router
 from src.router.supervisor_router import router as supervisor_router
 from src.router.transcript_router import router as transcript_router
 from src.router.account_router import router as account_router
@@ -25,10 +21,6 @@ load_dotenv()
 
 app = FastAPI(openapi_url="/docs/openapi.json", docs_url="/docs")
 app.include_router(account_router)
-app.include_router(questionnaire_router)
-app.include_router(multi_theory_router)
-app.include_router(chatbot_router)
-app.include_router(talk_router)
 app.include_router(supervisor_router)
 app.include_router(transcript_router)
 
