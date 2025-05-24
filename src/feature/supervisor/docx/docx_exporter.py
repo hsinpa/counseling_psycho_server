@@ -117,9 +117,10 @@ Attitude:
                 p.add_run(f'Challenge: ').bold = True
                 p.add_run(f'{criteria.challenge}').bold = False
 
-                p = document.add_paragraph('')
-                p.add_run(f'Recommended Step to Swift to: Step {criteria.recommended_swift_step_index+1}\n').bold = True
-                p.add_run(f'{criteria.recommended_step_to_swift_to}').bold = False
+                if criteria.recommended_swift_step_index > 0:
+                    p = document.add_paragraph('')
+                    p.add_run(f'Recommended Step to Swift to: Step {criteria.recommended_swift_step_index+1}\n').bold = True
+                    p.add_run(f'{criteria.recommended_step_to_swift_to}').bold = False
 
         document.add_page_break()
 

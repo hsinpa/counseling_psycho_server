@@ -42,7 +42,7 @@ Output in JSON format, the schema is define as follows
                 "phase_specific_evaluation_criteria": "",
                 "challenge": "Description of the difficulty encountered",
                 "emotional_disturbance": boolean type (true or false),
-                "recommended_step_to_swift_to": "string type, Step index (Make a decision based on the Decision Rules and provide an explanation)"
+                "recommended_step_to_swift_to": "string type, Which step index to fallback, when patient is not doing as plan (Make a decision based on the Decision Rules and provide an explanation)"
                 "recommended_swift_step_index": number type (The step index to fallback, check recommended_step_to_swift_to),
             }}
         ]

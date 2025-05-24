@@ -7,7 +7,7 @@ from src.feature.supervisor.supervisor_model import CaseConceptualizationModel, 
 from src.feature.supervisor.supervisor_main_graph import SupervisorGraph
 from src.feature.supervisor.supervisor_main_state import SupervisorMainState
 from src.utility.langfuse_helper import get_langfuse_callback
-from src.utility.utility_method import parse_json
+from src.utility.utility_method import parse_json, clamp
 from pydantic import TypeAdapter
 
 
@@ -83,6 +83,10 @@ class SupervisorRepo:
 
             treatment_evaluation_adapter = TypeAdapter(List[TreatmentEvaluation])
             treatment_evaluations = treatment_evaluation_adapter.validate_python(treatment_evaluation_json['steps'])
+
+            # Make sure the step index, make sense
+            for index, evaluation in enumerate(treatment_evaluations):
+                evaluation.recommended_swift_step_index = clamp(evaluation.recommended_swift_step_index, 0, max(0, index))
 
             issue_treatment_strategies.append(
                 IssueTreatmentStrategy(
